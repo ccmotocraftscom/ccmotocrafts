@@ -1,0 +1,14 @@
+CC MOTOCRAFTS PWA AUTO-UPDATE PACKAGE
+Build date: 27 October 2026
+
+Included changes:
+- Updated sw.js cache version to ccm-motocrafts-shell-v3.
+- Network-first HTML navigation with offline fallback.
+- Old ccm-motocrafts-shell-* caches are cleaned during activation.
+- Adds an Update available notice with Update Now / Later buttons.
+- Update prompt asks the waiting service worker to activate and reloads once controller changes.
+- Existing app icons, manifest, issue log, and site files retained.
+
+Deploy all ZIP contents together to the website document root (public_html) after backup. Keep /sw.js at the website root. Do not upload only index.html or only sw.js. Do not change email DNS/MX records for this update.
+
+IMPORTANT LIMITS: This package was checked locally for ZIP integrity and JavaScript syntax. It has not been deployed to the live website and has not been end-to-end tested on an Android phone. PWA updates depend on HTTPS, correct root paths, browser/service-worker lifecycle, and successful deployment. Existing booking/backend behavior has not been verified by this build. Test on a preview URL before replacing the live site.

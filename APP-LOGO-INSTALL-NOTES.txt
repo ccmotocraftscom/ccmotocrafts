@@ -1,0 +1,9 @@
+CC MOTOCRAFTS APP LOGO INTEGRATION — 27 OCT 2026
+
+Included the new black / metallic-silver / red CC MOTOCRAFTS | AI ENGINE LABS logo in this website package.
+- index.html header brand logo and homepage hero logo now reference /cc-motocrafts-logo.png.
+- PWA app icons replaced: app-icon-192.png and app-icon-512.png.
+- Added apple-touch-icon.png, favicon.ico, favicon PNGs, and app-icon.svg.
+- manifest.json retains app name: CC Motocrafts | AI Engine Labs; short name: CC Motocrafts.
+
+Deployment note: upload/extract the ZIP contents together into the website's public_html (or deploy folder). Do not upload only index.html, because it references the logo file. If the app was already installed on a phone, its icon may remain cached; remove the old home-screen shortcut and install/add it again after the website files are deployed. This package has not been deployed to the live domain by this edit.

@@ -1,0 +1,15 @@
+CC MOTOCRAFTS — SUPABASE RECORDS / WARRANTY CHECKLIST
+
+Project table referenced by current frontend: public.bike_bookings
+AI audit table referenced in project notes: public.ai_chat_audit_logs (verify whether actually created).
+
+Before production, verify in Supabase Table Editor / SQL Editor:
+1. Confirm exact phone column name used by booking inserts (phone/mobile/phone_number/customer_phone/contact_phone).
+2. Confirm fields used by the frontend exist: id, booking_ref or booking_id, vehicle_brand, vehicle_model/model, registration_number, status, customer_hidden, submitted_at/created_at, service_date/delivered_at, odometer_km/odometer, warranty_status/engine_warranty_status, invoice_url/invoice_number.
+3. Compare the JSON keys in saveBookingToSupabase() with the actual bike_bookings columns. PostgREST returns HTTP 400 for unknown columns.
+4. Review RLS policies. Do not allow anonymous users to read every booking or update customer_hidden for arbitrary IDs.
+5. Use OTP/customer authentication and enforce ownership server-side for history reads and hide actions. Never put a service-role key in index.html.
+6. Warranty is only displayable if the workshop saves written warranty terms, start/end dates, covered work, exclusions, and inspection/claim records. Do not infer warranty eligibility from a registration number alone.
+7. Test with a real test booking: create -> retrieve as the authenticated customer -> status update -> delivery -> warranty/invoice display -> hide from customer view while master record remains.
+
+This file is a checklist, not a database migration. Exact SQL depends on the actual schema and should be applied only after inspecting it.

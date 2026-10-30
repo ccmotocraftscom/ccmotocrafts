@@ -1,0 +1,29 @@
+CC MOTOCRAFTS — RELEASE / ISSUE HANDOFF
+Date: 29 October 2026
+
+IDENTITY / PARTNER POLICY
+- Public brand: CC MOTOCRAFTS | AI ENGINE LABS.
+- Partner garage registration remains a footer link only. No partner shop address was added because the exact partner name/location was not supplied in this request.
+- Do not represent a partner garage as the CC Motocrafts workshop or show a partner address as the primary business address.
+
+WARRANTY / BOOKING COPY
+- Reworded booking-pass text so a generated pass does not falsely imply that a booking/technician dispatch is confirmed.
+- Reworded the general-service warranty sentence to avoid an unconditional guarantee. Actual coverage must be written on the job card/warranty card.
+- Engine work coverage, part/manufacturing defects, customer misuse, external intervention, and service intervals must be confirmed per written terms. Do not promise that all running parts are covered.
+
+WHAT IS NOT VERIFIED
+- No live Hostinger deployment was performed.
+- No live Supabase booking write/history lookup was verified. Existing history lookup assumes bike_bookings columns phone, registration_number, customer_hidden, submitted_at and suitable RLS; schema/policies are not confirmed.
+- No Gmail/email sending, SMS provider, WhatsApp automation, Google Sheets webhook, OTP, or real dispatch integration was tested. Opening WhatsApp with a prefilled message is not the same as sending automatically.
+- No real Android phone/PWA update test was run.
+- The current frontend can show a booking receipt, but a real booking is only confirmed after backend save and team confirmation.
+
+REQUIRED BEFORE LIVE CAMPAIGN
+1. Back up current public_html and deploy to /preview/ first.
+2. Submit a test booking and verify the exact row appears in Supabase.
+3. Verify customer history only after secure identity verification and correct RLS; mobile/registration alone should not expose private records.
+4. Verify real email/SMS provider credentials and WhatsApp workflow. Never place service-role secrets in index.html.
+5. Test booking confirmation, warranty copy, mobile layout, PWA update prompt, and rollback.
+6. Only then deploy to root and run the campaign.
+
+Do not change Hostinger email DNS/MX records for this website code update.

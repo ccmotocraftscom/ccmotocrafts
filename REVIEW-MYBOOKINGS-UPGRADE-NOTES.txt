@@ -1,0 +1,9 @@
+CC MOTOCRAFTS — REVIEW + MY BOOKINGS UPDATE
+
+1. The review section offers all ratings from 1 to 5 and private WhatsApp feedback. The Google button now opens a Google Maps search for the business, not a verified direct review form. Replace the URL with the official Google Business Profile review link when the owner has it. Google reviews cannot be silently auto-posted by the website; the customer must submit them on Google.
+
+2. My Bookings now displays registered mobile number plus optional vehicle registration input. The lookup currently requires the registered mobile number; if registration is entered, it adds a registration_number filter. This assumes the database column is named registration_number and must be checked against the actual schema. The existing query also assumes phone, customer_hidden and submitted_at exist. If any differ, the lookup will fail until the query is migrated to the actual schema.
+
+3. Security requirement: before public launch, use OTP/authenticated backend verification and RLS. Do not allow customer history or invoices to be accessed by phone/vehicle number alone.
+
+4. ZIP integrity can be checked locally, but no live database, email delivery or Google review submission was tested by this build.

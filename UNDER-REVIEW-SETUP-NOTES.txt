@@ -1,0 +1,10 @@
+CC MOTOCRAFTS — UNDER REVIEW CUSTOMER FEEDBACK UPDATE
+
+Included: updated review section heading and explanatory copy; 1–5 star selection; private feedback WhatsApp flow; partner registration page; PWA assets; deployment/verification notes.
+
+IMPORTANT LIMITS:
+- This ZIP is a prepared release candidate, not a live deployment.
+- Google review URL is not a verified direct review-form URL. Current site code opens a Google search for CC Motocrafts. Replace reviewUrl in index.html with the exact Google Business Profile “Ask for reviews” link when supplied.
+- All ratings should have the same option to leave an honest Google review. Do not block negative reviews or require a customer to change a rating.
+- Supabase schema/RLS, saving of feedback, booking records, WhatsApp, email and live PWA update are not end-to-end verified.
+- Back up public_html, test in /preview/ first, and do not alter Hostinger email MX/DNS for this website update.

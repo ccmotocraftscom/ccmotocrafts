@@ -1,0 +1,15 @@
+CC MOTOCRAFTS — UNDER REVIEW / GOOGLE REVIEW LINK UPDATE
+Date: 30 October 2026
+
+Changes made to index.html:
+- Removed the public Google Maps iframe/location embed from the service-area page.
+- Removed the old public “Find us on Google / Reviews” Maps search button.
+- Set the Under Review Google button to the direct Google write-a-review URL:
+  https://search.google.com/local/writereview?placeid=ChIJPSKY4rSVyzsR645ZVsTOBqY
+- Kept private booking GPS/map-coordinate handling intact; it is used for pickup dispatch, not as a public location link.
+- Kept the neutral 1–5 star feedback path and private WhatsApp management contact.
+
+Important verification note:
+The business search returned a matching CC Motocrafts listing with Place ID ChIJPSKY4rSVyzsR645ZVsTOBqY. The Google review URL could not be opened by the web verification service during packaging. Before publishing, open the review button on a phone and confirm the Google page shows the intended CC Motocrafts profile, not a partner or unrelated listing.
+
+This ZIP has not been uploaded to Hostinger. No DNS/MX/email settings were changed. Supabase storage, WhatsApp delivery, and live form submission require separate end-to-end tests.

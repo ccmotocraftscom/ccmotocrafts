@@ -1,0 +1,9 @@
+CC Motocrafts customer review update
+
+1-3 star selection opens WhatsApp to central support +91 8333007351.
+4-5 star selections may optionally use the Google review button.
+No rating is filtered from public Google review destinations and customers are never asked to change/remove a review.
+Customer Voice wall is an honest empty state; only genuine customer feedback with consent should be published.
+Book Service CTA returns customers to booking.
+Google direct review URL still requires owner-provided exact Ask for reviews link; existing URL is a Google business search fallback, not verified direct review form.
+This package is not a live deployment. Confirm backend save, Google URL and WhatsApp on staging before publishing.

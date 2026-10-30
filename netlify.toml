@@ -1,0 +1,12 @@
+[build]
+  publish = "."
+
+[[redirects]]
+  from = "/preview"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/partner-register"
+  to = "/partner-register.html"
+  status = 200

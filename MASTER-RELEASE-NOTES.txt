@@ -1,0 +1,31 @@
+CC MOTOCRAFTS | AI ENGINE LABS — MERGED PREVIEW RELEASE
+Build date: 31 October 2026
+
+PACKAGE CONTENTS
+- Original 27-file Customer Review + WhatsApp Booking release preserved.
+- Schema-matched homepage, private admin.html, customer my-order.html, Supabase SQL migration, config files and deployment notes added.
+- PWA icons (192/512), Apple touch icon, favicon set, logo, manifest, service worker and netlify.toml included.
+- Existing original documentation retained.
+
+DEPLOYMENT
+1. Back up the current production website and Supabase database.
+2. Configure config.js with the Supabase project URL and publishable key only. Never put a service-role key in browser files.
+3. Review schema-security.sql against the live database before running it. It removes the exact unrestricted public SELECT policies supplied in the 31-Oct policy export.
+4. Configure Supabase Auth email templates/redirect URLs and authorize only intended admin emails in ccm_admin_allowlist. Enable MFA in Supabase Auth settings for admin accounts.
+5. Enable Realtime for bike_bookings and booking_status_events if live updates are required.
+6. Test on a Cloudflare Pages preview with dummy customer records before production. Preserve Hostinger MX/email DNS records.
+
+PICKUP POLICY
+VIP free pickup/drop applies to these approved PIN-code proxy areas: 500032, 500033, 500034, 500075, 500081, 500084, 500089, 500096. Other selected Hyderabad areas are shown as flat INR 500. These PIN codes are a practical eligibility list, NOT a true geospatial 20-km radius calculation. Confirm route/address manually for boundary cases. Outside-Hyderabad requests require manual availability/price confirmation.
+
+WARRANTY
+30-Day Service Workmanship Guarantee: CC Motocrafts provides a 30-day workmanship guarantee on eligible services from the service completion date, subject to the job card, approved work scope and stated exclusions. This guarantee covers eligible workmanship-related issues; it does not automatically cover normal wear and tear, accidental damage, misuse, unrelated faults or parts excluded from the job card.
+
+IMPORTANT LIMITS — NOT LIVE-VERIFIED
+- This archive has been assembled and structurally checked locally; it has not been deployed to your Cloudflare/Supabase account.
+- Live database migration, owner login/MFA, customer OTP, RLS isolation, Realtime, email delivery and WhatsApp handoff must be tested in your accounts.
+- Browser booking insert still needs server-side abuse protection (e.g. Turnstile + rate limiting / Edge Function) before public production use.
+- The website cannot promise literal zero-second load. This package retains the existing large homepage; actual first-load speed depends on hosting, network, device and image transfer.
+- Email delivery is not activated merely by storing an email address. Configure and test a server-side mail service separately.
+
+Do not overwrite production until preview checks pass. Keep Hostinger email MX/DNS unchanged.

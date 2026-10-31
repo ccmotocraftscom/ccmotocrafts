@@ -1,0 +1,32 @@
+SCHEMA MAPPING CONFIRMED FROM USER'S EXPORT
+
+Website booking form -> public.bike_bookings
+booking_ref -> booking_id
+vehicle_model -> bike_model
+registration_number -> reg_number
+vehicle_class -> vehicle_class
+engine_capacity -> engine_cc
+pickup_area -> area
+preferred_date -> booking_date
+preferred_time -> time_slot
+customer_notes/problem -> complaint_note
+street_address/location -> address
+landmark -> landmark
+pickup_fee_status -> pickup_zone_type
+pickup_fee -> pickup_charge
+status -> Pending
+
+Admin/customer views use:
+created_at, booking_id, customer_name, phone, email, vehicle_brand, bike_model,
+reg_number, vehicle_class, engine_cc, service_type, area, booking_date,
+time_slot, complaint_note, address, landmark, status, odometer_km,
+service_date, engine_warranty_status, warranty_parts_covered,
+warranty_void_rule, pickup_zone_type, pickup_charge, cancellation_penalty,
+total_dispatch_fee, vehicle_displacement_class.
+
+Status history uses booking_status_events.booking_code = bike_bookings.booking_id.
+Customer ownership uses verified Supabase Auth JWT email = bike_bookings.email.
+Admin ownership uses public.ccm_admin_allowlist + public.ccm_is_admin().
+
+IMPORTANT: The exported bike_bookings.id is NOT NULL but has no default. Migration
+creates a sequence-backed default and advances it past existing max(id), preserving rows.

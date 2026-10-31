@@ -1,0 +1,23 @@
+CC MOTOCRAFTS — PREVIEW RELEASE CHECKLIST
+
+[ ] Supabase backup completed
+[ ] schema-security.sql reviewed and applied
+[ ] Policy query reviewed: no public SELECT USING true on private tables
+[ ] Owner Auth account verified; MFA enabled
+[ ] Customer email OTP/magic-link redirect configured
+[ ] Realtime publication includes bike_bookings (optional)
+[ ] Cloudflare Pages preview deployed (not production)
+[ ] Dummy public booking inserted successfully into actual schema
+[ ] Owner admin can read/update booking
+[ ] Non-admin cannot read admin data or update booking
+[ ] Customer A can read own booking only
+[ ] Customer A cannot read Customer B booking
+[ ] Status change creates booking_status_events row
+[ ] Invoice/PDF contains exact 30-day workmanship guarantee
+[ ] Anonymous SELECT denied on bookings, AI logs, events and issues
+[ ] Only approved + consented customer reviews are public
+[ ] Hostinger email send/receive verified; MX/SPF/DKIM/DMARC preserved
+[ ] Cloudflare Turnstile/server-side rate limiting added before public production
+[ ] Production promotion approved after all tests
+
+Never add service_role/secret keys to config.js or frontend source.

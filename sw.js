@@ -1,4 +1,4 @@
-const CACHE_NAME='ccm-motocrafts-shell-v20261030b';
+const CACHE_NAME='ccm-motocrafts-shell-v20261031-merged';
 const SHELL=['/','/manifest.json','/app-icon-192.png','/app-icon-512.png'];
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting()));

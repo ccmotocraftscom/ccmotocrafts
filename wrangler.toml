@@ -1,0 +1,15 @@
+name = "cc-motocrafts-api"
+main = "worker/src/index.js"
+compatibility_date = "2026-10-31"
+workers_dev = true
+
+[vars]
+APP_NAME = "CC MOTOCRAFTS AI ENGINE LABS"
+PUBLIC_ORIGIN = "https://ccmotocrafts.in"
+BUSINESS_EMAIL = "info@ccmotocrafts.in"
+BUSINESS_WHATSAPP = "+918333084261"
+
+# Create this namespace and bind it before deploying for rate limiting.
+# [[kv_namespaces]]
+# binding = "RATE_LIMIT"
+# id = "REPLACE_WITH_KV_NAMESPACE_ID"

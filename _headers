@@ -2,8 +2,5 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: DENY
-  Permissions-Policy: camera=(), microphone=(), geolocation=(self)
-/admin.html
-  X-Robots-Tag: noindex, nofollow
-/my-order.html
-  X-Robots-Tag: noindex, nofollow
+  Permissions-Policy: camera=(self), microphone=(self), geolocation=(self)
+  Strict-Transport-Security: max-age=31536000; includeSubDomains

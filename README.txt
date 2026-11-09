@@ -1,1 +1,1 @@
-CC MOTOCrafts Admin & Customer Dashboard upgrade package. See README-SETUP-HINGLISH.txt and DEPLOY-CHECKLIST.txt for full setup and security gates.
+Replace these with real photos (same file names, webp or jpg) when you have them: work-1..8, hero-van, pickup, certificate, logo.

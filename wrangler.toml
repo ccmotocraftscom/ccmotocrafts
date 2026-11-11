@@ -5,8 +5,9 @@ workers_dev = true
 
 [vars]
 APP_NAME = "CC MOTOCRAFTS AI ENGINE LABS"
-PUBLIC_ORIGIN = "https://ccmotocrafts.in"
-BUSINESS_EMAIL = "info@ccmotocrafts.in"
+PUBLIC_ORIGIN = "https://www.ccmotocrafts.in"
+ALLOWED_ORIGINS = "https://ccmotocrafts.in,https://www.ccmotocrafts.in"
+BUSINESS_ALERT_EMAILS = "aisupport.on@gmail.com,info@ccmotocrafts.in"
 BUSINESS_WHATSAPP = "+918333084261"
 
 # Create this namespace and bind it before deploying for rate limiting.

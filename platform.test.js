@@ -68,3 +68,12 @@ test('normalizer preserves explicit notification consent and GPS capture metadat
   assert.equal(booking.location_capture_method, 'browser_gps');
   assert.equal(booking.pickup_requested, true);
 });
+
+
+test('CORS allowlist returns the exact requested production origin for apex and www', async () => {
+  for (const origin of ['https://ccmotocrafts.in', 'https://www.ccmotocrafts.in']) {
+    const req = new Request('https://api.example.workers.dev/api/health', { headers: { origin } });
+    const res = await worker.fetch(req, { PUBLIC_ORIGIN: 'https://www.ccmotocrafts.in', ALLOWED_ORIGINS: 'https://ccmotocrafts.in,https://www.ccmotocrafts.in' });
+    assert.equal(res.headers.get('access-control-allow-origin'), origin);
+  }
+});

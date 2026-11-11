@@ -87,18 +87,35 @@ async function handleBooking(request, env) {
 
   const message = `New CC Motocrafts booking ${saved.job_id}\nCustomer: ${saved.customer_name}\nPhone: ${saved.customer_phone}\nVehicle: ${saved.vehicle_model} (${saved.vehicle_reg})\nPIN: ${saved.pincode}\nArea: ${saved.area || 'Not supplied'}\nIssue: ${saved.service_package}`;
   const deliveries = [];
-  if (env.BUSINESS_ALERT_EMAIL) deliveries.push({ channel: 'business_email', ...(await notifyEmail(env, env.BUSINESS_ALERT_EMAIL, `New CC Motocrafts booking ${saved.job_id}`, message)) });
-  if (routing.garage?.email) deliveries.push({ channel: 'partner_email', ...(await notifyEmail(env, routing.garage.email, `Assigned booking ${saved.job_id}`, message)) });
-  if (routing.garage?.phone) deliveries.push({ channel: 'partner_whatsapp', ...(await notifySms(env, routing.garage.phone, message, true)) });
-  else if (env.BUSINESS_WHATSAPP) deliveries.push({ channel: 'business_whatsapp', ...(await notifySms(env, env.BUSINESS_WHATSAPP, message, true)) });
+  // Send the owner notification to both configured business inboxes.
+  // BUSINESS_ALERT_EMAIL remains supported for backward compatibility.
+  const ownerEmails = [...new Set(String(env.BUSINESS_ALERT_EMAILS || env.BUSINESS_ALERT_EMAIL || '')
+    .split(',').map(value => value.trim().toLowerCase()).filter(Boolean))];
+  for (const recipient of ownerEmails) {
+    try {
+      deliveries.push({ channel: 'business_email', recipient, ...(await notifyEmail(env, recipient, `New CC Motocrafts booking ${saved.job_id}`, message)) });
+    } catch (error) {
+      deliveries.push({ channel: 'business_email', recipient, configured: true, ok: false, error: 'delivery_failed' });
+    }
+  }
+  if (routing.garage?.email) {
+    try { deliveries.push({ channel: 'partner_email', ...(await notifyEmail(env, routing.garage.email, `Assigned booking ${saved.job_id}`, message)) }); }
+    catch (error) { deliveries.push({ channel: 'partner_email', configured: true, ok: false, error: 'delivery_failed' }); }
+  }
+  try {
+    if (routing.garage?.phone) deliveries.push({ channel: 'partner_whatsapp', ...(await notifySms(env, routing.garage.phone, message, true)) });
+    else if (env.BUSINESS_WHATSAPP) deliveries.push({ channel: 'business_whatsapp', ...(await notifySms(env, env.BUSINESS_WHATSAPP, message, true)) });
+  } catch (error) { deliveries.push({ channel: 'whatsapp', configured: true, ok: false, error: 'delivery_failed' }); }
 
   // Customer notifications are sent only where the customer supplied the address/number and opted in.
   const customerMessage = `Thank you for choosing CC Motocrafts! Your booking request ${saved.job_id} has been received. Our team will contact you to confirm pickup availability; the 35–45 minute pickup target applies only after dispatch confirmation and service-area availability.`;
   if (saved.customer_email && saved.customer_email_opt_in) {
-    deliveries.push({ channel: 'customer_email', ...(await notifyEmail(env, saved.customer_email, `CC Motocrafts booking request ${saved.job_id}`, customerMessage)) });
+    try { deliveries.push({ channel: 'customer_email', ...(await notifyEmail(env, saved.customer_email, `CC Motocrafts booking request ${saved.job_id}`, customerMessage)) }); }
+    catch (error) { deliveries.push({ channel: 'customer_email', configured: true, ok: false, error: 'delivery_failed' }); }
   }
   if (saved.customer_whatsapp_opt_in) {
-    deliveries.push({ channel: 'customer_whatsapp', ...(await notifySms(env, saved.customer_phone, customerMessage, true)) });
+    try { deliveries.push({ channel: 'customer_whatsapp', ...(await notifySms(env, saved.customer_phone, customerMessage, true)) }); }
+    catch (error) { deliveries.push({ channel: 'customer_whatsapp', configured: true, ok: false, error: 'delivery_failed' }); }
   }
 
   return json({ ok: true, job_id: saved.job_id, status: saved.status, garage_id: saved.garage_id || null, routing: routing.garage ? 'partner_assigned' : (routing.routeLookupFailed ? 'route_lookup_unavailable' : 'central_queue_no_pincode_match'), notifications: deliveries, message: 'Booking saved. Appointment and pickup remain subject to team confirmation.' }, 201);

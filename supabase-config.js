@@ -226,7 +226,7 @@ window.CC_CONFIG = {
   // 18 Curated Portfolio Items mapped to all uploaded images
   portfolioItems: [
     {
-      img: "assets/images/portfolio-superbike-inline4-rebuild.jpg",
+      img: "portfolio-superbike-inline4-rebuild.jpg",
       title: "Kawasaki Inline-4 Superbike Engine Rebuild",
       category: "Engine repair/rebuild",
       vehicleClass: "Multi-Cylinder Superbike (600–2500cc)",
@@ -234,7 +234,7 @@ window.CC_CONFIG = {
       desc: "Complete 4-cylinder engine block teardown, crankshaft journal inspection, and factory torque assembly."
     },
     {
-      img: "assets/images/portfolio-ducati-trellis-rebuild.jpg",
+      img: "portfolio-ducati-trellis-rebuild.jpg",
       title: "Ducati L-Twin Frame & Engine Overhaul",
       category: "Engine repair/rebuild",
       vehicleClass: "Multi-Cylinder Superbike (600–2500cc)",
@@ -242,7 +242,7 @@ window.CC_CONFIG = {
       desc: "Desmo valve clearance check, timing belt service, and trellis frame engine diagnostics."
     },
     {
-      img: "assets/images/portfolio-aprilia-superbike-overhaul.jpg",
+      img: "portfolio-aprilia-superbike-overhaul.jpg",
       title: "Aprilia V4 Superbike Full Diagnostic & Overhaul",
       category: "FI/ECU diagnostics",
       vehicleClass: "Multi-Cylinder Superbike (600–2500cc)",
@@ -250,7 +250,7 @@ window.CC_CONFIG = {
       desc: "Ride-by-wire throttle calibration, APRC sensor diagnostics, and cooling system overhaul."
     },
     {
-      img: "assets/images/portfolio-kawasaki-z900-exhaust.jpg",
+      img: "portfolio-kawasaki-z900-exhaust.jpg",
       title: "Kawasaki Z900 Exhaust, Suspension & General Service",
       category: "General service",
       vehicleClass: "Multi-Cylinder Superbike (600–2500cc)",
@@ -258,7 +258,7 @@ window.CC_CONFIG = {
       desc: "Full synthetic oil service, header torque check, chain laser alignment, and brake caliper cleaning."
     },
     {
-      img: "assets/images/portfolio-cylinder-head-valve-care.jpg",
+      img: "portfolio-cylinder-head-valve-care.jpg",
       title: "Cylinder Head Resurfacing & Precision Valve Lapping",
       category: "Engine repair/rebuild",
       vehicleClass: "Multi-Cylinder Superbike (600–2500cc)",
@@ -266,7 +266,7 @@ window.CC_CONFIG = {
       desc: "Micro-tolerance cylinder head resurfacing and valve seat lapping for maximum compression restoration."
     },
     {
-      img: "assets/images/portfolio-crankcase-precision-assembly.jpg",
+      img: "portfolio-crankcase-precision-assembly.jpg",
       title: "Bottom-End Crankcase & Gearbox Blueprinting",
       category: "Clutch & transmission",
       vehicleClass: "Sports (200–500cc)",
@@ -274,7 +274,7 @@ window.CC_CONFIG = {
       desc: "Split crankcase bearing replacement, shift fork inspection, and precision torque assembly."
     },
     {
-      img: "assets/images/portfolio-fi-ecu-troubleshooting.jpg",
+      img: "portfolio-fi-ecu-troubleshooting.jpg",
       title: "FI / ECU Circuit & Check-Engine Live Troubleshooting",
       category: "FI/ECU diagnostics",
       vehicleClass: "Multi-Cylinder Superbike (600–2500cc)",
@@ -282,7 +282,7 @@ window.CC_CONFIG = {
       desc: "Resolving stalling, no-start, and check-engine faults using digital oscilloscopes and OBD-II scanners."
     },
     {
-      img: "assets/images/portfolio-adventure-obd-scan.jpg",
+      img: "portfolio-adventure-obd-scan.jpg",
       title: "Adventure Tourer Laptop OBD-II & ABS Calibration",
       category: "FI/ECU diagnostics",
       vehicleClass: "Sports (200–500cc)",
@@ -290,7 +290,7 @@ window.CC_CONFIG = {
       desc: "Computerized ECU fault reading, fuel trim mapping, and rear drivetrain service for adventure tourers."
     },
     {
-      img: "assets/images/portfolio-bmw-g310r-diagnostics.jpg",
+      img: "portfolio-bmw-g310r-diagnostics.jpg",
       title: "BMW G310R Computerized Service & Fluid Flush",
       category: "General service",
       vehicleClass: "Sports (200–500cc)",
@@ -298,7 +298,7 @@ window.CC_CONFIG = {
       desc: "Service interval reset, diagnostic scan, synthetic oil change, and hydraulic brake bleeding."
     },
     {
-      img: "assets/images/portfolio-himalayan-suspension-forks.jpg",
+      img: "portfolio-himalayan-suspension-forks.jpg",
       title: "Royal Enfield Himalayan Front Fork & Suspension Rebuild",
       category: "Brake & suspension",
       vehicleClass: "Sports (200–500cc)",
@@ -306,7 +306,7 @@ window.CC_CONFIG = {
       desc: "Complete front fork oil & genuine oil-seal replacement, cone-set adjustment, and wheel alignment."
     },
     {
-      img: "assets/images/portfolio-royal-enfield-general.jpg",
+      img: "portfolio-royal-enfield-general.jpg",
       title: "Royal Enfield 350/650 Periodic Service & Detailing",
       category: "General service",
       vehicleClass: "Sports (200–500cc)",
@@ -314,7 +314,7 @@ window.CC_CONFIG = {
       desc: "Tappet clearance adjustment, fuel injector cleaning, chain lube, and 40-point safety inspection."
     },
     {
-      img: "assets/images/portfolio-cruiser-brake-service.jpg",
+      img: "portfolio-cruiser-brake-service.jpg",
       title: "Cruiser Disc Brake Caliper & Wheel Bearing Overhaul",
       category: "Brake & suspension",
       vehicleClass: "Sports (200–500cc)",
@@ -322,7 +322,7 @@ window.CC_CONFIG = {
       desc: "Master cylinder rebuild, sintered pad installation, rotor runout check, and ABS bleeding."
     },
     {
-      img: "assets/images/portfolio-commuter-sport-red.jpg",
+      img: "portfolio-commuter-sport-red.jpg",
       title: "Commuter & Naked Sport Periodic Maintenance",
       category: "General service",
       vehicleClass: "Commuter (100–160cc)",
@@ -330,7 +330,7 @@ window.CC_CONFIG = {
       desc: "High-mileage engine care, carburetor/injector tuning, air filter replacement, and electrical check."
     },
     {
-      img: "assets/images/portfolio-clutch-transmission-bay.jpg",
+      img: "portfolio-clutch-transmission-bay.jpg",
       title: "Multi-Plate Wet Clutch & Chain Drivetrain Overhaul",
       category: "Clutch & transmission",
       vehicleClass: "Commuter (100–160cc)",
@@ -338,7 +338,7 @@ window.CC_CONFIG = {
       desc: "Genuine clutch plate set, pressure plates, clutch cable lubrication, and chain-sprocket kit installation."
     },
     {
-      img: "assets/images/portfolio-retro-electrical-wiring.jpg",
+      img: "portfolio-retro-electrical-wiring.jpg",
       title: "Complete Wiring Harness, Battery & Charging Restoration",
       category: "Electrical troubleshooting",
       vehicleClass: "Commuter (100–160cc)",
@@ -346,7 +346,7 @@ window.CC_CONFIG = {
       desc: "Multimeter load testing, stator coil check, RR unit replacement, and custom relay harness protection."
     },
     {
-      img: "assets/images/portfolio-scooter-vespa-yellow.jpg",
+      img: "portfolio-scooter-vespa-yellow.jpg",
       title: "Vespa & Premium Gearless Scooter Full Service",
       category: "General service",
       vehicleClass: "Scooter / Gearless",
@@ -354,7 +354,7 @@ window.CC_CONFIG = {
       desc: "Complete gearless scooter maintenance, engine oil & gear oil replacement, and brake shoe renewal."
     },
     {
-      img: "assets/images/portfolio-scooter-cvt-drivetrain.jpg",
+      img: "portfolio-scooter-cvt-drivetrain.jpg",
       title: "Scooter CVT Variator, Belt & Clutch Bell Overhaul",
       category: "Clutch & transmission",
       vehicleClass: "Scooter / Gearless",
@@ -362,7 +362,7 @@ window.CC_CONFIG = {
       desc: "Eliminating scooter vibration and mileage drop with genuine variator rollers, Kevlar belt, and clutch cleaning."
     },
     {
-      img: "assets/images/portfolio-scooter-vespa-red.jpg",
+      img: "portfolio-scooter-vespa-red.jpg",
       title: "Gearless Scooter Engine, Suspension & Body Restoration",
       category: "Accident repair",
       vehicleClass: "Scooter / Gearless",

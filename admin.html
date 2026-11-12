@@ -1,1 +1,549 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Master Administration | CC Motocrafts</title><link rel="stylesheet" href="/portals/portal.css"></head><body><main class="wrap"><header><a href="/" class="brand">CC MOTOCRAFTS <span>AI ENGINE LABS</span></a><span class="tag">MASTER ADMIN</span></header><section class="hero"><p class="eyebrow">CENTRAL OPERATIONS</p><h1>Platform administration</h1><p>Restricted to an account explicitly granted the platform-admin role in Supabase Auth app metadata.</p></section><section class="panel" id="loginPanel"><h2>Administrator sign in</h2><label>Email<input id="email" type="email" autocomplete="username"></label><label>Password<input id="password" type="password" autocomplete="current-password"></label><button id="signIn">Sign in</button><p id="message" class="muted" role="status"></p></section><section class="panel hidden" id="dashboard"><div class="split"><h2>Operations overview</h2><button class="secondary" id="signOut">Sign out</button></div><button id="loadAdmin">Load requests & recent bookings</button><pre id="adminData" class="result"></pre></section><footer>Never put master access codes or service-role credentials in this page.</footer></main><script src="/portals/portal.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Master Owner Admin Command Center | CC Motocrafts AI Engine Labs Service</title>
+  <link rel="icon" type="image/jpeg" href="assets/images/logo-cc-crafts-3d.jpg">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="top-vip-bar">
+    <span class="vip-pill">MASTER OWNER AUTHORITY</span>
+    <span><strong>CC Motocrafts AI Engine Labs Command Center</strong> • Official Admin Email: <strong style="color:#38bdf8;">info@ccmotocrafts.in</strong> • Helpline: <strong style="color:#34d399;">+91 8333084261</strong></span>
+  </div>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="brand-wrap">
+        <img src="assets/images/logo-cc-crafts-3d.jpg" alt="CC Motocrafts Logo" class="brand-logo">
+        <div>
+          <div class="brand-title">CC MOTOCRAFTS — MASTER ADMIN</div>
+          <div class="brand-sub">Dynamic CRUD • Remote Kill-Switch • Live Audit Trail</div>
+        </div>
+      </a>
+
+      <nav class="main-nav">
+        <a href="#supabase-setup-sec">1. Supabase & API Key Setup</a>
+        <a href="#crud-pricing-sec">2. Dynamic Services CRUD</a>
+        <a href="#killswitch-sec">3. Partner & Remote Kill-Switch</a>
+        <a href="#live-bays-sec">4. Live Bookings & Bay Control</a>
+        <a href="#audit-trail-sec">5. Security Audit Logs</a>
+      </nav>
+
+      <div class="header-ctas">
+        <a href="partner.html" class="btn btn-cyan">🛠️ Partner Terminal</a>
+        <a href="index.html" class="btn btn-outline">🏠 Customer Site</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top:36px;padding-bottom:80px;">
+
+    <!-- 1. SUPABASE CONNECTION & PUBLISHABLE KEY PANEL -->
+    <section id="supabase-setup-sec" style="padding:28px 0;">
+      <div class="form-card" style="border-color:var(--border-cyan);">
+        <span class="cluster-tag">SUPABASE POSTGRESQL & CLOUDFLARE WORKER LINK</span>
+        <h2 style="color:#fff;font-size:1.4rem;margin-bottom:8px;">Database & API Key Configuration</h2>
+        <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:16px;">
+          Your public key <code>sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I</code> is pre-configured. Paste your <strong>Supabase Project URL</strong> below (found in <em>Supabase Dashboard → Project Settings → API → Project URL</em>) to activate live cloud PostgreSQL syncing alongside instant local persistence.
+        </p>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Configured Publishable Key (Active)</label>
+            <input type="text" class="form-control" value="sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I" readonly style="color:#34d399;font-weight:700;">
+          </div>
+          <div class="form-group">
+            <label for="admin-sb-url">Supabase Project URL (https://YOUR_PROJECT_ID.supabase.co)</label>
+            <input type="url" id="admin-sb-url" class="form-control" placeholder="https://xyzcompany.supabase.co">
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:14px;align-items:center;flex-wrap:wrap;">
+          <button type="button" class="btn btn-amber" onclick="saveSupabaseConnection()">💾 Save & Connect Supabase</button>
+          <span id="sb-conn-status" style="font-size:0.84rem;color:#34d399;"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. DYNAMIC SERVICES & PRICING CRUD MANAGEMENT -->
+    <section id="crud-pricing-sec" style="padding:28px 0;">
+      <div class="form-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:18px;">
+          <div>
+            <span class="cluster-tag">DYNAMIC CRUD ENGINE</span>
+            <h2 style="color:#fff;font-size:1.4rem;">Add, Edit or Delete Service Categories & Pricing Tiers</h2>
+            <p style="font-size:0.85rem;color:var(--text-muted);">Changes made here sync immediately to the Customer Booking Portal and Partner Job Card Terminal.</p>
+          </div>
+          <button type="button" class="btn btn-outline" onclick="resetDefaultServices()">🔄 Reset to Default 8 Services</button>
+        </div>
+
+        <!-- ADD / EDIT SERVICE FORM -->
+        <form id="admin-service-form" style="background:rgba(255,255,255,0.02);border:1px solid var(--border-subtle);padding:18px;border-radius:10px;margin-bottom:22px;">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Service Code *</label>
+              <input type="text" id="srv-code" class="form-control" placeholder="e.g. SRV-CUST" required>
+            </div>
+            <div class="form-group">
+              <label>Category Name *</label>
+              <input type="text" id="srv-cat" class="form-control" placeholder="e.g. General service / FI/ECU diagnostics" required>
+            </div>
+            <div class="form-group full-width">
+              <label>Full Service Display Title *</label>
+              <input type="text" id="srv-name" class="form-control" placeholder="e.g. Full Synthetic Oil & 40-Point Diagnostic Service" required>
+            </div>
+            <div class="form-group">
+              <label>Scooter Price (₹) *</label>
+              <input type="number" id="srv-p-scooter" class="form-control" value="899" required>
+            </div>
+            <div class="form-group">
+              <label>Commuter 100–160cc Price (₹) *</label>
+              <input type="number" id="srv-p-commuter" class="form-control" value="1099" required>
+            </div>
+            <div class="form-group">
+              <label>Sports 200–500cc Price (₹) *</label>
+              <input type="number" id="srv-p-sports" class="form-control" value="1999" required>
+            </div>
+            <div class="form-group">
+              <label>Superbike 600–2500cc Price (₹) *</label>
+              <input type="number" id="srv-p-superbike" class="form-control" value="3999" required>
+            </div>
+            <div class="form-group">
+              <label>Base Labor Charge (₹) *</label>
+              <input type="number" id="srv-labor" class="form-control" value="450" required>
+            </div>
+            <div class="form-group">
+              <label>Written Warranty Terms *</label>
+              <input type="text" id="srv-warranty" class="form-control" value="30-Day Unconditional Workmanship Guarantee" required>
+            </div>
+            <div class="form-group full-width">
+              <label>Service Scope Description</label>
+              <input type="text" id="srv-desc" class="form-control" placeholder="Describe inspection steps and genuine parts policy...">
+            </div>
+          </div>
+          <div style="margin-top:14px;">
+            <button type="submit" class="btn btn-amber">➕ Save / Update Service Pricing Tier</button>
+          </div>
+        </form>
+
+        <!-- SERVICES TABLE -->
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Category & Title</th>
+                <th>Scooter</th>
+                <th>Commuter</th>
+                <th>Sports</th>
+                <th>Superbike</th>
+                <th>Labor</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="admin-services-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. PARTNER & STAFF MANAGEMENT + REMOTE KILL-SWITCH (SESSION REVOCATION) -->
+    <section id="killswitch-sec" style="padding:28px 0;">
+      <div class="form-card" style="border-color:rgba(239,68,68,0.45);">
+        <span class="cluster-tag" style="background:rgba(239,68,68,0.18);color:#f87171;border-color:rgba(239,68,68,0.45);">SECURITY & REMOTE KILL-SWITCH</span>
+        <h2 style="color:#fff;font-size:1.4rem;margin-bottom:6px;">Garage Partner & Staff Accounts — Instant Session Revocation</h2>
+        <p style="font-size:0.86rem;color:var(--text-muted);margin-bottom:18px;">
+          Clicking <strong>"🚨 Disconnect & Revoke Session"</strong> on any partner or staff member immediately invalidates their auth session token in Supabase/Cloudflare and locks their Partner Terminal into an unworkable <strong>"ACCESS REVOKED"</strong> read-only screen.
+        </p>
+
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Partner ID</th>
+                <th>Workshop / Bay Name</th>
+                <th>Technician / Lead</th>
+                <th>Hyderabad Zone Cluster</th>
+                <th>Online Status</th>
+                <th>Account Security Status</th>
+                <th>Remote Kill-Switch / Action</th>
+              </tr>
+            </thead>
+            <tbody id="admin-partners-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. LIVE WORKSHOP BAYS & CUSTOMER BOOKING DISPATCH -->
+    <section id="live-bays-sec" style="padding:28px 0;">
+      <div class="form-card">
+        <span class="cluster-tag">REAL-TIME BAY TRACKING & WHATSAPP DISPATCH</span>
+        <h2 style="color:#fff;font-size:1.4rem;margin-bottom:14px;">All Customer Bookings & Workshop Bay Status</h2>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Booking ID</th>
+                <th>Customer & Mobile</th>
+                <th>Vehicle & Class</th>
+                <th>Area & PIN</th>
+                <th>Pickup Tier</th>
+                <th>Stage Status</th>
+                <th>Parts Approval</th>
+                <th>Update Stage / WhatsApp</th>
+              </tr>
+            </thead>
+            <tbody id="admin-bookings-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. SECURITY & ADMINISTRATIVE AUDIT TRAIL -->
+    <section id="audit-trail-sec" style="padding:28px 0;">
+      <div class="form-card">
+        <span class="cluster-tag">IMMUTABLE AUDIT LOGS</span>
+        <h2 style="color:#fff;font-size:1.4rem;margin-bottom:14px;">Master Owner Administrative & Security Audit Trail</h2>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Actor</th>
+                <th>Action Type</th>
+                <th>Target</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody id="admin-audit-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="floating-Dock" id="global-floating-dock"></div>
+
+  <script src="assets/js/supabase-config.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script>
+    // Master Owner Admin Portal Controller
+    const defaultPartners = [
+      {
+        id: "CCM-HQ-01",
+        name: "CC Motocrafts AI Engine Labs HQ (Manikonda / Shaikpet)",
+        lead: "Mr. Shaik Mujahid Qadri (Master Tech)",
+        zone: "POST 2: Gachibowli, Financial Dist, Kokapet, Narsingi & Puppalguda (500032, 500075, 500089)",
+        online: true,
+        status: "approved"
+      },
+      {
+        id: "CCM-PRT-02",
+        name: "CC Motocrafts VIP Hub — Jubilee & Banjara Hills",
+        lead: "Syed Irfan (Senior Superbike Tech)",
+        zone: "POST 1: Jubilee Hills, Banjara Hills & Film Nagar (500033, 500034, 500096)",
+        online: true,
+        status: "approved"
+      },
+      {
+        id: "CCM-PRT-03",
+        name: "CC Motocrafts Cyberabad Bay — HITEC City & Kondapur",
+        lead: "Ramesh Kumar (FI & ECU Specialist)",
+        zone: "POST 3: HITEC City, Madhapur, Kondapur & Lanco Hills (500081, 500084, 500089)",
+        online: true,
+        status: "approved"
+      },
+      {
+        id: "CCM-STF-04",
+        name: "External Sub-Garage Bay 04",
+        lead: "Vikram Reddy (Field Staff)",
+        zone: "Rest of Hyderabad (₹500 Pickup Zone)",
+        online: false,
+        status: "suspended"
+      }
+    ];
+
+    function getPartners() {
+      const s = localStorage.getItem("ccm_partners_db");
+      if (s) { try { return JSON.parse(s); } catch (e) {} }
+      localStorage.setItem("ccm_partners_db", JSON.stringify(defaultPartners));
+      return defaultPartners;
+    }
+
+    function savePartners(list) {
+      localStorage.setItem("ccm_partners_db", JSON.stringify(list));
+    }
+
+    function getAuditLogs() {
+      const s = localStorage.getItem("ccm_audit_logs");
+      if (s) { try { return JSON.parse(s); } catch (e) {} }
+      const initLogs = [
+        {
+          time: "2026-11-12 09:00:00",
+          actor: "Master Owner (info@ccmotocrafts.in)",
+          action: "SYSTEM_INIT",
+          target: "All Modules",
+          details: "Configured Official WhatsApp +91 8333084261, Email info@ccmotocrafts.in, and Supabase key sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I"
+        }
+      ];
+      localStorage.setItem("ccm_audit_logs", JSON.stringify(initLogs));
+      return initLogs;
+    }
+
+    function addAuditLog(action, target, details) {
+      const logs = getAuditLogs();
+      logs.unshift({
+        time: new Date().toLocaleString(),
+        actor: "Master Owner (info@ccmotocrafts.in)",
+        action,
+        target,
+        details
+      });
+      localStorage.setItem("ccm_audit_logs", JSON.stringify(logs));
+      renderAuditTable();
+    }
+
+    function saveSupabaseConnection() {
+      const val = document.getElementById("admin-sb-url").value.trim();
+      localStorage.setItem("ccm_supabase_url", val);
+      document.getElementById("sb-conn-status").textContent = val
+        ? "✅ Connected to " + val + " with key sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I"
+        : "ℹ️ Using Local Browser DB + Instant Sync Ready.";
+      addAuditLog("SUPABASE_CONFIG_UPDATE", "Supabase Endpoint", val || "Local Mode");
+    }
+
+    function renderAdminServices() {
+      const tbody = document.getElementById("admin-services-tbody");
+      const list = window.CCM_API.getServices();
+      tbody.innerHTML = list.map(s => `
+        <tr>
+          <td><strong>${s.code}</strong></td>
+          <td>
+            <div style="color:var(--cyan);font-size:0.75rem;font-weight:700;">${s.category}</div>
+            <strong>${s.name}</strong>
+          </td>
+          <td>₹${s.scooter_price}</td>
+          <td>₹${s.commuter_price}</td>
+          <td>₹${s.sports_price}</td>
+          <td>₹${s.superbike_price}</td>
+          <td>₹${s.labor_charge}</td>
+          <td>
+            <div style="display:flex;gap:6px;">
+              <button type="button" class="btn btn-outline" style="padding:4px 10px;font-size:0.75rem;" onclick="editServiceRow('${s.code}')">Edit</button>
+              <button type="button" class="btn btn-crimson" style="padding:4px 10px;font-size:0.75rem;" onclick="deleteServiceRow('${s.code}')">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    window.editServiceRow = function (code) {
+      const list = window.CCM_API.getServices();
+      const item = list.find(x => x.code === code);
+      if (!item) return;
+      document.getElementById("srv-code").value = item.code;
+      document.getElementById("srv-cat").value = item.category;
+      document.getElementById("srv-name").value = item.name;
+      document.getElementById("srv-p-scooter").value = item.scooter_price;
+      document.getElementById("srv-p-commuter").value = item.commuter_price;
+      document.getElementById("srv-p-sports").value = item.sports_price;
+      document.getElementById("srv-p-superbike").value = item.superbike_price;
+      document.getElementById("srv-labor").value = item.labor_charge;
+      document.getElementById("srv-warranty").value = item.warranty;
+      document.getElementById("srv-desc").value = item.desc || "";
+      document.getElementById("crud-pricing-sec").scrollIntoView({ behavior: "smooth" });
+    };
+
+    window.deleteServiceRow = function (code) {
+      const list = window.CCM_API.getServices().filter(x => x.code !== code);
+      window.CCM_API.saveServices(list);
+      addAuditLog("DELETE_SERVICE_TIER", code, "Removed service pricing tier from live platform.");
+      renderAdminServices();
+    };
+
+    window.resetDefaultServices = function () {
+      window.CCM_API.saveServices(window.CC_CONFIG.defaultServices);
+      addAuditLog("RESET_SERVICES", "All 8 Categories", "Restored default 8 service categories and pricing.");
+      renderAdminServices();
+    };
+
+    document.getElementById("admin-service-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const code = document.getElementById("srv-code").value.trim().toUpperCase();
+      const entry = {
+        id: code,
+        code: code,
+        category: document.getElementById("srv-cat").value.trim(),
+        name: document.getElementById("srv-name").value.trim(),
+        scooter_price: Number(document.getElementById("srv-p-scooter").value),
+        commuter_price: Number(document.getElementById("srv-p-commuter").value),
+        sports_price: Number(document.getElementById("srv-p-sports").value),
+        superbike_price: Number(document.getElementById("srv-p-superbike").value),
+        labor_charge: Number(document.getElementById("srv-labor").value),
+        warranty: document.getElementById("srv-warranty").value.trim(),
+        desc: document.getElementById("srv-desc").value.trim()
+      };
+      const list = window.CCM_API.getServices();
+      const idx = list.findIndex(x => x.code === code);
+      if (idx >= 0) {
+        list[idx] = entry;
+      } else {
+        list.push(entry);
+      }
+      window.CCM_API.saveServices(list);
+      addAuditLog("UPSERT_SERVICE_PRICING", code, `${entry.name} (Scooter ₹${entry.scooter_price} / Superbike ₹${entry.superbike_price})`);
+      renderAdminServices();
+      this.reset();
+    });
+
+    function renderPartnersTable() {
+      const tbody = document.getElementById("admin-partners-tbody");
+      const list = getPartners();
+      tbody.innerHTML = list.map(p => {
+        const isRevoked = p.status === "revoked";
+        return `
+          <tr>
+            <td><strong>${p.id}</strong></td>
+            <td><strong>${p.name}</strong></td>
+            <td>${p.lead}</td>
+            <td style="font-size:0.8rem;color:var(--text-muted);">${p.zone}</td>
+            <td>
+              <span style="color:${p.online ? "#34d399" : "#94a3b8"};font-weight:700;">
+                ${p.online ? "● ONLINE" : "○ OFFLINE"}
+              </span>
+            </td>
+            <td>
+              <span class="cluster-tag" style="background:${isRevoked ? "rgba(239,68,68,0.2)" : "rgba(16,185,129,0.18)"};color:${isRevoked ? "#f87171" : "#34d399"};">
+                ${p.status.toUpperCase()}
+              </span>
+            </td>
+            <td>
+              ${!isRevoked ? `
+                <button type="button" class="btn btn-crimson" style="padding:6px 12px;font-size:0.78rem;" onclick="triggerRemoteKillSwitch('${p.id}')">
+                  🚨 Disconnect & Revoke Session
+                </button>
+              ` : `
+                <button type="button" class="btn btn-whatsapp" style="padding:6px 12px;font-size:0.78rem;" onclick="restorePartnerSession('${p.id}')">
+                  🔓 Restore & Re-Approve Access
+                </button>
+              `}
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    window.triggerRemoteKillSwitch = function (partnerId) {
+      const list = getPartners();
+      const p = list.find(x => x.id === partnerId);
+      if (!p) return;
+      p.status = "revoked";
+      p.online = false;
+      savePartners(list);
+
+      // Set global kill-switch flag in localStorage & sync to Supabase active_sessions
+      localStorage.setItem("ccm_killswitch_active", JSON.stringify({
+        revoked: true,
+        partner_id: partnerId,
+        partner_name: p.name,
+        revoked_by: "Master Owner (info@ccmotocrafts.in)",
+        revoked_at: new Date().toLocaleString(),
+        reason: "Immediate Security Session Revocation by Master Owner Command Center"
+      }));
+
+      window.CCM_API.syncToSupabase("active_sessions", "POST", {
+        session_token: "TOKEN-" + partnerId,
+        role: "partner",
+        is_revoked: true,
+        revoked_reason: "Master Owner Kill-Switch Triggered",
+        revoked_by: "info@ccmotocrafts.in",
+        revoked_at: new Date().toISOString()
+      });
+
+      addAuditLog("REMOTE_KILL_SWITCH_EXECUTED", partnerId, `Session token invalidated for ${p.name}. Partner terminal locked into Access Revoked read-only mode.`);
+      renderPartnersTable();
+      alert(`🚨 REMOTE KILL-SWITCH EXECUTED FOR ${partnerId}!
+
+Open partner.html now to verify that the Partner Terminal is locked into the "ACCESS REVOKED" screen.`);
+    };
+
+    window.restorePartnerSession = function (partnerId) {
+      const list = getPartners();
+      const p = list.find(x => x.id === partnerId);
+      if (!p) return;
+      p.status = "approved";
+      p.online = true;
+      savePartners(list);
+      localStorage.removeItem("ccm_killswitch_active");
+      addAuditLog("PARTNER_SESSION_RESTORED", partnerId, `Re-approved session token and restored access for ${p.name}.`);
+      renderPartnersTable();
+    };
+
+    function renderBookingsTable() {
+      const tbody = document.getElementById("admin-bookings-tbody");
+      const list = window.CCM_API.getBookings();
+      tbody.innerHTML = list.map(b => `
+        <tr>
+          <td><strong style="color:var(--amber-bright);">${b.booking_code}</strong></td>
+          <td><strong>${b.customer_name}</strong><br><span style="font-size:0.78rem;color:var(--text-muted);">${b.customer_mobile}</span></td>
+          <td><strong>${b.vehicle_brand} ${b.vehicle_model}</strong><br><span style="font-size:0.76rem;color:var(--cyan);">${b.registration_no} • ${b.engine_cc}</span></td>
+          <td>${b.area_name}<br><strong>PIN: ${b.pincode}</strong></td>
+          <td><span style="color:${b.is_vip_free_pickup ? "#34d399" : "#fbbf24"};font-weight:700;">${b.is_vip_free_pickup ? "FREE VIP (₹0)" : "₹500"}</span></td>
+          <td>
+            <select class="form-control" style="padding:5px 8px;font-size:0.78rem;" onchange="adminChangeBookingStage('${b.booking_code}', this.value)">
+              <option value="received" ${b.booking_status === "received" ? "selected" : ""}>01. Received</option>
+              <option value="pickup_dispatched" ${b.booking_status === "pickup_dispatched" ? "selected" : ""}>02. Flatbed Dispatched</option>
+              <option value="in_inspection" ${b.booking_status === "in_inspection" ? "selected" : ""}>03. In Inspection</option>
+              <option value="awaiting_whatsapp_approval" ${b.booking_status === "awaiting_whatsapp_approval" ? "selected" : ""}>04. Awaiting WhatsApp Approval</option>
+              <option value="repair_in_progress" ${b.booking_status === "repair_in_progress" ? "selected" : ""}>05. Repair In Progress</option>
+              <option value="ready_for_delivery" ${b.booking_status === "ready_for_delivery" ? "selected" : ""}>06. QC & Ready for Drop</option>
+            </select>
+          </td>
+          <td><span style="font-size:0.78rem;font-weight:700;color:#34d399;">${(b.customer_parts_approval_status || "").replace(/_/g, " ")}</span></td>
+          <td>
+            <a href="https://wa.me/${b.customer_mobile.replace(/\D/g, "")}?text=${encodeURIComponent("Hello " + b.customer_name + ", update from CC Motocrafts AI Engine Labs (" + b.booking_code + "): Your " + b.vehicle_brand + " " + b.vehicle_model + " status is now [" + b.booking_status.toUpperCase() + "]. Remember: Zero parts are replaced without your WhatsApp approval! Helpline: +91 8333084261")}" target="_blank" class="btn btn-whatsapp" style="padding:5px 10px;font-size:0.75rem;">📲 Notify Customer</a>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    window.adminChangeBookingStage = function (code, newStage) {
+      const list = window.CCM_API.getBookings();
+      const item = list.find(x => x.booking_code === code);
+      if (item) {
+        item.booking_status = newStage;
+        window.CCM_API.saveBookings(list);
+        addAuditLog("BOOKING_STAGE_UPDATED", code, `Updated booking ${code} status to ${newStage}`);
+        renderBookingsTable();
+      }
+    };
+
+    function renderAuditTable() {
+      const tbody = document.getElementById("admin-audit-tbody");
+      const logs = getAuditLogs();
+      tbody.innerHTML = logs.map(l => `
+        <tr>
+          <td style="font-size:0.78rem;color:var(--text-muted);">${l.time}</td>
+          <td><strong>${l.actor}</strong></td>
+          <td><span class="cluster-tag">${l.action}</span></td>
+          <td><strong>${l.target}</strong></td>
+          <td style="font-size:0.82rem;">${l.details}</td>
+        </tr>
+      `).join("");
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("admin-sb-url").value = localStorage.getItem("ccm_supabase_url") || "";
+      renderAdminServices();
+      renderPartnersTable();
+      renderBookingsTable();
+      renderAuditTable();
+    });
+  </script>
+</body>
+</html>

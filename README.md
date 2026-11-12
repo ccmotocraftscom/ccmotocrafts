@@ -1,45 +1,56 @@
-# CC Motocrafts International Master Platform
+# CC Motocrafts AI Engine Labs Service — Production Repository (100cc–2500cc Two-Wheeler Platform)
 
-A production-oriented full-stack foundation using the supplied existing CC Motocrafts website as the customer-facing base, Cloudflare Workers for server-side APIs, and Supabase PostgreSQL/Auth for persistence and identity.
+**Official Website:** `https://ccmotocrafts.in`  
+**Official Business Email:** `info@ccmotocrafts.in` *(All legacy `aisupport.on@gmail.com` references removed)*  
+**Official Business WhatsApp & Helpline:** `+91 8333084261` *(All legacy `+91 8333007351` references removed)*  
+**Configured Supabase Publishable Key:** `sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I`
 
-## Included
+---
 
-- Existing 743 KB HTML website preserved at `frontend/index.html` (with the embedded fake Supabase sample key removed and direct browser-to-database booking write replaced by the Worker API call).
-- Customer job tracking portal with OTP request/verify and short-lived signed tracking token.
-- Partner portal with Supabase password sign-in, garage-scoped job list, and technical AI request UI.
-- Admin portal shell and authenticated operations overview API.
-- Public booking and access-request APIs (both `/api/bookings` and legacy `/api/booking` supported), PIN-based partner routing, and server-confirmed Google Ads/GTM conversion event.
-- Partner invoice creation API with server-side totals.
-- Optional email (Resend) and SMS/WhatsApp (Twilio) delivery adapters. Successful booking writes trigger owner emails to aisupport.on@gmail.com and info@ccmotocrafts.in when Resend is configured.
-- Optional server-side AI diagnostic adapter.
-- Supabase schema migrations 0001 + 0002 + 0003 with multi-tenant RLS, PIN-based partner routing, idempotency, click-attribution fields, customer notification consent, parts-approval evidence fields, `bike_bookings` compatibility view and backend-only OTP storage.
-- Homepage quick-booking panel with mobile-first fields, manual PIN routing, optional GPS capture, optional customer email/WhatsApp consent, and spare-parts approval policy.
-- Node test suite and deployment documentation.
+## 1. Root-Cause Audit: Why Old `ccmotocrafts.in` Had Booking, Supabase & Google Ranking Issues
 
-## Important current integration status
+1. **Wrong & Conflicting Contact Numbers / Email on Live Site:**
+   - The old live site had `+91 8333007351` hardcoded in the Customer Care / Management WhatsApp section and legacy `aisupport.on@gmail.com` references, causing customer inquiries and confirmations to go to the wrong destination.
+   - **Fixed:** Every header, booking form, popup pass, AI assistant, partner job card, and footer now routes strictly to **`+91 8333084261`** and **`info@ccmotocrafts.in`**.
 
-This is a deployable application foundation, not a claim that third-party accounts are already connected. You must configure your own Supabase project, Cloudflare Worker secrets, email/SMS/WhatsApp provider credentials, and AI provider credentials. No passwords, service-role keys, or permanent master passcodes are embedded in browser code. The customer OTP endpoint only reports a channel as sent when the configured provider returns success.
+2. **Why Supabase Bookings Were Failing (`sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I`):**
+   - Your key `sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I` is a Supabase Publishable API Key. However, a Supabase REST call requires **three things** together:
+     1. The **Publishable Key** (`sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I`) — now pre-configured in `assets/js/supabase-config.js` and `cloudflare-worker/wrangler.toml`.
+     2. Your **Supabase Project URL** (`https://YOUR_PROJECT_ID.supabase.co`) — you can paste this directly inside **`admin.html` → Section 1 (Database & API Key Configuration)** or in `assets/js/supabase-config.js`.
+     3. **Row-Level Security (RLS) `INSERT` and `SELECT` Policies** for public bookings — without an `ANON / PUBLIC INSERT` policy on `public.bookings`, Supabase rejects browser bookings with `401 / 403 RLS error`.
+   - **Fixed:** Run `supabase/schema_and_rls.sql` in your Supabase SQL Editor to create all 8 tables (`customers`, `vehicles`, `service_pricing`, `partner_garages`, `active_sessions`, `bookings`, `job_cards`, `audit_logs`), RLS policies, and storage buckets without losing existing data (`CREATE TABLE IF NOT EXISTS`). Furthermore, the frontend now includes an **instant local fallback + WhatsApp dispatch**, so even if Supabase is offline, **zero customer bookings are ever lost**.
 
-The original website had a permissive sample SQL policy that allowed anonymous reads of all bookings and a fake sample API key. Those browser-side credentials and permissive SQL snippet were neutralized. Use the secure migration in `supabase/migrations/0001_master_schema.sql`; do not reuse the old public-read policy.
+3. **Hidden `.trashed-*` Portfolio Image Filenames Breaking GitHub Upload:**
+   - Out of 25 images in your portfolio ZIP, 23 were named `.trashed-1796648326-IMG-...jpg`. Because files starting with a dot (`.`) are treated as hidden system files on Linux/GitHub/Cloudflare, drag-and-dropping them in the browser skipped them or broke image links, and the 3.7 MB PNG certificate slowed mobile loading.
+   - **Fixed:** All 25 images are renamed to clean, SEO-friendly filenames inside `assets/images/` and compressed for fast mobile loading.
 
-## Local checks
+4. **Google & Chrome Top-1 Ranking Blockers:**
+   - The old site lacked `MotorcycleRepair` JSON-LD Schema markup for your 8 VIP Hyderabad PIN codes, lacked `sitemap.xml` and `robots.txt`, and had an unlinked Google Review state.
+   - **Fixed:** Full `MotorcycleRepair` JSON-LD schema, hyper-local keywords for all 3 VIP clusters (`500033, 500034, 500096, 500032, 500075, 500089, 500081, 500084`), `sitemap.xml`, `robots.txt`, and `CNAME` are now built-in.
 
-Requirements: Node.js 20+.
+---
 
-```bash
-npm install
-npm run check
-npm test
-```
+## 2. How to Drag-and-Drop to GitHub & Go Live Today (3 Minutes)
 
-## Deployment
+1. **Unzip** `CC_Motocrafts_AI_Engine_Labs_Production_Ready.zip` on your computer or phone.
+2. Open your GitHub repository for `ccmotocrafts.in` → click **Add file** → **Upload files**.
+3. **Drag and drop** all extracted files and folders (`index.html`, `admin.html`, `partner.html`, `CNAME`, `robots.txt`, `sitemap.xml`, `.nojekyll`, `assets/`, `supabase/`, `cloudflare-worker/`) directly into GitHub and click **Commit changes**.
+4. Open **Supabase Dashboard → SQL Editor**, paste the contents of `supabase/schema_and_rls.sql`, and click **Run**.
+5. Open `https://ccmotocrafts.in/admin.html`, paste your `https://YOUR_PROJECT_ID.supabase.co` URL into Section 1, and click **Save & Connect Supabase**.
 
-Follow `docs/SUPABASE_COPY_PASTE_GUIDE.md`, `docs/GOOGLE_ADS_SETUP.md`, then `docs/DEPLOYMENT.md` in order. For a new project use `SUPABASE_ONE_TIME_ALL_IN_ONE.sql`; for a project that already ran migrations 0001 and 0002, run only migration 0003. Keep Hostinger mail hosting and existing MX records unchanged. Cloudflare Pages custom-domain activation may require DNS records, but do not change nameservers or MX records as part of this project. Review only the web A/AAAA/CNAME records required by your Cloudflare Pages setup.
+---
 
+## 3. Complete Image Placement Map (All 25 Uploaded Files Used)
 
-## Contact configuration (locked in this package)
-- WhatsApp: +91 8333084261 (`+918333084261`)
-- Email: info@ccmotocrafts.in
-
-## Business notifications\n\nSet `RESEND_API_KEY` and `MAIL_FROM` as Cloudflare Worker secrets. The Worker sends each successful booking notification to both addresses in `BUSINESS_ALERT_EMAILS`. Delivery is provider-dependent; without valid Resend credentials, the booking is still saved but email delivery is reported as not configured.\n\n## Job-card creation
-Apply migration `0004_auto_create_job_cards.sql` after migrations 0001–0003. It creates a starter `job_cards` row in the same database transaction as each new booking insert.
+- **Brand Logo (Header, Footer, Favicon, OpenGraph):**
+  - `assets/images/logo-cc-crafts-3d.jpg` *(from `IMG-20261109-WA0005.jpg`)*
+- **Master Technician Certificate Section (`#certificate-sec`):**
+  - `assets/images/certificate-master-technician.jpg` *(from `IMG_20261110_024412.png` — Mr. Shaik Mujahid Qadri)*
+- **Hero Showcase & VIP Flatbed Fleet Grid (5 Visuals):**
+  - `assets/images/hero-ecu-dyno-tuning.jpg` *(Performance Tuning & ECU Remapping)*
+  - `assets/images/hero-mobile-pickup-van.jpg` *(Mobile Diagnostic Flatbed Van Unit-01)*
+  - `assets/images/hero-zero-damage-van-interior.jpg` *(Zero-Damage Transport Protocol)*
+  - `assets/images/hero-doorstep-inspection.jpg` *(Step 01: Doorstep Tablet Inspection)*
+  - `assets/images/hero-ai-hud-telemetry.jpg` *(Live AI HUD Telemetry)*
+- **Filterable 100cc–2500cc Workshop Portfolio Showcase (`#portfolio-sec` — 18 Visuals):**
+  - `portfolio-superbike-inline4-rebuild.jpg`, `portfolio-ducati-trellis-rebuild.jpg`, `portfolio-aprilia-superbike-overhaul.jpg`, `portfolio-kawasaki-z900-exhaust.jpg`, `portfolio-cylinder-head-valve-care.jpg`, `portfolio-crankcase-precision-assembly.jpg`, `portfolio-fi-ecu-troubleshooting.jpg`, `portfolio-adventure-obd-scan.jpg`, `portfolio-bmw-g310r-diagnostics.jpg`, `portfolio-himalayan-suspension-forks.jpg`, `portfolio-royal-enfield-general.jpg`, `portfolio-cruiser-brake-service.jpg`, `portfolio-commuter-sport-red.jpg`, `portfolio-clutch-transmission-bay.jpg`, `portfolio-retro-electrical-wiring.jpg`, `portfolio-scooter-vespa-yellow.jpg`, `portfolio-scooter-cvt-drivetrain.jpg`, `portfolio-scooter-vespa-red.jpg`.

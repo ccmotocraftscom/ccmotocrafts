@@ -1,16 +1,10 @@
-name = "cc-motocrafts-api"
-main = "worker/src/index.js"
-compatibility_date = "2026-10-31"
-workers_dev = true
+name = "ccmotocrafts-ai-engine-labs"
+main = "worker.js"
+compatibility_date = "2026-11-01"
 
 [vars]
-APP_NAME = "CC MOTOCRAFTS AI ENGINE LABS"
-PUBLIC_ORIGIN = "https://www.ccmotocrafts.in"
-ALLOWED_ORIGINS = "https://ccmotocrafts.in,https://www.ccmotocrafts.in"
-BUSINESS_ALERT_EMAILS = "aisupport.on@gmail.com,info@ccmotocrafts.in"
-BUSINESS_WHATSAPP = "+918333084261"
-
-# Create this namespace and bind it before deploying for rate limiting.
-# [[kv_namespaces]]
-# binding = "RATE_LIMIT"
-# id = "REPLACE_WITH_KV_NAMESPACE_ID"
+OFFICIAL_EMAIL = "info@ccmotocrafts.in"
+OFFICIAL_WHATSAPP = "+918333084261"
+SUPABASE_PUBLISHABLE_KEY = "sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I"
+# Add your SUPABASE_URL in Cloudflare Worker Variables or via assets/js/supabase-config.js:
+# SUPABASE_URL = "https://YOUR_PROJECT_REF.supabase.co"

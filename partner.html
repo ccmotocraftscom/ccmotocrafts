@@ -1,1 +1,285 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Partner Garage Portal | CC Motocrafts</title><link rel="stylesheet" href="/portals/portal.css"></head><body><main class="wrap"><header><a href="/" class="brand">CC MOTOCRAFTS <span>AI ENGINE LABS</span></a><span class="tag">PARTNER WORKSPACE</span></header><section class="hero"><p class="eyebrow">SECURE MULTI-TENANT PORTAL</p><h1>Partner Garage Workspace</h1><p>Sign in with your approved partner account. Your garage records are isolated from other partners.</p></section><section class="panel" id="loginPanel"><h2>Partner sign in</h2><label>Email<input id="email" type="email" autocomplete="username" required></label><label>Password<input id="password" type="password" autocomplete="current-password" required></label><button id="signIn">Sign in securely</button><p id="message" class="muted" role="status"></p></section><section class="panel hidden" id="dashboard"><div class="split"><h2>Garage jobs</h2><button class="secondary" id="signOut">Sign out</button></div><p id="garageMeta" class="muted"></p><div id="jobs" class="jobs"></div><hr><h2>Technical AI assistant</h2><label>Vehicle details<input id="vehicle" placeholder="Year, make, model, engine size"></label><label>Symptom / OBD code<textarea id="question" placeholder="Describe the symptom or enter an OBD code"></textarea></label><button id="diagnose">Analyze safely</button><pre id="diagnosticResult" class="result"></pre><p class="muted">AI outputs are preliminary hypotheses. Confirm against OEM service information and physical tests.</p></section><footer>Access is granted by CC Motocrafts Central Verification. Never share OTPs or passwords.</footer></main><script src="/portals/portal.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Garage Partner & Dispatch Terminal | CC Motocrafts AI Engine Labs Service</title>
+  <link rel="icon" type="image/jpeg" href="assets/images/logo-cc-crafts-3d.jpg">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+  <!-- REMOTE KILL-SWITCH ACCESS REVOKED OVERLAY SCREEN -->
+  <div class="revoked-lock-screen" id="killswitch-overlay">
+    <div class="revoked-box">
+      <div style="font-size:3.2rem;margin-bottom:10px;">🔒</div>
+      <span class="cluster-tag" style="background:rgba(239,68,68,0.25);color:#fca5a5;border-color:#ef4444;">SECURITY KILL-SWITCH ENGAGED • SESSION TOKEN INVALIDATED</span>
+      <h1 style="color:#fff;font-size:1.85rem;margin:10px 0;">ACCESS REVOKED — TERMINAL LOCKED</h1>
+      <p style="color:#cbd5e1;font-size:0.95rem;margin-bottom:16px;" id="revoked-reason-text">
+        Your partner/staff authentication token has been immediately terminated by the Master Owner Command Center (<strong>info@ccmotocrafts.in</strong>). This terminal is now locked in read-only security mode.
+      </p>
+      <div style="background:rgba(0,0,0,0.45);border:1px solid rgba(239,68,68,0.4);padding:12px;border-radius:8px;font-size:0.82rem;color:#fca5a5;margin-bottom:20px;" id="revoked-meta-text"></div>
+      <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
+        <a href="https://wa.me/918333084261?text=Hello%20Master%20Owner%20(CC%20Motocrafts),%20my%20Partner%20Terminal%20shows%20Access%20Revoked.%20Please%20review%20my%20session." target="_blank" class="btn btn-whatsapp">📲 Contact Master Owner (+91 8333084261)</a>
+        <a href="admin.html#killswitch-sec" class="btn btn-outline">🔓 Go to Admin Panel to Restore</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP BAR -->
+  <div class="top-vip-bar">
+    <span class="vip-pill">GARAGE PARTNER & FLATBED DISPATCH TERMINAL</span>
+    <span>Lead Technician: <strong>Mr. Shaik Mujahid Qadri</strong> • Zero Unapproved Parts Protocol Enforced • Helpline: <strong>+91 8333084261</strong></span>
+  </div>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="brand-wrap">
+        <img src="assets/images/logo-cc-crafts-3d.jpg" alt="CC Motocrafts Logo" class="brand-logo">
+        <div>
+          <div class="brand-title">CC MOTOCRAFTS — PARTNER TERMINAL</div>
+          <div class="brand-sub">Flatbed Dispatch • Digital Job Card • WhatsApp Customer Approval</div>
+        </div>
+      </a>
+
+      <div class="header-ctas">
+        <button type="button" id="partner-online-toggle" class="btn btn-whatsapp" onclick="togglePartnerAvailability()">● Bay Status: ONLINE (Accepting Dispatches)</button>
+        <button type="button" class="btn btn-crimson" onclick="simulateKillSwitchDemo()">🚨 Test Kill-Switch Lock</button>
+        <a href="admin.html" class="btn btn-amber">⚙️ Master Admin</a>
+        <a href="index.html" class="btn btn-outline">🏠 Customer Site</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top:36px;padding-bottom:80px;">
+
+    <!-- 1. DIGITAL JOB CARD & GENUINE PARTS WHATSAPP APPROVAL GENERATOR -->
+    <section style="padding:24px 0;">
+      <div class="booking-layout">
+        <div class="form-card">
+          <span class="cluster-tag">STEP 02 & 03: WORKSHOP INSPECTION & WHATSAPP PART QUOTATION</span>
+          <h2 style="color:#fff;font-size:1.35rem;margin-bottom:8px;">Create Digital Inspection Job Card & Request Customer Approval</h2>
+          <p style="font-size:0.86rem;color:var(--text-muted);margin-bottom:18px;">
+            Mandatory Policy: Upload inspection findings and exact genuine spare parts below, then send to the customer on WhatsApp. <strong>If the customer says "Confirm Change", proceed. If the customer says "Nako / No", do not include even 1 Paisa of extra parts!</strong>
+          </p>
+
+          <form id="partner-jobcard-form">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Select Active Booking ID *</label>
+                <select id="jc-booking-select" class="form-control"></select>
+              </div>
+              <div class="form-group">
+                <label>Assigned Workshop Bay *</label>
+                <select id="jc-bay" class="form-control">
+                  <option value="BAY-01 (Superbike & ECU Dyno Lab)">BAY-01 (Superbike & ECU Dyno Lab)</option>
+                  <option value="BAY-02 (Engine Overhaul & Valve Room)">BAY-02 (Engine Overhaul & Valve Room)</option>
+                  <option value="BAY-03 (Commuter & Suspension Bay)">BAY-03 (Commuter & Suspension Bay)</option>
+                  <option value="BAY-04 (Scooter & CVT Drivetrain Bay)">BAY-04 (Scooter & CVT Drivetrain Bay)</option>
+                </select>
+              </div>
+
+              <div class="form-group full-width">
+                <label>OBD-II / ECU Diagnostic Fault Codes & Mechanical Inspection Findings *</label>
+                <textarea id="jc-findings" class="form-control" rows="3" placeholder="e.g. OBD Scan complete. Front brake pads worn to 1.2mm; engine oil dark; air filter choked." required></textarea>
+              </div>
+
+              <div class="form-group">
+                <label>Recommended 100% Genuine OEM Spare Parts List</label>
+                <input type="text" id="jc-parts-list" class="form-control" placeholder="e.g. Genuine Sintered Brake Pads + OEM Oil Filter" required>
+              </div>
+              <div class="form-group">
+                <label>Genuine Parts Cost (₹) — Billed ONLY if Approved *</label>
+                <input type="number" id="jc-parts-cost" class="form-control" value="850" required>
+              </div>
+
+              <div class="form-group">
+                <label>Approved Service Labor Charge (₹) *</label>
+                <input type="number" id="jc-labor-cost" class="form-control" value="499" required>
+              </div>
+              <div class="form-group">
+                <label>Inspection Photo / Video Evidence Note</label>
+                <input type="text" id="jc-photo-note" class="form-control" value="Live photos & video attached in WhatsApp thread">
+              </div>
+            </div>
+
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;">
+              <button type="submit" class="btn btn-whatsapp" style="flex:1;padding:13px;">
+                📲 Save Job Card & Send WhatsApp Approval Request to Customer
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- PARTNER PROTOCOL CARD -->
+        <div class="summary-card">
+          <span class="cluster-tag">10KM FREE VIP FLATBED DISPATCH</span>
+          <h3 style="color:#fff;font-size:1.2rem;margin-bottom:12px;">Partner Dispatch & Zero-Paisa Unapproved Rule</h3>
+          <img src="assets/images/hero-zero-damage-van-interior.jpg" alt="Zero Damage Transport Van" style="border-radius:10px;margin-bottom:14px;border:1px solid var(--border-subtle);">
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;font-size:0.85rem;color:#e2e8f0;">
+            <li>✅ <strong>VIP Free Pickup Pincodes (₹0):</strong> 500033, 500034, 500096, 500032, 500075, 500089, 500081, 500084.</li>
+            <li>✅ <strong>Other Hyderabad Pincodes:</strong> ₹500 two-way flatbed van charge.</li>
+            <li>✅ <strong>Mandatory WhatsApp Consent:</strong> Never open or replace any spare part without customer confirmation on WhatsApp (+91 8333084261).</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. ASSIGNED BOOKINGS QUEUE -->
+    <section style="padding:24px 0;">
+      <div class="form-card">
+        <span class="cluster-tag">LIVE WORKSHOP DISPATCH QUEUE</span>
+        <h2 style="color:#fff;font-size:1.35rem;margin-bottom:14px;">Active Two-Wheeler Jobs in Workshop Bays</h2>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Booking ID</th>
+                <th>Customer</th>
+                <th>Two-Wheeler</th>
+                <th>Area & PIN</th>
+                <th>Inspection & Quote</th>
+                <th>Customer WhatsApp Decision</th>
+              </tr>
+            </thead>
+            <tbody id="partner-jobs-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="floating-Dock" id="global-floating-dock"></div>
+
+  <script src="assets/js/supabase-config.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script>
+    let partnerOnline = true;
+
+    function checkKillSwitchLock() {
+      const ks = localStorage.getItem("ccm_killswitch_active");
+      const overlay = document.getElementById("killswitch-overlay");
+      if (ks) {
+        try {
+          const data = JSON.parse(ks);
+          if (data.revoked) {
+            overlay.classList.add("active");
+            document.getElementById("revoked-meta-text").innerHTML =
+              `Target Terminal: <strong>${data.partner_id} (${data.partner_name})</strong><br>` +
+              `Revoked By: <strong>${data.revoked_by}</strong> at <strong>${data.revoked_at}</strong><br>` +
+              `Reason: ${data.reason}`;
+            return;
+          }
+        } catch (e) {}
+      }
+      overlay.classList.remove("active");
+    }
+
+    window.simulateKillSwitchDemo = function () {
+      localStorage.setItem("ccm_killswitch_active", JSON.stringify({
+        revoked: true,
+        partner_id: "CCM-PRT-02",
+        partner_name: "CC Motocrafts Partner Terminal",
+        revoked_by: "Master Owner (info@ccmotocrafts.in)",
+        revoked_at: new Date().toLocaleString(),
+        reason: "Instant Remote Kill-Switch Demonstration — Auth Token Revoked via Supabase/Cloudflare"
+      }));
+      checkKillSwitchLock();
+    };
+
+    window.togglePartnerAvailability = function () {
+      partnerOnline = !partnerOnline;
+      const btn = document.getElementById("partner-online-toggle");
+      if (partnerOnline) {
+        btn.className = "btn btn-whatsapp";
+        btn.textContent = "● Bay Status: ONLINE (Accepting Dispatches)";
+      } else {
+        btn.className = "btn btn-outline";
+        btn.textContent = "○ Bay Status: OFFLINE (Dispatches Paused)";
+      }
+    };
+
+    function populatePartnerBookings() {
+      const list = window.CCM_API.getBookings();
+      const sel = document.getElementById("jc-booking-select");
+      const tbody = document.getElementById("partner-jobs-tbody");
+
+      if (sel) {
+        sel.innerHTML = list.map(b =>
+          `<option value="${b.booking_code}">${b.booking_code} — ${b.vehicle_brand} ${b.vehicle_model} (${b.customer_name})</option>`
+        ).join("");
+      }
+
+      if (tbody) {
+        tbody.innerHTML = list.map(b => `
+          <tr>
+            <td><strong style="color:var(--amber-bright);">${b.booking_code}</strong><br><small>${b.bay_number || "BAY-01"}</small></td>
+            <td><strong>${b.customer_name}</strong><br><small>${b.customer_mobile}</small></td>
+            <td><strong>${b.vehicle_brand} ${b.vehicle_model}</strong><br><small>${b.registration_no} (${b.engine_cc})</small></td>
+            <td>${b.area_name}<br><strong>${b.pincode}</strong></td>
+            <td style="max-width:300px;font-size:0.82rem;">${b.inspection_findings || "Pending inspection"}<br><strong style="color:var(--amber-bright);">Est: ₹${b.estimated_cost || 0}</strong></td>
+            <td>
+              <span class="cluster-tag">${(b.customer_parts_approval_status || "").replace(/_/g, " ").toUpperCase()}</span>
+            </td>
+          </tr>
+        `).join("");
+      }
+    }
+
+    document.getElementById("partner-jobcard-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const code = document.getElementById("jc-booking-select").value;
+      const bay = document.getElementById("jc-bay").value;
+      const findings = document.getElementById("jc-findings").value.trim();
+      const partsList = document.getElementById("jc-parts-list").value.trim();
+      const partsCost = Number(document.getElementById("jc-parts-cost").value) || 0;
+      const laborCost = Number(document.getElementById("jc-labor-cost").value) || 0;
+
+      const list = window.CCM_API.getBookings();
+      const b = list.find(x => x.booking_code === code);
+      if (!b) return;
+
+      const total = partsCost + laborCost + (b.pickup_charge || 0);
+      b.bay_number = bay;
+      b.booking_status = "awaiting_whatsapp_approval";
+      b.customer_parts_approval_status = "quotation_sent_on_whatsapp";
+      b.inspection_findings = `${findings} | Recommended Genuine OEM Parts: ${partsList} (₹${partsCost}) + Labor (₹${laborCost}) + Pickup (₹${b.pickup_charge || 0}) = Total ₹${total}.`;
+      b.estimated_cost = total;
+
+      window.CCM_API.saveBookings(list);
+      populatePartnerBookings();
+
+      const waApprovalMsg = [
+        `*CC MOTOCRAFTS AI ENGINE LABS — DIGITAL INSPECTION & PART APPROVAL REQUEST*`,
+        `Booking ID: *${b.booking_code}*`,
+        `Customer: ${b.customer_name}`,
+        `Vehicle: ${b.vehicle_brand} ${b.vehicle_model} (${b.registration_no})`,
+        `Workshop Bay: ${bay}`,
+        `━━━━━━━━━━━━━━━━━━━━`,
+        `🔍 *Diagnostic Findings:* ${findings}`,
+        `⚙️ *Recommended 100% Genuine Parts:* ${partsList} — *₹${partsCost}*`,
+        `🛠️ *Service Labor:* ₹${laborCost}`,
+        `🚚 *Pickup & Drop:* ₹${b.pickup_charge || 0}`,
+        `💰 *Total Estimate (if parts approved):* *₹${total}*`,
+        `━━━━━━━━━━━━━━━━━━━━`,
+        `🛡️ *YOUR DECISION REQUIRED:*`,
+        `Reply *"CONFIRM CHANGE"* to approve replacing these genuine parts.`,
+        `Reply *"NAKO / DO NOT CHANGE"* if you do not want extra parts replaced — *0 Paisa will be added without your approval!*`,
+        `Official Helpline: +91 8333084261 | Email: info@ccmotocrafts.in`
+      ].join("\n");
+
+      const cleanPhone = b.customer_mobile.replace(/\D/g, "");
+      const targetPhone = cleanPhone.length === 10 ? "91" + cleanPhone : cleanPhone;
+      window.open(`https://wa.me/${targetPhone}?text=${encodeURIComponent(waApprovalMsg)}`, "_blank");
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      checkKillSwitchLock();
+      populatePartnerBookings();
+      window.addEventListener("storage", checkKillSwitchLock);
+    });
+  </script>
+</body>
+</html>

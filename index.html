@@ -13,6 +13,11 @@
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://ccmotocrafts.in/logo-cc-crafts-3d.jpg">
   <link rel="icon" type="image/jpeg" href="logo-cc-crafts-3d.jpg">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#f59e0b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="app-icon-192.png">
   <link rel="stylesheet" href="styles.css">
   <style>
 /* ============================================================================
@@ -1174,6 +1179,7 @@ section {
       </nav>
 
       <div class="header-ctas">
+        <button type="button" class="btn btn-cyan pwa-install-btn" onclick="installCCMotocraftsApp()" style="padding:7px 11px;font-size:0.78rem;">📲 Install App</button>
         <a href="#booking-section" class="btn btn-amber">🛠️ Book</a>
         <a href="https://wa.me/918333084261?text=Hello%20CC%20Motocrafts%20AI%20Engine%20Labs!%20I%20want%20to%20book%20a%20two-wheeler%20service%20in%20Hyderabad." target="_blank" class="btn btn-whatsapp hide-on-xs">💬 WhatsApp</a>
         <button type="button" class="mobile-menu-btn" onclick="toggleMobileNav()" aria-label="Toggle Menu">☰</button>
@@ -1206,6 +1212,7 @@ section {
           <a href="https://wa.me/918333084261?text=Hi%20CC%20Motocrafts%20AI%20Engine%20Labs,%20I%20want%20to%20book%20a%20two-wheeler%20service%20on%20WhatsApp." target="_blank" class="btn btn-whatsapp">💬 Book on WhatsApp (+91 8333084261)</a>
           <a href="tel:+918333084261" class="btn btn-outline">☎️ Call Helpline</a>
           <button type="button" class="btn btn-cyan" onclick="toggleAiAssistant()">🤖 Ask AI Engine Advisor</button>
+          <button type="button" class="btn btn-outline pwa-install-btn" onclick="installCCMotocraftsApp()">📲 Install Offline Customer App</button>
         </div>
 
         <div class="hero-badges">
@@ -1394,6 +1401,8 @@ section {
       <div class="booking-layout">
         <!-- FORM CARD -->
         <div class="form-card">
+          <div id="offline-network-banner" style="display:none;padding:10px 14px;border-radius:8px;border:1px solid #f59e0b;margin-bottom:12px;font-size:0.84rem;color:#fff;"></div>
+          <div id="saved-profile-status-banner" style="display:none;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.45);padding:10px 14px;border-radius:8px;margin-bottom:14px;"></div>
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
             <div><h3 style="color:#fff;font-size:1.15rem;">Customer, Vehicle & GPS Pickup Intake</h3><div style="font-size:0.75rem;color:#34d399;font-weight:700;margin-top:2px;">● Instant Digital Booking Pass + Direct WhatsApp Confirmation</div></div>
             <button type="button" id="btn-load-profile" class="btn btn-outline" style="padding:6px 12px;font-size:0.78rem;">📂 Load Saved Customer Profile</button>
@@ -1410,7 +1419,7 @@ section {
                 <input type="tel" id="bf-mobile" class="form-control" placeholder="e.g. 9848012345" pattern="[0-9+\-\s]{10,15}" required>
               </div>
               <div class="form-group">
-                <label for="bf-email">Email Address (Logs also sent to info@ccmotocrafts.in)</label>
+                <label for="bf-email">Customer Email Address (Optional)</label>
                 <input type="email" id="bf-email" class="form-control" placeholder="yourname@email.com">
               </div>
               <div class="form-group">

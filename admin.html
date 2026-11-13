@@ -1614,7 +1614,7 @@ Open partner.html now to verify that the Partner Terminal is locked into the "AC
       tbody.innerHTML = list.map(b => `
         <tr>
           <td><strong style="color:var(--amber-bright);">${b.booking_code}</strong></td>
-          <td><strong>${b.customer_name}</strong><br><span style="font-size:0.78rem;color:var(--text-muted);">${b.customer_mobile}</span></td>
+          <td><strong>${b.customer_name}</strong><br><a href="tel:${b.customer_mobile}" style="font-size:0.84rem;color:#34d399;font-weight:800;">📞 ${b.customer_mobile}</a><br><span style="font-size:0.74rem;color:var(--text-muted);">${b.customer_email || ""}</span></td>
           <td><strong>${b.vehicle_brand} ${b.vehicle_model}</strong><br><span style="font-size:0.76rem;color:var(--cyan);">${b.registration_no} • ${b.engine_cc}</span></td>
           <td>${b.area_name}<br><strong>PIN: ${b.pincode}</strong></td>
           <td><span style="color:${b.is_vip_free_pickup ? "#34d399" : "#fbbf24"};font-weight:700;">${b.is_vip_free_pickup ? "FREE VIP (₹0)" : "₹500"}</span></td>
@@ -1644,6 +1644,7 @@ Open partner.html now to verify that the Partner Terminal is locked into the "AC
         window.CCM_API.saveBookings(list);
         addAuditLog("BOOKING_STAGE_UPDATED", code, `Updated booking ${code} status to ${newStage}`);
         renderBookingsTable();
+      if (window.CCM_API && window.CCM_API.fetchCloudBookings) { window.CCM_API.fetchCloudBookings().then(renderBookingsTable); }
       }
     };
 
@@ -1666,6 +1667,7 @@ Open partner.html now to verify that the Partner Terminal is locked into the "AC
       renderAdminServices();
       renderPartnersTable();
       renderBookingsTable();
+      if (window.CCM_API && window.CCM_API.fetchCloudBookings) { window.CCM_API.fetchCloudBookings().then(renderBookingsTable); }
       renderAuditTable();
     });
   </script>

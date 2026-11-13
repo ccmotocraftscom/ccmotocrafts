@@ -99,22 +99,39 @@
     window.dispatchEvent(new Event("ccm_data_updated"));
   }
 
-  // Cloud Database Sync Helper (Matches exact columns of bike_bookings, bookings, and customer_reviews in unpbcjgnctdmtwzmoymt)
-  async function syncToSupabase(table, method, payload, query = "") {
-    const sbUrl = CFG.supabaseUrl;
-    const sbKey = CFG.supabasePublishableKey;
-    const cleanUrl = sbUrl.replace(/\/+$/, "");
+  // Cloud Database Sync Helper (Multi-Endpoint + Progressive Column Fallback so ZERO bookings ever fail)
+  async function postWithFallback(baseUrl, sbKey, table, payloads) {
+    const cleanUrl = baseUrl.replace(/\/+$/, "");
     const headers = {
       "apikey": sbKey,
       "Authorization": `Bearer ${sbKey}`,
       "Content-Type": "application/json",
       "Prefer": "return=minimal"
     };
+    for (let i = 0; i < payloads.length; i++) {
+      try {
+        const res = await fetch(`${cleanUrl}/rest/v1/${table}`, {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(payloads[i])
+        });
+        if (res.ok || res.status === 201 || res.status === 204) {
+          return { ok: true, table, attempt: i + 1, status: res.status };
+        }
+      } catch (e) {}
+    }
+    return { ok: false, table };
+  }
 
-    try {
-      if (table === "bookings" && method === "POST" && payload) {
-        // 1. Exact payload for public.bike_bookings (from your Schema Visualizer Photo 1 & 2)
-        const bikeBookingsRow = {
+  async function syncToSupabase(table, method, payload, query = "") {
+    const sbKey = CFG.supabasePublishableKey;
+    const endpoints = [CFG.supabaseUrl, CFG.supabaseBackupUrl].filter(Boolean);
+
+    if (table === "bookings" && method === "POST" && payload) {
+      // Exact 1-to-1 Keyword Mapping for public.bike_bookings (Progressive Fallback: Full -> Standard -> Minimal)
+      const bikePayloads = [
+        // Attempt 1: Full 20-column schema from your Schema Visualizer (Photos 1-4)
+        {
           booking_id: payload.booking_code,
           customer_name: payload.customer_name,
           phone: payload.customer_mobile,
@@ -131,15 +148,50 @@
           complaint_note: payload.complaint_notes || "Standard diagnostic & service check",
           address: payload.street_address,
           landmark: payload.landmark,
-          status: payload.booking_status || "received",
+          status: "Booking Confirmed",
           pickup_zone_type: payload.is_vip_free_pickup ? "VIP_FREE" : "STANDARD_500",
           pickup_charge: Number(payload.pickup_charge || 0),
           cancellation_penalty: Number(payload.cancellation_fee || 300),
-          total_dispatch_fee: Number(payload.pickup_charge || 0)
-        };
+          total_dispatch_fee: Number(payload.pickup_charge || 0),
+          vehicle_displacement_cc: payload.engine_cc,
+          workmanship_guarantee_days: 30,
+          admin_notes: payload.gps_coords ? `GPS: ${payload.gps_coords}` : "Website Direct Booking"
+        },
+        // Attempt 2: Core 16-column schema (if optional columns differ)
+        {
+          booking_id: payload.booking_code,
+          customer_name: payload.customer_name,
+          phone: payload.customer_mobile,
+          email: payload.customer_email || "info@ccmotocrafts.in",
+          vehicle_brand: payload.vehicle_brand,
+          bike_model: payload.vehicle_model,
+          reg_number: payload.registration_no,
+          vehicle_class: payload.vehicle_class,
+          engine_cc: payload.engine_cc,
+          service_type: payload.service_category,
+          area: `${payload.area_name} (${payload.pincode})`,
+          booking_date: payload.preferred_date,
+          time_slot: payload.preferred_time_window,
+          complaint_note: payload.complaint_notes || "Website Booking",
+          address: payload.street_address,
+          landmark: payload.landmark,
+          status: "Booking Confirmed"
+        },
+        // Attempt 3: Ultra-minimal core lead record
+        {
+          booking_id: payload.booking_code,
+          customer_name: payload.customer_name,
+          phone: payload.customer_mobile,
+          bike_model: `${payload.vehicle_brand} ${payload.vehicle_model}`,
+          reg_number: payload.registration_no,
+          area: payload.pincode,
+          status: "Booking Confirmed"
+        }
+      ];
 
-        // 2. Exact payload for public.bookings (from your Schema Visualizer Photo 2 & 3)
-        const bookingsRow = {
+      // Exact 1-to-1 Keyword Mapping for public.bookings (Progressive Fallback)
+      const bookingsPayloads = [
+        {
           job_id: payload.booking_code,
           division: "2W",
           customer_name: payload.customer_name,
@@ -155,40 +207,121 @@
           pickup_fee: Number(payload.pickup_charge || 0),
           preferred_date: payload.preferred_date || null,
           preferred_slot: payload.preferred_time_window,
-          customer_notes: `${payload.complaint_notes || ""} | Address: ${payload.street_address}, Landmark: ${payload.landmark}`,
+          customer_notes: `${payload.complaint_notes || ""} | Area: ${payload.area_name} | Address: ${payload.street_address}, Landmark: ${payload.landmark}`,
           google_maps_link: payload.gps_coords || "",
           base_price: Number(payload.estimated_cost || 0),
-          status: payload.booking_status || "received"
-        };
+          status: "Booking Confirmed"
+        },
+        {
+          job_id: payload.booking_code,
+          division: "2W",
+          customer_name: payload.customer_name,
+          customer_phone: payload.customer_mobile,
+          vehicle_reg: payload.registration_no,
+          vehicle_model: `${payload.vehicle_brand} ${payload.vehicle_model}`,
+          service_package: payload.service_category,
+          pincode: payload.pincode,
+          pickup_fee: Number(payload.pickup_charge || 0),
+          status: "Booking Confirmed"
+        }
+      ];
 
-        const [resBike, resMain] = await Promise.allSettled([
-          fetch(`${cleanUrl}/rest/v1/bike_bookings`, {
-            method: "POST",
-            headers: headers,
-            body: JSON.stringify(bikeBookingsRow)
-          }),
-          fetch(`${cleanUrl}/rest/v1/bookings`, {
-            method: "POST",
-            headers: headers,
-            body: JSON.stringify(bookingsRow)
-          })
+      // Exact 1-to-1 Keyword Mapping for public.customer_requests (Lead backup table in your Schema Visualizer)
+      const requestPayloads = [
+        {
+          customer_phone: payload.customer_mobile,
+          description: `[${payload.booking_code}] ${payload.customer_name} | ${payload.vehicle_brand} ${payload.vehicle_model} (${payload.registration_no}, ${payload.engine_cc}) | ${payload.service_category} | Area: ${payload.area_name} (${payload.pincode}) | Slot: ${payload.preferred_date} ${payload.preferred_time_window} | Addr: ${payload.street_address}, ${payload.landmark}`,
+          status: "Booking Confirmed"
+        }
+      ];
+
+      let anySynced = false;
+      for (const ep of endpoints) {
+        const [r1, r2, r3] = await Promise.all([
+          postWithFallback(ep, sbKey, "bike_bookings", bikePayloads),
+          postWithFallback(ep, sbKey, "bookings", bookingsPayloads),
+          postWithFallback(ep, sbKey, "customer_requests", requestPayloads)
         ]);
-
-        const ok1 = resBike.status === "fulfilled" && resBike.value.ok;
-        const ok2 = resMain.status === "fulfilled" && resMain.value.ok;
-        return { synced: ok1 || ok2, bike_bookings_ok: ok1, bookings_ok: ok2 };
+        if (r1.ok || r2.ok || r3.ok) {
+          anySynced = true;
+        }
       }
-
-      // Generic table call (e.g. customer_reviews)
-      const res = await fetch(`${cleanUrl}/rest/v1/${table}${query}`, {
-        method: method,
-        headers: headers,
-        body: payload ? JSON.stringify(payload) : undefined
-      });
-      return { synced: res.ok, status: res.status };
-    } catch (err) {
-      return { synced: false, error: err.message };
+      return { synced: anySynced };
     }
+
+    // Generic table call (e.g. customer_reviews)
+    for (const ep of endpoints) {
+      try {
+        const cleanUrl = ep.replace(/\/+$/, "");
+        const res = await fetch(`${cleanUrl}/rest/v1/${table}${query}`, {
+          method: method,
+          headers: {
+            "apikey": sbKey,
+            "Authorization": `Bearer ${sbKey}`,
+            "Content-Type": "application/json",
+            "Prefer": "return=minimal"
+          },
+          body: payload ? JSON.stringify(payload) : undefined
+        });
+        if (res.ok) return { synced: true, status: res.status };
+      } catch (e) {}
+    }
+    return { synced: false };
+  }
+
+  // Live Cloud Reader: Fetch bookings from Supabase bike_bookings & bookings so any booking from any phone shows up live!
+  async function fetchCloudBookings() {
+    const sbKey = CFG.supabasePublishableKey;
+    const endpoints = [CFG.supabaseUrl, CFG.supabaseBackupUrl].filter(Boolean);
+    const merged = [...getBookings()];
+    const seen = new Set(merged.map(b => b.booking_code));
+
+    for (const ep of endpoints) {
+      const cleanUrl = ep.replace(/\/+$/, "");
+      const headers = { "apikey": sbKey, "Authorization": `Bearer ${sbKey}` };
+      try {
+        const res1 = await fetch(`${cleanUrl}/rest/v1/bike_bookings?select=*&order=created_at.desc&limit=50`, { headers });
+        if (res1.ok) {
+          const rows = await res1.json();
+          if (Array.isArray(rows)) {
+            rows.forEach(r => {
+              const code = r.booking_id || ("CCM-" + String(r.id || "").slice(0, 6).toUpperCase());
+              if (!seen.has(code)) {
+                seen.add(code);
+                merged.unshift({
+                  booking_code: code,
+                  customer_name: r.customer_name || "Customer",
+                  customer_mobile: r.phone || "",
+                  customer_email: r.email || "info@ccmotocrafts.in",
+                  vehicle_brand: r.vehicle_brand || "",
+                  vehicle_model: r.bike_model || "Two-Wheeler",
+                  registration_no: r.reg_number || "",
+                  vehicle_class: r.vehicle_class || "Two-Wheeler",
+                  engine_cc: r.engine_cc || "",
+                  service_category: r.service_type || "General service",
+                  complaint_notes: r.complaint_note || "",
+                  area_name: r.area || "Hyderabad",
+                  pincode: r.pincode || "500033",
+                  is_vip_free_pickup: r.pickup_zone_type === "VIP_FREE" || Number(r.pickup_charge) === 0,
+                  pickup_charge: Number(r.pickup_charge || 0),
+                  cancellation_fee: Number(r.cancellation_penalty || 300),
+                  preferred_date: r.booking_date || "",
+                  preferred_time_window: r.time_slot || "",
+                  street_address: r.address || "",
+                  landmark: r.landmark || "",
+                  booking_status: r.status === "Booking Confirmed" ? "received" : (r.status || "received"),
+                  customer_parts_approval_status: "pending_inspection",
+                  estimated_cost: Number(r.pickup_charge || 0),
+                  created_at: r.created_at || new Date().toISOString()
+                });
+              }
+            });
+          }
+        }
+      } catch (e) {}
+    }
+    saveBookings(merged);
+    return merged;
   }
 
   // Format WhatsApp Booking Message
@@ -222,6 +355,7 @@
 
   // Expose Global API for Admin, Partner, and Customer Pages
   window.CCM_API = {
+    fetchCloudBookings,
     getServices,
     saveServices,
     getBookings,
@@ -374,7 +508,7 @@
         const q = (document.getElementById("tracker-input").value || "").trim().toUpperCase();
         renderCustomerLiveTracker(q);
       });
-      renderCustomerLiveTracker("CCM-849201");
+      fetchCloudBookings().then(() => renderCustomerLiveTracker("CCM-849201"));
     }
 
     // 9. Instant PIN Code Checker Bar
@@ -560,7 +694,8 @@
     const list = getBookings();
     list.unshift(newBooking);
     saveBookings(list);
-    await syncToSupabase("bookings", "POST", newBooking);
+    const syncResult = await syncToSupabase("bookings", "POST", newBooking);
+    if (window.queueOfflineBookingIfNeeded) { window.queueOfflineBookingIfNeeded(newBooking, syncResult && syncResult.synced); }
 
     // Build WhatsApp URL
     const waText = buildWhatsAppMessage(newBooking);
@@ -966,4 +1101,152 @@ window.toggleMobileNav = function () {
   };
 
   document.addEventListener("DOMContentLoaded", renderReviewsWall);
+})();
+
+
+// ============================================================================
+// PWA APP INSTALLER + OFFLINE BOOKING QUEUE + AUTO-LOAD SAVED CUSTOMER PROFILE
+// ============================================================================
+(function () {
+  let deferredInstallPrompt = null;
+
+  // 1. Register Service Worker for Offline App Mode
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    });
+  }
+
+  // 2. Capture Chrome "Add to Home Screen / Install App" Prompt
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    document.querySelectorAll('.pwa-install-btn').forEach((btn) => {
+      btn.style.display = 'inline-flex';
+    });
+  });
+
+  window.installCCMotocraftsApp = async function () {
+    if (deferredInstallPrompt) {
+      deferredInstallPrompt.prompt();
+      const { outcome } = await deferredInstallPrompt.userChoice;
+      if (outcome === 'accepted') {
+        deferredInstallPrompt = null;
+      }
+    } else {
+      alert(
+        "📲 Install CC Motocrafts App on Your Phone:\n\n" +
+        "• On Android Chrome: Tap the 3 dots (⋮) at top-right → tap 'Install app' or 'Add to Home screen'.\n" +
+        "• On iPhone Safari: Tap 'Share' → tap 'Add to Home Screen'.\n\n" +
+        "Once installed, the app opens full-screen from your home screen, works offline, and remembers your bike details for 1-click repeat booking!"
+      );
+    }
+  };
+
+  // 3. Auto-Fill Returning Customer's Saved Profile & Show Next-Time Quick Re-Book Banner
+  function autoFillSavedCustomerProfile() {
+    const saved = localStorage.getItem('ccm_customer_profile');
+    if (!saved) return;
+    try {
+      const p = JSON.parse(saved);
+      const setVal = (id, v) => { const el = document.getElementById(id); if (el && v && !el.value) el.value = v; };
+      setVal('bf-name', p.name);
+      setVal('bf-mobile', p.mobile);
+      if (p.email && p.email !== 'Not Provided') setVal('bf-email', p.email);
+      if (p.brand && document.getElementById('bf-brand')) document.getElementById('bf-brand').value = p.brand;
+      setVal('bf-model', p.model);
+      setVal('bf-reg', p.reg);
+      if (p.pincode && document.getElementById('bf-pincode')) {
+        document.getElementById('bf-pincode').value = p.pincode;
+      }
+      setVal('bf-address', p.address);
+      setVal('bf-landmark', p.landmark);
+
+      const badge = document.getElementById('saved-profile-status-banner');
+      if (badge && p.name && p.model) {
+        badge.style.display = 'flex';
+        badge.innerHTML = `
+          <div>
+            <strong style="color:#34d399;">⚡ Welcome Back, ${p.name}!</strong>
+            <span style="font-size:0.8rem;color:#e2e8f0;margin-left:6px;">Your saved vehicle (<strong>${p.brand || ''} ${p.model} • ${p.reg || ''}</strong>) & address are pre-filled for 1-click repeat booking!</span>
+          </div>
+          <button type="button" class="btn btn-outline" style="padding:4px 10px;font-size:0.74rem;" onclick="clearSavedCustomerProfile()">Clear Saved Profile</button>
+        `;
+      }
+    } catch (e) {}
+  }
+
+  window.clearSavedCustomerProfile = function () {
+    localStorage.removeItem('ccm_customer_profile');
+    const badge = document.getElementById('saved-profile-status-banner');
+    if (badge) badge.style.display = 'none';
+    const form = document.getElementById('main-booking-form');
+    if (form) form.reset();
+  };
+
+  // 4. Offline Booking Queue & Automatic Background Sync When Internet Returns
+  function getOfflineQueue() {
+    try { return JSON.parse(localStorage.getItem('ccm_offline_booking_queue') || '[]'); } catch (e) { return []; }
+  }
+
+  function saveOfflineQueue(q) {
+    localStorage.setItem('ccm_offline_booking_queue', JSON.stringify(q));
+    updateOfflineBanner();
+  }
+
+  window.queueOfflineBookingIfNeeded = function (bookingRecord, syncSucceeded) {
+    if (!syncSucceeded) {
+      const q = getOfflineQueue();
+      if (!q.some(x => x.booking_code === bookingRecord.booking_code)) {
+        q.push(bookingRecord);
+        saveOfflineQueue(q);
+      }
+    }
+  };
+
+  async function flushOfflineBookings() {
+    if (!navigator.onLine || !window.CCM_API || !window.CCM_API.syncToSupabase) return;
+    const q = getOfflineQueue();
+    if (!q.length) return;
+    const remaining = [];
+    for (const item of q) {
+      const res = await window.CCM_API.syncToSupabase('bookings', 'POST', item);
+      if (!res || !res.synced) {
+        remaining.push(item);
+      }
+    }
+    saveOfflineQueue(remaining);
+  }
+
+  function updateOfflineBanner() {
+    const bar = document.getElementById('offline-network-banner');
+    if (!bar) return;
+    const q = getOfflineQueue();
+    if (!navigator.onLine) {
+      bar.style.display = 'block';
+      bar.style.background = 'rgba(245, 158, 11, 0.18)';
+      bar.style.borderColor = '#f59e0b';
+      bar.innerHTML = `📴 <strong>Offline App Mode Active:</strong> You can still browse prices and confirm your booking offline! ${q.length ? `(${q.length} offline booking queued — will auto-sync to workshop when internet returns)` : ''}`;
+    } else if (q.length > 0) {
+      bar.style.display = 'block';
+      bar.style.background = 'rgba(6, 182, 212, 0.18)';
+      bar.style.borderColor = '#06b6d4';
+      bar.innerHTML = `🔄 <strong>Syncing ${q.length} Offline Booking(s) to Workshop Server...</strong>`;
+      flushOfflineBookings();
+    } else {
+      bar.style.display = 'none';
+    }
+  }
+
+  window.addEventListener('online', () => {
+    updateOfflineBanner();
+    flushOfflineBookings();
+  });
+  window.addEventListener('offline', updateOfflineBanner);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    autoFillSavedCustomerProfile();
+    updateOfflineBanner();
+    flushOfflineBookings();
+  });
 })();

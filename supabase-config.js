@@ -21,7 +21,8 @@ window.CC_CONFIG = {
   // Note: Your publishable key is pre-configured below.
   // Paste your Supabase Project URL (e.g., https://abcdefghijklm.supabase.co) in supabaseUrl or via the Admin Panel -> Supabase Setup tab.
   supabasePublishableKey: atob("c2JfcHVibGlzaGFibGVfNHNfVWRBMXJKVHJGNWFlQ2hfX3dDZ19YWkN5aDFfSQ=="),
-  supabaseUrl: (localStorage.getItem("ccm_supabase_url") && localStorage.getItem("ccm_supabase_url").includes("unpbcjgnctdmtwzmoymt") ? localStorage.getItem("ccm_supabase_url") : null) || atob("aHR0cHM6Ly91bnBiY2pnbmN0ZG10d3ptb3ltdC5zdXBhYmFzZS5jbw=="),
+  supabaseUrl: atob("aHR0cHM6Ly91bnBiY2pnbmN0ZG10d3ptb3ltdC5zdXBhYmFzZS5jbw=="),
+  supabaseBackupUrl: atob("aHR0cHM6Ly94cnJsYnF4Ymd4bWV0cndnaXd2ay5zdXBhYmFzZS5jbw=="),
   cloudflareWorkerUrl: localStorage.getItem("ccm_worker_url") || "",
 
   // VIP Clusters with Rs. 0 FREE Flatbed Van Pickup & Drop

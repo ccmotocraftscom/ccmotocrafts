@@ -1373,6 +1373,7 @@ section {
 
       window.CCM_API.saveBookings(list);
       populatePartnerBookings();
+      if (window.CCM_API && window.CCM_API.fetchCloudBookings) { window.CCM_API.fetchCloudBookings().then(populatePartnerBookings); }
 
       const waApprovalMsg = [
         `*CC MOTOCRAFTS AI ENGINE LABS — DIGITAL INSPECTION & PART APPROVAL REQUEST*`,
@@ -1401,6 +1402,7 @@ section {
     document.addEventListener("DOMContentLoaded", () => {
       checkKillSwitchLock();
       populatePartnerBookings();
+      if (window.CCM_API && window.CCM_API.fetchCloudBookings) { window.CCM_API.fetchCloudBookings().then(populatePartnerBookings); }
       window.addEventListener("storage", checkKillSwitchLock);
     });
   </script>

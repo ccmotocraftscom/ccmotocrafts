@@ -22,7 +22,7 @@ window.CC_CONFIG = {
   // Note: Your publishable key is pre-configured below.
   // Paste your Supabase Project URL (e.g., https://abcdefghijklm.supabase.co) in supabaseUrl or via the Admin Panel -> Supabase Setup tab.
   supabasePublishableKey: "sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I",
-  supabaseUrl: localStorage.getItem("ccm_supabase_url") || "",
+  supabaseUrl: localStorage.getItem("ccm_supabase_url") || "https://xrrlbqxbgxmetrwgiwvk.supabase.co",
   cloudflareWorkerUrl: localStorage.getItem("ccm_worker_url") || "",
 
   // VIP Clusters with Rs. 0 FREE Flatbed Van Pickup & Drop

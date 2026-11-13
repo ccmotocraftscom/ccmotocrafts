@@ -100,27 +100,60 @@
     window.dispatchEvent(new Event("ccm_data_updated"));
   }
 
-  // Supabase REST Helper (Works with Publishable Key sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I)
+  // Supabase REST Helper (Pre-Connected to https://xrrlbqxbgxmetrwgiwvk.supabase.co + Key sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I)
   async function syncToSupabase(table, method, payload, query = "") {
-    const sbUrl = localStorage.getItem("ccm_supabase_url") || CFG.supabaseUrl;
+    const sbUrl = localStorage.getItem("ccm_supabase_url") || CFG.supabaseUrl || "https://xrrlbqxbgxmetrwgiwvk.supabase.co";
     const sbKey = CFG.supabasePublishableKey;
-    if (!sbUrl) {
-      return { synced: false, reason: "SUPABASE_URL_NOT_SET_USING_LOCAL_DB" };
-    }
+    const cleanUrl = sbUrl.replace(/\/+$/, "");
+    const headers = {
+      "apikey": sbKey,
+      "Authorization": `Bearer ${sbKey}`,
+      "Content-Type": "application/json",
+      "Prefer": "return=representation"
+    };
     try {
-      const cleanUrl = sbUrl.replace(/\/+$/, "");
       const res = await fetch(`${cleanUrl}/rest/v1/${table}${query}`, {
         method: method,
-        headers: {
-          "apikey": sbKey,
-          "Authorization": `Bearer ${sbKey}`,
-          "Content-Type": "application/json",
-          "Prefer": "return=representation"
-        },
+        headers: headers,
         body: payload ? JSON.stringify(payload) : undefined
       });
-      const data = await res.json().catch(() => null);
-      return { synced: res.ok, status: res.status, data };
+      if (res.ok) {
+        const data = await res.json().catch(() => null);
+        return { synced: true, status: res.status, data };
+      }
+      // Fallback: if inserting a booking and the existing Supabase table has minimal columns or is named bike_bookings
+      if (table === "bookings" && method === "POST" && payload) {
+        const minimalPayload = {
+          booking_code: payload.booking_code,
+          customer_name: payload.customer_name,
+          customer_mobile: payload.customer_mobile,
+          customer_email: payload.customer_email,
+          vehicle_brand: payload.vehicle_brand,
+          vehicle_model: payload.vehicle_model,
+          registration_no: payload.registration_no,
+          vehicle_class: payload.vehicle_class,
+          engine_cc: payload.engine_cc,
+          service_category: payload.service_category,
+          complaint_notes: payload.complaint_notes,
+          area_name: payload.area_name,
+          pincode: payload.pincode,
+          pickup_charge: payload.pickup_charge,
+          preferred_date: payload.preferred_date,
+          preferred_time_window: payload.preferred_time_window,
+          street_address: payload.street_address,
+          landmark: payload.landmark,
+          booking_status: payload.booking_status
+        };
+        const res2 = await fetch(`${cleanUrl}/rest/v1/bike_bookings`, {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(minimalPayload)
+        }).catch(() => null);
+        if (res2 && res2.ok) {
+          return { synced: true, status: res2.status, table: "bike_bookings" };
+        }
+      }
+      return { synced: false, status: res.status };
     } catch (err) {
       return { synced: false, error: err.message };
     }
@@ -713,11 +746,11 @@
           </div>
         </div>
       </div>
-      <div style="display:flex;gap:10px;">
-        <button type="button" class="btn btn-amber" onclick="toggleAiAssistant()" style="border-radius:999px;padding:12px 18px;box-shadow:0 8px 25px rgba(0,0,0,0.6);">
-          ⚙️ Ask AI Engineer / Quick Book
+      <div class="floating-buttons-row">
+        <button type="button" class="btn btn-amber" onclick="toggleAiAssistant()" style="border-radius:999px;box-shadow:0 8px 25px rgba(0,0,0,0.7);">
+          🤖 AI Engineer / Quick Book
         </button>
-        <a href="https://wa.me/${CFG.officialWhatsApp}?text=${encodeURIComponent("Hello CC Motocrafts AI Engine Labs! I need two-wheeler service / diagnostic support in Hyderabad.")}" target="_blank" class="btn btn-whatsapp" style="border-radius:999px;padding:12px 18px;box-shadow:0 8px 25px rgba(0,0,0,0.6);">
+        <a href="https://wa.me/${CFG.officialWhatsApp}?text=${encodeURIComponent("Hello CC Motocrafts AI Engine Labs! I need two-wheeler service / diagnostic support in Hyderabad.")}" target="_blank" class="btn btn-whatsapp" style="border-radius:999px;box-shadow:0 8px 25px rgba(0,0,0,0.7);">
           💬 WhatsApp +91 8333084261
         </a>
       </div>
@@ -779,3 +812,8 @@
     window.open(`https://wa.me/${CFG.officialWhatsApp}?text=${encodeURIComponent(waText)}`, "_blank");
   };
 })();
+
+window.toggleMobileNav = function () {
+  const nav = document.getElementById("main-nav-links");
+  if (nav) nav.classList.toggle("open");
+};

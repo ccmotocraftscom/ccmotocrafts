@@ -1,3 +1,8 @@
 User-agent: *
 Allow: /
+Disallow: /admin.html
+Disallow: /partner.html
+Disallow: /schema_and_rls.sql
+Disallow: /worker.js
+Disallow: /wrangler.toml
 Sitemap: https://ccmotocrafts.in/sitemap.xml

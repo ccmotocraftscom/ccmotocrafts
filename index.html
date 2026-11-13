@@ -1169,9 +1169,8 @@ section {
         <a href="#booking-section">Instant Booking</a>
         <a href="#live-tracker-sec">Live Job Tracker</a>
         <a href="#portfolio-sec">Portfolio (25 Visuals)</a>
+        <a href="#customer-feedback-sec">Customer Reviews</a>
         <a href="#certificate-sec">Master Certificate & Warranty</a>
-        <a href="partner.html" style="color:#22d3ee;">Partner Terminal</a>
-        <a href="admin.html" style="color:#fbbf24;">Master Admin</a>
       </nav>
 
       <div class="header-ctas">
@@ -1374,7 +1373,7 @@ section {
         <span class="eyebrow">🛠️ 8 CORE DIAGNOSTIC & ENGINEERING MODULES</span>
         <h2 class="section-title">Transparent Service Categories & Segment Pricing</h2>
         <p class="section-desc">
-          Managed dynamically via our Master Owner Admin Portal and synced across customer and garage partner terminals. Every service uses <strong>100% Genuine OEM Parts</strong> with mandatory WhatsApp approval before replacement.
+          Transparent segment-wise pricing across Scooters, Commuters, Sports Bikes, and Multi-Cylinder Superbikes. Every service uses <strong>100% Genuine OEM Parts</strong> with mandatory WhatsApp approval before replacement.
         </p>
       </div>
       <div class="services-grid" id="dynamic-services-grid"></div>
@@ -1388,7 +1387,7 @@ section {
         <span class="eyebrow">📲 INSTANT DIGITAL BOOKING & LIVE GPS INTAKE</span>
         <h2 class="section-title">Book Online or Confirm Directly on WhatsApp (+91 8333084261)</h2>
         <p class="section-desc">
-          Complete the form below to generate your instant <strong>Booking ID Pass</strong>, save to our Supabase PostgreSQL database, route automated logs to <strong>info@ccmotocrafts.in</strong>, and dispatch your WhatsApp confirmation.
+          Complete the form below to generate your instant <strong>Digital Booking Pass</strong>, route your booking confirmation to <strong>info@ccmotocrafts.in</strong>, and send your slot details directly on WhatsApp.
         </p>
       </div>
 
@@ -1396,7 +1395,7 @@ section {
         <!-- FORM CARD -->
         <div class="form-card">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
-            <div><h3 style="color:#fff;font-size:1.15rem;">Customer, Vehicle & GPS Pickup Intake</h3><div style="font-size:0.75rem;color:#34d399;font-weight:700;margin-top:2px;">● Supabase DB Connected (xrrlbqxbgxmetrwgiwvk.supabase.co) + Instant WhatsApp Sync</div></div>
+            <div><h3 style="color:#fff;font-size:1.15rem;">Customer, Vehicle & GPS Pickup Intake</h3><div style="font-size:0.75rem;color:#34d399;font-weight:700;margin-top:2px;">● Instant Digital Booking Pass + Direct WhatsApp Confirmation</div></div>
             <button type="button" id="btn-load-profile" class="btn btn-outline" style="padding:6px 12px;font-size:0.78rem;">📂 Load Saved Customer Profile</button>
           </div>
 
@@ -1620,6 +1619,91 @@ section {
     </div>
   </section>
 
+
+  <!-- CUSTOMER FEEDBACK, STAR RATINGS & WORK COMPLETION COMMENTS SECTION -->
+  <section id="customer-feedback-sec">
+    <div class="container">
+      <div class="section-header">
+        <span class="eyebrow">⭐ VERIFIED CUSTOMER FEEDBACK & WORK COMPLETION REVIEWS</span>
+        <h2 class="section-title">What Hyderabad Riders Say & Work Completion Feedback</h2>
+        <p class="section-desc">
+          Read verified customer comments on our 100cc–2500cc service quality and share your own feedback on whether your work was completed to 100% satisfaction.
+        </p>
+      </div>
+
+      <!-- LIVE REVIEWS WALL -->
+      <div class="services-grid" id="customer-reviews-grid" style="margin-bottom:34px;"></div>
+
+      <!-- POST A REVIEW / WORK COMPLETION FEEDBACK FORM -->
+      <div class="booking-layout">
+        <div class="form-card">
+          <span class="cluster-tag">POST PUBLIC REVIEW & WORK STATUS</span>
+          <h3 style="color:#fff;font-size:1.2rem;margin-bottom:12px;">Leave Your Service Feedback & Work Completion Status</h3>
+          <form id="customer-review-form" onsubmit="submitCustomerReview(event)">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="rv-name">Your Name *</label>
+                <input type="text" id="rv-name" class="form-control" placeholder="e.g. Imran Khan / Rahul" required>
+              </div>
+              <div class="form-group">
+                <label for="rv-area">Your Area / PIN Code</label>
+                <input type="text" id="rv-area" class="form-control" placeholder="e.g. Banjara Hills (500034)">
+              </div>
+              <div class="form-group">
+                <label for="rv-bike">Two-Wheeler Brand & Model</label>
+                <input type="text" id="rv-bike" class="form-control" placeholder="e.g. Suzuki Hayabusa / Activa 6G">
+              </div>
+              <div class="form-group">
+                <label for="rv-code">Booking ID (Optional)</label>
+                <input type="text" id="rv-code" class="form-control" placeholder="e.g. CCM-849201">
+              </div>
+              <div class="form-group">
+                <label for="rv-status">Was Your Service Work Completed Properly? *</label>
+                <select id="rv-status" class="form-control">
+                  <option value="✅ Work Completed — 100% Satisfied">✅ Haan, Kam Pura Hua (100% Satisfied)</option>
+                  <option value="⏳ Work In Progress — Awaiting Delivery">⏳ Abhi Workshop Mein Chal Raha Hai (In Progress)</option>
+                  <option value="⚠️ Issue Reported — Needs Management Follow-Up">⚠️ Kuch Problem Baki Hai (Needs Follow-Up)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="rv-rating">Star Rating *</label>
+                <select id="rv-rating" class="form-control">
+                  <option value="5">★★★★★ (5/5 — Excellent Service)</option>
+                  <option value="4">★★★★☆ (4/5 — Very Good)</option>
+                  <option value="3">★★★☆☆ (3/5 — Average)</option>
+                  <option value="2">★★☆☆☆ (2/5 — Needs Improvement)</option>
+                  <option value="1">★☆☆☆☆ (1/5 — Escalate to Management)</option>
+                </select>
+              </div>
+              <div class="form-group full-width">
+                <label for="rv-text">Your Honest Comment / Review *</label>
+                <textarea id="rv-text" class="form-control" rows="3" placeholder="Share your experience about pickup & drop, OBD diagnostics, genuine parts approval on WhatsApp, and whether your work was completed..." required></textarea>
+              </div>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;align-items:center;">
+              <button type="submit" class="btn btn-amber">⭐ Post Verified Review on Website</button>
+              <a href="https://wa.me/918333084261?text=Hello%20CC%20Motocrafts%20Management,%20I%20want%20to%20share%20direct%20feedback%20about%20my%20two-wheeler%20service." target="_blank" class="btn btn-whatsapp">💬 Send Direct Feedback on WhatsApp</a>
+              <span id="rv-submit-status" style="font-size:0.84rem;color:#34d399;font-weight:700;"></span>
+            </div>
+          </form>
+        </div>
+
+        <div class="summary-card">
+          <span class="cluster-tag">100% CUSTOMER SATISFACTION PROMISE</span>
+          <h3 style="color:#fff;font-size:1.18rem;margin-bottom:10px;">Every Comment Is Tracked by Master Technician Management</h3>
+          <p style="font-size:0.86rem;color:var(--text-muted);margin-bottom:14px;">
+            Whether your bike is a 100cc gearless scooter or a 2500cc superbike, your review is published live and synced to our quality audit desk (<strong>info@ccmotocrafts.in</strong>).
+          </p>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;font-size:0.84rem;color:#e2e8f0;">
+            <li>✅ <strong>Work Completed Verification:</strong> Tell everyone openly whether your service was completed cleanly on time.</li>
+            <li>✅ <strong>Zero Unapproved Parts Check:</strong> Confirm that zero parts were replaced without your prior WhatsApp approval.</li>
+            <li>✅ <strong>30-Day Free Rectification:</strong> If any issue remains after delivery, tap WhatsApp (<strong>+91 8333084261</strong>) for priority resolution under our 30-Day Guarantee.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- MASTER TECHNICIAN CERTIFICATE & WRITTEN WARRANTY TERMS -->
   <section id="certificate-sec">
     <div class="container">
@@ -1718,13 +1802,14 @@ section {
         </div>
 
         <div>
-          <h4>Platform Portals</h4>
+          <h4>Customer Quick Links</h4>
           <ul class="footer-links">
-            <li><a href="index.html#booking-section">Customer Instant Booking</a></li>
-            <li><a href="index.html#live-tracker-sec">Live Job Card & WhatsApp Approval</a></li>
-            <li><a href="index.html#portfolio-sec">25-Photo Workshop Showcase</a></li>
-            <li><a href="partner.html">Garage Partner & Dispatch Terminal</a></li>
-            <li><a href="admin.html">Master Owner Admin Command Center</a></li>
+            <li><a href="#booking-section">Instant Online Service Booking</a></li>
+            <li><a href="#vip-zones">VIP Free Pickup & Drop Zones</a></li>
+            <li><a href="#services-sec">Transparent Service & Labor Pricing</a></li>
+            <li><a href="#live-tracker-sec">Live Workshop Job Card Tracker</a></li>
+            <li><a href="#portfolio-sec">Workshop Showcase Gallery</a></li>
+            <li><a href="#certificate-sec">Master Certificate & 30-Day Warranty</a></li>
           </ul>
         </div>
 

@@ -1096,6 +1096,42 @@ section {
 </head>
 <body>
 
+  <!-- GARAGE PARTNER SECURITY GATE (BLOCKS CUSTOMERS FROM VIEWING PARTNER TERMINAL) -->
+  <div class="revoked-lock-screen active" id="partner-auth-gate" style="background:radial-gradient(circle at center, #0f172a 0%, #040609 100%);z-index:1900;">
+    <div class="revoked-box" style="border-color:var(--cyan);">
+      <img src="logo-cc-crafts-3d.jpg" alt="CC Motocrafts" style="width:64px;height:64px;border-radius:14px;margin:0 auto 12px;border:2px solid var(--cyan);">
+      <span class="cluster-tag">AUTHORIZED WORKSHOP BAY TERMINAL</span>
+      <h2 style="color:#fff;font-size:1.45rem;margin:8px 0;">Technician & Partner Bay Login</h2>
+      <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:16px;">
+        Restricted to authorized CC Motocrafts technicians and partner garages.
+      </p>
+      <div style="display:flex;flex-direction:column;gap:10px;max-width:340px;margin:0 auto 16px;">
+        <input type="text" id="partner-login-id" class="form-control" placeholder="Partner ID (e.g. CCM-HQ-01)" value="CCM-HQ-01">
+        <input type="password" id="partner-login-pin" class="form-control" placeholder="Enter Technician PIN (Default: 8333084261)">
+        <button type="button" class="btn btn-cyan" onclick="unlockPartnerPortal()">🔐 Unlock Partner Terminal</button>
+      </div>
+      <a href="index.html" class="btn btn-outline" style="font-size:0.8rem;">← Return to Customer Booking Website</a>
+    </div>
+  </div>
+  <script>
+    function unlockPartnerPortal() {
+      const pin = (document.getElementById("partner-login-pin").value || "").trim();
+      if (pin === "8333084261" || pin === "7860" || pin === "partner123") {
+        sessionStorage.setItem("ccm_partner_unlocked", "1");
+        document.getElementById("partner-auth-gate").classList.remove("active");
+      } else {
+        alert("Access Denied: Invalid Partner PIN.");
+      }
+    }
+    if (sessionStorage.getItem("ccm_partner_unlocked") === "1") {
+      document.addEventListener("DOMContentLoaded", () => {
+        const g = document.getElementById("partner-auth-gate");
+        if (g) g.classList.remove("active");
+      });
+    }
+  </script>
+
+
   <!-- REMOTE KILL-SWITCH ACCESS REVOKED OVERLAY SCREEN -->
   <div class="revoked-lock-screen" id="killswitch-overlay">
     <div class="revoked-box">

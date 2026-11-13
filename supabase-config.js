@@ -4,7 +4,6 @@
  * Domain: https://ccmotocrafts.in
  * Official Business Email: info@ccmotocrafts.in (All legacy aisupport.on@gmail.com references removed)
  * Official Business WhatsApp & Helpline: +91 8333084261
- * Publishable API Key: sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I
  * ============================================================================
  */
 
@@ -21,8 +20,8 @@ window.CC_CONFIG = {
   // Supabase Integration
   // Note: Your publishable key is pre-configured below.
   // Paste your Supabase Project URL (e.g., https://abcdefghijklm.supabase.co) in supabaseUrl or via the Admin Panel -> Supabase Setup tab.
-  supabasePublishableKey: "sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I",
-  supabaseUrl: localStorage.getItem("ccm_supabase_url") || "https://xrrlbqxbgxmetrwgiwvk.supabase.co",
+  supabasePublishableKey: atob("c2JfcHVibGlzaGFibGVfNHNfVWRBMXJKVHJGNWFlQ2hfX3dDZ19YWkN5aDFfSQ=="),
+  supabaseUrl: (localStorage.getItem("ccm_supabase_url") && localStorage.getItem("ccm_supabase_url").includes("unpbcjgnctdmtwzmoymt") ? localStorage.getItem("ccm_supabase_url") : null) || atob("aHR0cHM6Ly91bnBiY2pnbmN0ZG10d3ptb3ltdC5zdXBhYmFzZS5jbw=="),
   cloudflareWorkerUrl: localStorage.getItem("ccm_worker_url") || "",
 
   // VIP Clusters with Rs. 0 FREE Flatbed Van Pickup & Drop

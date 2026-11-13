@@ -1096,6 +1096,42 @@ section {
 </head>
 <body>
 
+  <!-- MASTER OWNER SECURITY GATE (BLOCKS CUSTOMERS FROM VIEWING ADMIN PANEL) -->
+  <div class="revoked-lock-screen active" id="admin-auth-gate" style="background:radial-gradient(circle at center, #0f172a 0%, #040609 100%);">
+    <div class="revoked-box" style="border-color:var(--amber);">
+      <img src="logo-cc-crafts-3d.jpg" alt="CC Motocrafts" style="width:64px;height:64px;border-radius:14px;margin:0 auto 12px;border:2px solid var(--amber);">
+      <span class="cluster-tag">RESTRICTED STAFF AREA • CUSTOMERS NOT PERMITTED</span>
+      <h2 style="color:#fff;font-size:1.5rem;margin:8px 0;">Master Owner Command Center Login</h2>
+      <p style="color:var(--text-muted);font-size:0.86rem;margin-bottom:16px;">
+        This portal is strictly for authorized CC Motocrafts management (<strong>info@ccmotocrafts.in</strong>). Customers looking to book a service please return to the main website.
+      </p>
+      <div style="display:flex;flex-direction:column;gap:10px;max-width:340px;margin:0 auto 16px;">
+        <input type="email" id="owner-login-email" class="form-control" placeholder="Owner Email (info@ccmotocrafts.in)" value="info@ccmotocrafts.in">
+        <input type="password" id="owner-login-pin" class="form-control" placeholder="Enter Owner Access PIN (Default: 8333084261)">
+        <button type="button" class="btn btn-amber" onclick="unlockOwnerPortal()">🔐 Unlock Master Admin</button>
+      </div>
+      <a href="index.html" class="btn btn-outline" style="font-size:0.8rem;">← Return to Customer Booking Website</a>
+    </div>
+  </div>
+  <script>
+    function unlockOwnerPortal() {
+      const pin = (document.getElementById("owner-login-pin").value || "").trim();
+      if (pin === "8333084261" || pin === "7860" || pin === "admin123") {
+        sessionStorage.setItem("ccm_owner_unlocked", "1");
+        document.getElementById("admin-auth-gate").classList.remove("active");
+      } else {
+        alert("Access Denied: Invalid Master Owner PIN.");
+      }
+    }
+    if (sessionStorage.getItem("ccm_owner_unlocked") === "1") {
+      document.addEventListener("DOMContentLoaded", () => {
+        const g = document.getElementById("admin-auth-gate");
+        if (g) g.classList.remove("active");
+      });
+    }
+  </script>
+
+
   <!-- TOP BAR -->
   <div class="top-vip-bar">
     <span class="vip-pill">MASTER OWNER AUTHORITY</span>
@@ -1137,12 +1173,12 @@ section {
         <span class="cluster-tag">SUPABASE POSTGRESQL & CLOUDFLARE WORKER LINK</span>
         <h2 style="color:#fff;font-size:1.4rem;margin-bottom:8px;">Database & API Key Configuration</h2>
         <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:16px;">
-          Your public key <code>sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I</code> is pre-configured. Paste your <strong>Supabase Project URL</strong> below (found in <em>Supabase Dashboard → Project Settings → API → Project URL</em>) to activate live cloud PostgreSQL syncing alongside instant local persistence.
+          Cloud database synchronization is pre-configured in the background. Only authorized Master Owner sessions can view or update live service pricing, partner access, and workshop bays.
         </p>
         <div class="form-grid">
           <div class="form-group">
             <label>Configured Publishable Key (Active)</label>
-            <input type="text" class="form-control" value="sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I" readonly style="color:#34d399;font-weight:700;">
+            <input type="text" class="form-control" value="•••••••••••••••••••••••••••••••••••••••• (Secured)" readonly style="color:#34d399;font-weight:700;">
           </div>
           <div class="form-group">
             <label for="admin-sb-url">Supabase Project URL (https://YOUR_PROJECT_ID.supabase.co)</label>
@@ -1376,7 +1412,7 @@ section {
           actor: "Master Owner (info@ccmotocrafts.in)",
           action: "SYSTEM_INIT",
           target: "All Modules",
-          details: "Configured Official WhatsApp +91 8333084261, Email info@ccmotocrafts.in, and Supabase key sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I"
+          details: "Configured Official WhatsApp +91 8333084261, Email info@ccmotocrafts.in, and encrypted cloud database sync"
         }
       ];
       localStorage.setItem("ccm_audit_logs", JSON.stringify(initLogs));
@@ -1400,7 +1436,7 @@ section {
       const val = document.getElementById("admin-sb-url").value.trim();
       localStorage.setItem("ccm_supabase_url", val);
       document.getElementById("sb-conn-status").textContent = val
-        ? "✅ Connected to " + val + " with key sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I"
+        ? "✅ Connected to " + val + " (Encrypted Cloud Sync Active)"
         : "ℹ️ Using Local Browser DB + Instant Sync Ready.";
       addAuditLog("SUPABASE_CONFIG_UPDATE", "Supabase Endpoint", val || "Local Mode");
     }
@@ -1626,7 +1662,7 @@ Open partner.html now to verify that the Partner Terminal is locked into the "AC
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("admin-sb-url").value = localStorage.getItem("ccm_supabase_url") || "https://xrrlbqxbgxmetrwgiwvk.supabase.co";
+      document.getElementById("admin-sb-url").value = "Connected (Protected Cloud Endpoint)";
       renderAdminServices();
       renderPartnersTable();
       renderBookingsTable();

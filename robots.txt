@@ -3,6 +3,5 @@ Allow: /
 Disallow: /admin.html
 Disallow: /partner.html
 Disallow: /schema_and_rls.sql
-Disallow: /worker.js
-Disallow: /wrangler.toml
+Disallow: /SUPABASE_FRESH_MIGRATION_AND_CLEANUP.sql
 Sitemap: https://ccmotocrafts.in/sitemap.xml

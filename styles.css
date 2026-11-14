@@ -1,13 +1,13 @@
 /* ============================================================================
-   CC MOTOCRAFTS AI ENGINE LABS SERVICE - ZERO-OVERLAP UNIVERSAL RESPONSIVE CSS
-   Fits 100% cleanly on Android Mobile (320px–480px), Tablet (768px),
-   Laptop (1024px–1440px), and Wide Desktop without horizontal overflow or overlap.
+   CC MOTOCRAFTS AI ENGINE LABS SERVICE - NATIVE PWA & DIAGNOSTIC PLATFORM CSS
+   Theme Colors: #0b0f19 (Deep Carbon Background) & #f59e0b (Diagnostic Amber)
+   Strictly Petrol 100cc–2500cc Two-Wheelers (Zero EVs, Zero Social Feed)
    ============================================================================ */
 
 :root {
-  --bg-deep: #070a0f;
-  --bg-card: #0f1520;
-  --bg-card-hover: #151d2c;
+  --bg-deep: #0b0f19;
+  --bg-card: #111827;
+  --bg-card-hover: #1a2438;
   --border-subtle: rgba(255, 255, 255, 0.1);
   --border-amber: rgba(245, 158, 11, 0.45);
   --border-cyan: rgba(6, 182, 212, 0.45);
@@ -23,7 +23,7 @@
   --radius-lg: 16px;
   --radius-md: 12px;
   --radius-sm: 8px;
-  --shadow-lg: 0 18px 40px rgba(0, 0, 0, 0.65);
+  --shadow-lg: 0 18px 40px rgba(0, 0, 0, 0.68);
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
@@ -43,6 +43,7 @@ html, body {
   font-family: var(--font-sans);
   line-height: 1.55;
   -webkit-text-size-adjust: 100%;
+  padding-bottom: 68px; /* Space for Fixed Bottom App Navigation */
 }
 
 a {
@@ -61,7 +62,7 @@ img {
   background: linear-gradient(90deg, #0b1322 0%, #17253b 50%, #0b1322 100%);
   border-bottom: 1px solid var(--border-amber);
   padding: 8px 14px;
-  font-size: 0.8rem;
+  font-size: 0.79rem;
   text-align: center;
   color: #e2e8f0;
   display: flex;
@@ -82,7 +83,7 @@ img {
   padding: 2px 10px;
   border-radius: 999px;
   font-weight: 700;
-  font-size: 0.74rem;
+  font-size: 0.73rem;
   white-space: nowrap;
 }
 
@@ -91,7 +92,7 @@ img {
   position: sticky;
   top: 0;
   z-index: 950;
-  background: rgba(7, 10, 15, 0.96);
+  background: rgba(11, 15, 25, 0.96);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border-subtle);
   width: 100%;
@@ -135,7 +136,7 @@ img {
 }
 
 .brand-sub {
-  font-size: 0.68rem;
+  font-size: 0.67rem;
   color: var(--cyan);
   font-weight: 700;
   text-transform: uppercase;
@@ -200,7 +201,7 @@ img {
 
 .btn-amber {
   background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-  color: #070a0f;
+  color: #0b0f19;
   box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3);
 }
 
@@ -260,17 +261,14 @@ section {
   text-transform: uppercase;
   letter-spacing: 0.8px;
   margin-bottom: 10px;
-  max-width: 100%;
-  word-wrap: break-word;
 }
 
 .section-title {
-  font-size: clamp(1.45rem, 3.2vw, 2.35rem);
+  font-size: clamp(1.45rem, 3.2vw, 2.3rem);
   font-weight: 800;
   color: #ffffff;
   line-height: 1.22;
   margin-bottom: 10px;
-  word-wrap: break-word;
 }
 
 .section-desc {
@@ -295,7 +293,7 @@ section {
 }
 
 .hero-title {
-  font-size: clamp(1.7rem, 3.8vw, 2.95rem);
+  font-size: clamp(1.7rem, 3.8vw, 2.9rem);
   font-weight: 900;
   line-height: 1.15;
   margin-bottom: 14px;
@@ -313,7 +311,6 @@ section {
   margin-bottom: 18px;
 }
 
-/* ZERO UNAPPROVED PARTS PLEDGE BANNER */
 .pledge-box {
   background: linear-gradient(135deg, rgba(16, 185, 129, 0.13) 0%, rgba(6, 182, 212, 0.1) 100%);
   border: 1px solid rgba(16, 185, 129, 0.45);
@@ -364,7 +361,7 @@ section {
   color: var(--text-muted);
 }
 
-/* HERO VISUAL SHOWCASE GRID (5 Real Hero Images) */
+/* HERO VISUAL SHOWCASE GRID */
 .hero-visual-stack {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -405,7 +402,7 @@ section {
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(to top, rgba(7, 10, 15, 0.95), rgba(7, 10, 15, 0.15));
+  background: linear-gradient(to top, rgba(11, 15, 25, 0.95), rgba(11, 15, 25, 0.15));
   padding: 8px 10px;
 }
 
@@ -424,7 +421,7 @@ section {
   line-height: 1.2;
 }
 
-/* VIP PICKUP CLUSTERS (POST 1, POST 2, POST 3) */
+/* VIP PICKUP CLUSTERS & LIVE BAY STATUS */
 .clusters-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
@@ -454,8 +451,6 @@ section {
   padding: 3px 10px;
   border-radius: 999px;
   margin-bottom: 8px;
-  max-width: 100%;
-  word-wrap: break-word;
 }
 
 .cluster-card h3 {
@@ -482,7 +477,6 @@ section {
   cursor: pointer;
 }
 
-/* INSTANT PIN CHECKER BAR */
 .pin-checker-bar {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
@@ -495,7 +489,7 @@ section {
   gap: 14px;
 }
 
-/* VEHICLE SELECTION GRID (4 CLASSES) */
+/* VEHICLE SELECTION GRID & SERVICES */
 .vehicle-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -522,7 +516,6 @@ section {
   margin-bottom: 8px;
 }
 
-/* SERVICES & DYNAMIC PRICING GRID (8 CATEGORIES) */
 .services-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -602,7 +595,7 @@ section {
 .form-control {
   width: 100%;
   max-width: 100%;
-  background: #070a0f;
+  background: #0b0f19;
   border: 1px solid rgba(255, 255, 255, 0.16);
   color: #ffffff;
   padding: 11px 12px;
@@ -616,7 +609,7 @@ section {
   border-color: var(--amber);
 }
 
-/* PORTFOLIO GALLERY (18 REAL WORKSHOP PHOTOS) */
+/* PORTFOLIO GALLERY */
 .portfolio-filters {
   display: flex;
   flex-wrap: wrap;
@@ -639,7 +632,7 @@ section {
 .filter-btn.active,
 .filter-btn:hover {
   background: var(--amber);
-  color: #070a0f;
+  color: #0b0f19;
   border-color: var(--amber);
 }
 
@@ -675,7 +668,7 @@ section {
   position: absolute;
   top: 10px;
   left: 10px;
-  background: rgba(7, 10, 15, 0.88);
+  background: rgba(11, 15, 25, 0.88);
   border: 1px solid var(--border-amber);
   color: var(--amber-bright);
   font-size: 0.7rem;
@@ -745,14 +738,53 @@ section {
   background: rgba(245, 158, 11, 0.15);
 }
 
-/* FLOATING AI ASSISTANT & WHATSAPP DOCK (CONTAINED WITHIN VIEWPORT) */
+/* REQUIREMENT 2: FIXED BOTTOM APP NAVIGATION BAR (Home, Bookings, Live Tracker, Portfolio) */
+.pwa-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 62px;
+  background: rgba(11, 15, 25, 0.98);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid var(--border-amber);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  z-index: 1050;
+  box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.7);
+}
+
+.pwa-bottom-nav a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  transition: color 0.2s, background 0.2s;
+}
+
+.pwa-bottom-nav a span.nav-ico {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.pwa-bottom-nav a:hover,
+.pwa-bottom-nav a.active {
+  color: var(--amber-bright);
+  background: rgba(245, 158, 11, 0.08);
+}
+
+/* FLOATING AI & WHATSAPP DOCK (Positioned cleanly above the 62px Bottom App Bar) */
 .floating-Dock {
   position: fixed;
-  bottom: 14px;
+  bottom: 72px;
   right: 14px;
   left: auto;
   max-width: calc(100vw - 28px);
-  z-index: 999;
+  z-index: 1000;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -793,7 +825,7 @@ section {
 
 .ai-chat-body {
   padding: 14px;
-  max-height: 380px;
+  max-height: 360px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -812,13 +844,13 @@ section {
   border-left: 3px solid var(--cyan);
 }
 
-/* MODAL POPUP */
+/* MODAL POPUPS (BOOKING PASS, DIGITAL CERTIFICATE & TECHNICAL FALLBACK ERROR MODAL) */
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.84);
+  background: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(6px);
-  z-index: 1200;
+  z-index: 1300;
   display: none;
   align-items: center;
   justify-content: center;
@@ -833,7 +865,7 @@ section {
   background: var(--bg-card);
   border: 2px solid var(--amber);
   border-radius: var(--radius-lg);
-  max-width: 600px;
+  max-width: 620px;
   width: 100%;
   padding: 22px;
   max-height: 90vh;
@@ -872,7 +904,7 @@ section {
 .revoked-lock-screen {
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at center, #3b0707 0%, #070a0f 100%);
+  background: radial-gradient(circle at center, #3b0707 0%, #0b0f19 100%);
   z-index: 2000;
   display: none;
   align-items: center;
@@ -888,17 +920,17 @@ section {
 .revoked-box {
   max-width: 560px;
   width: 100%;
-  background: rgba(15, 21, 32, 0.96);
+  background: rgba(17, 24, 39, 0.96);
   border: 2px solid var(--crimson);
   border-radius: var(--radius-lg);
   padding: 28px 20px;
   box-shadow: 0 0 60px rgba(239, 68, 68, 0.45);
 }
 
-/* FOOTER (WITH BOTTOM PADDING FOR FLOATING BAR) */
+/* FOOTER */
 .site-footer {
-  background: #040609;
-  padding: 48px 0 96px;
+  background: #060911;
+  padding: 48px 0 80px;
   border-top: 1px solid var(--border-subtle);
   font-size: 0.85rem;
   color: var(--text-muted);
@@ -923,10 +955,7 @@ section {
   gap: 8px;
 }
 
-/* ============================================================================
-   UNIVERSAL RESPONSIVE BREAKPOINTS (LAPTOP, TABLET & MOBILE PHONES)
-   ============================================================================ */
-
+/* RESPONSIVE BREAKPOINTS */
 @media (max-width: 1120px) {
   .mobile-menu-btn {
     display: inline-flex;
@@ -940,13 +969,13 @@ section {
     top: 100%;
     left: 0;
     right: 0;
-    background: #0b111c;
+    background: #0b0f19;
     border-bottom: 2px solid var(--amber);
     flex-direction: column;
     align-items: stretch;
     padding: 14px 18px;
     gap: 10px;
-    box-shadow: 0 18px 35px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 18px 35px rgba(0, 0, 0, 0.85);
     z-index: 990;
   }
 
@@ -1000,7 +1029,7 @@ section {
 
   .header-ctas .btn {
     padding: 7px 10px;
-    font-size: 0.76rem;
+    font-size: 0.75rem;
   }
 
   .header-ctas .hide-on-xs {
@@ -1008,11 +1037,11 @@ section {
   }
 
   section {
-    padding: 38px 0;
+    padding: 36px 0;
   }
 
   .hero-section {
-    padding: 24px 0 38px;
+    padding: 24px 0 36px;
   }
 
   .hero-actions {
@@ -1049,15 +1078,10 @@ section {
     padding: 16px;
   }
 
-  .service-price-matrix {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  /* Compact non-overlapping bottom floating bar on mobile */
   .floating-Dock {
     left: 10px;
     right: 10px;
-    bottom: 10px;
+    bottom: 68px;
     max-width: calc(100vw - 20px);
     align-items: stretch;
   }
@@ -1075,8 +1099,8 @@ section {
   }
 
   .floating-buttons-row .btn {
-    padding: 10px 8px;
-    font-size: 0.76rem;
+    padding: 9px 8px;
+    font-size: 0.75rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

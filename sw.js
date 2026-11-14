@@ -1,10 +1,4 @@
-/**
- * CC MOTOCRAFTS AI ENGINE LABS SERVICE - OFFLINE-FIRST PWA SERVICE WORKER
- * Caches the entire Customer App, Pricing, Saved Profile, and Portfolio Images
- * so customers can open the installed app and book even without internet!
- */
-
-const CACHE_NAME = 'cc-motocrafts-pwa-v8';
+const CACHE_NAME = 'cc-motocrafts-pwa-v9';
 const OFFLINE_ASSETS = [
   './',
   './index.html',
@@ -20,25 +14,7 @@ const OFFLINE_ASSETS = [
   './hero-mobile-pickup-van.jpg',
   './hero-zero-damage-van-interior.jpg',
   './hero-doorstep-inspection.jpg',
-  './hero-ai-hud-telemetry.jpg',
-  './portfolio-superbike-inline4-rebuild.jpg',
-  './portfolio-ducati-trellis-rebuild.jpg',
-  './portfolio-aprilia-superbike-overhaul.jpg',
-  './portfolio-kawasaki-z900-exhaust.jpg',
-  './portfolio-cylinder-head-valve-care.jpg',
-  './portfolio-crankcase-precision-assembly.jpg',
-  './portfolio-fi-ecu-troubleshooting.jpg',
-  './portfolio-adventure-obd-scan.jpg',
-  './portfolio-bmw-g310r-diagnostics.jpg',
-  './portfolio-himalayan-suspension-forks.jpg',
-  './portfolio-royal-enfield-general.jpg',
-  './portfolio-cruiser-brake-service.jpg',
-  './portfolio-commuter-sport-red.jpg',
-  './portfolio-clutch-transmission-bay.jpg',
-  './portfolio-retro-electrical-wiring.jpg',
-  './portfolio-scooter-vespa-yellow.jpg',
-  './portfolio-scooter-cvt-drivetrain.jpg',
-  './portfolio-scooter-vespa-red.jpg'
+  './hero-ai-hud-telemetry.jpg'
 ];
 
 self.addEventListener('install', (event) => {

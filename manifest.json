@@ -1,12 +1,13 @@
 {
   "name": "CC Motocrafts AI Engine Labs Service",
   "short_name": "CC Motocrafts",
-  "description": "Hyderabad's Premier Multi-Brand Two-Wheeler (100cc-2500cc) Diagnostic & Doorstep Pickup Service App. Works Online & Offline!",
+  "description": "Hyderabad's Premier Multi-Brand Two-Wheeler (100cc to 2500cc Petrol Bikes & Scooters) Diagnostic & Service Booking App.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
+  "display_override": ["standalone", "fullscreen"],
   "orientation": "portrait-primary",
-  "background_color": "#070a0f",
+  "background_color": "#0b0f19",
   "theme_color": "#f59e0b",
   "icons": [
     {

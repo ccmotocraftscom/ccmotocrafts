@@ -1,66 +1,31 @@
 /**
  * ============================================================================
- * CC MOTOCRAFTS AI ENGINE LABS SERVICE - SUPABASE & BUSINESS CONFIGURATION
- * Domain: https://ccmotocrafts.in
- * Official Business Email: info@ccmotocrafts.in (All legacy aisupport.on@gmail.com references removed)
- * Official Business WhatsApp & Helpline: +91 8333084261
+ * CC MOTOCRAFTS AI ENGINE LABS SERVICE - CONFIGURATION
+ * Domain: https://ccmotocrafts.in | Official Email: info@ccmotocrafts.in
+ * Manager & Lead Dispatcher: Mr. Nitish Kumar (+91 8333084261)
+ * Scope: 100cc to 2500cc Petrol Two-Wheelers (Bikes & Gearless Scooters Only — Strictly No EVs)
  * ============================================================================
  */
 
 window.CC_CONFIG = {
   brandName: "CC Motocrafts AI Engine Labs Service",
-  tagline: "Hyderabad's Premier Multi-Brand Two-Wheeler (100cc–2500cc) Diagnostic & Service Network",
+  tagline: "Hyderabad's Premier Multi-Brand Petrol Two-Wheeler (100cc–2500cc) Diagnostic & Service Network",
   domain: "https://ccmotocrafts.in",
   officialEmail: "info@ccmotocrafts.in",
   officialPhone: "+91 8333084261",
   officialWhatsApp: "918333084261",
+  managerAndDispatcher: "Mr. Nitish Kumar (Manager & Lead Dispatcher — +91 8333084261)",
   masterTechnician: "Mr. Shaik Mujahid Qadri (Certified Master Technician & Technical Head)",
   workshopTimings: "Monday – Sunday: 09:00 AM – 10:30 PM",
 
-  // Supabase Integration
-  // Note: Your publishable key is pre-configured below.
-  // Paste your Supabase Project URL (e.g., https://abcdefghijklm.supabase.co) in supabaseUrl or via the Admin Panel -> Supabase Setup tab.
   supabasePublishableKey: atob("c2JfcHVibGlzaGFibGVfNHNfVWRBMXJKVHJGNWFlQ2hfX3dDZ19YWkN5aDFfSQ=="),
-  supabaseUrl: atob("aHR0cHM6Ly91bnBiY2pnbmN0ZG10d3ptb3ltdC5zdXBhYmFzZS5jbw=="),
-  supabaseBackupUrl: atob("aHR0cHM6Ly94cnJsYnF4Ymd4bWV0cndnaXd2ay5zdXBhYmFzZS5jbw=="),
-  cloudflareWorkerUrl: localStorage.getItem("ccm_worker_url") || "",
-
-  // VIP Clusters with Rs. 0 FREE Flatbed Van Pickup & Drop
-  vipClusters: [
-    {
-      id: "POST-1",
-      title: "POST 1: Jubilee Hills, Banjara Hills & Film Nagar Special",
-      areas: ["Jubilee Hills", "Banjara Hills", "Film Nagar", "Nanakramguda"],
-      pincodes: ["500033", "500034", "500096"],
-      pickupFee: 0,
-      cancellationFee: 300,
-      badge: "FREE VIP FLATBED PICKUP & DROP"
-    },
-    {
-      id: "POST-2",
-      title: "POST 2: Gachibowli, Financial District, Kokapet, Narsingi & Puppalguda",
-      areas: ["Gachibowli", "Financial District", "Kokapet", "Narsingi", "Puppalguda", "Manikonda"],
-      pincodes: ["500032", "500075", "500089"],
-      pickupFee: 0,
-      cancellationFee: 300,
-      badge: "FREE VIP FLATBED PICKUP & DROP"
-    },
-    {
-      id: "POST-3",
-      title: "POST 3: Hitech City, Madhapur, Kondapur & Lanco Hills",
-      areas: ["HITEC City", "Madhapur", "Kondapur", "Lanco Hills"],
-      pincodes: ["500081", "500084", "500089"],
-      pickupFee: 0,
-      cancellationFee: 300,
-      badge: "FREE VIP FLATBED PICKUP & DROP"
-    }
-  ],
+  supabaseUrl: atob("aHR0cHM6Ly94cnJsYnF4Ymd4bWV0cndnaXd2ay5zdXBhYmFzZS5jbw=="),
+  supabaseSecondaryUrl: atob("aHR0cHM6Ly91bnBiY2pnbmN0ZG10d3ptb3ltdC5zdXBhYmFzZS5jbw=="),
 
   vipPincodes: ["500033", "500034", "500096", "500032", "500075", "500089", "500081", "500084"],
   otherHyderabadPickupFee: 500,
   otherHyderabadCancellationFee: 500,
 
-  // Area Dropdown Options
   hyderabadAreas: [
     { label: "Jubilee Hills / Film Nagar — 500033 (FREE VIP Pickup & Drop)", pincode: "500033", area: "Jubilee Hills / Film Nagar", vip: true },
     { label: "Banjara Hills — 500034 (FREE VIP Pickup & Drop)", pincode: "500034", area: "Banjara Hills", vip: true },
@@ -79,43 +44,42 @@ window.CC_CONFIG = {
     { label: "Other Hyderabad Area / Enter Custom PIN (Standard ₹500 Pickup & Drop)", pincode: "500001", area: "Other Hyderabad Area", vip: false }
   ],
 
-  // 4 Mandatory Vehicle Classes
+  // 4 Mandatory Vehicle Classes (Strictly Petrol Only — 100cc to 2500cc, Zero EVs)
   vehicleClasses: [
     {
-      id: "Scooter / Gearless",
-      title: "Scooter / Gearless",
-      ccRange: "100cc – 160cc CVT & Electric",
-      examples: "Activa, Jupiter, Access 125, Vespa, Aprilia SR, Aerox 155, Ather, Ola",
+      id: "Scooter / Gearless (100–160cc Petrol)",
+      title: "Scooter / Gearless (Petrol)",
+      ccRange: "100cc – 160cc CVT Petrol Scooters",
+      examples: "Honda Activa 110/125, TVS Jupiter, Suzuki Access 125, Burgman, Vespa, Aprilia SR 160, Yamaha Aerox 155 (Strictly Petrol Only)",
       baseInspect: "₹299",
       icon: "🛵"
     },
     {
-      id: "Commuter (100–160cc)",
-      title: "Commuter (100–160cc)",
-      ccRange: "100cc – 160cc Single Cylinder",
-      examples: "Splendor, Shine, Unicorn, Pulsar 150, Apache RTR 160, FZ-S, Raider",
+      id: "Commuter (100–160cc Petrol)",
+      title: "Commuter Bikes (100–160cc)",
+      ccRange: "100cc – 160cc Single-Cylinder Petrol",
+      examples: "Hero Splendor+, Honda Shine/Unicorn, Bajaj Pulsar 150, TVS Apache RTR 160 4V, Yamaha FZ-S, Raider 125",
       baseInspect: "₹349",
       icon: "🏍️"
     },
     {
-      id: "Sports (200–500cc)",
+      id: "Sports & Cruiser (200–500cc Petrol)",
       title: "Sports & Cruiser (200–500cc)",
       ccRange: "200cc – 500cc Performance & Royal Enfield",
-      examples: "Classic 350, Himalayan 450, KTM Duke/RC 200-390, Dominar 400, R15, BMW G310R, Speed 400",
+      examples: "Royal Enfield Classic 350, Himalayan 450, KTM Duke/RC 200/250/390, Apache RTR 200 4V, Dominar 400, R15 V4, BMW G310R, Triumph Speed 400",
       baseInspect: "₹599",
       icon: "⚡"
     },
     {
-      id: "Multi-Cylinder Superbike (600–2500cc)",
+      id: "Multi-Cylinder Superbike (600–2500cc Petrol)",
       title: "Multi-Cylinder Superbike (600–2500cc)",
       ccRange: "600cc – 2500cc Twin, Inline-4, V-Twin & V4",
-      examples: "Interceptor 650, Kawasaki Z900/ZX-10R, Triumph Street Triple/Rocket 3, Ducati Monster/Panigale, Harley, Hayabusa, BMW S1000RR",
+      examples: "Suzuki Hayabusa 1300cc, Benelli TNT 600i, Kawasaki Z900/ZX-10R, Interceptor 650, Triumph Street Triple/Rocket 3, Ducati, Harley-Davidson, Aprilia RSV4",
       baseInspect: "₹1,299",
       icon: "🏁"
     }
   ],
 
-  // 8 Mandatory Service Categories
   defaultServices: [
     {
       id: "SRV-GEN",
@@ -128,7 +92,7 @@ window.CC_CONFIG = {
       superbike_price: 3999,
       labor_charge: 450,
       warranty: "30-Day Unconditional Workmanship Guarantee",
-      desc: "Synthetic/OEM oil change, oil & air filter care, chain/CVT cleaning, brake calibration, electrical check & computer wash."
+      desc: "Synthetic/OEM petrol engine oil change, oil & air filter care, chain/CVT cleaning, brake calibration, electrical check & foam wash."
     },
     {
       id: "SRV-ENG",
@@ -154,7 +118,7 @@ window.CC_CONFIG = {
       superbike_price: 1999,
       labor_charge: 499,
       warranty: "30-Day Sensor & Calibration Guarantee",
-      desc: "OBD-II fault code scanning, fuel injector ultrasonic cleaning, throttle body sync, AFR sensor & ECU remapping."
+      desc: "OBD-II fault code scanning, petrol fuel injector ultrasonic cleaning, throttle body sync, AFR sensor & ECU remapping."
     },
     {
       id: "SRV-ELC",
@@ -167,7 +131,7 @@ window.CC_CONFIG = {
       superbike_price: 1799,
       labor_charge: 399,
       warranty: "30-Day Electrical Workmanship Guarantee",
-      desc: "Complete wiring short-circuit resolution, magnet coil/stator check, RR unit testing, ABS wheel-speed sensors & lighting."
+      desc: "Complete wiring short-circuit resolution, magnet coil/stator check, RR unit testing, ABS wheel-speed sensors & ignition coils."
     },
     {
       id: "SRV-BRK",
@@ -193,20 +157,20 @@ window.CC_CONFIG = {
       superbike_price: 4499,
       labor_charge: 650,
       warranty: "30-Day Workmanship Guarantee",
-      desc: "Clutch plate/hub replacement, slipper clutch servicing, scooter CVT variator rollers & Kevlar belt, brass chain-sprocket kit."
+      desc: "Clutch plate/hub replacement, slipper clutch servicing, petrol scooter CVT variator rollers & Kevlar belt, brass chain-sprocket kit."
     },
     {
       id: "SRV-BAT",
       code: "SRV-BAT",
       category: "Battery & starting",
-      name: "Battery CCA Load Test, Starter Motor & Charging Care",
+      name: "Battery CCA Load Test, Self-Starter Motor & Charging Care",
       scooter_price: 299,
       commuter_price: 399,
       sports_price: 699,
       superbike_price: 1299,
       labor_charge: 299,
       warranty: "OEM Battery Warranty + 30-Day Labor Guarantee",
-      desc: "Digital battery health & parasitic drain test, starter motor armature/carbon brush overhaul, one-way clutch bearing replacement."
+      desc: "Digital 12V battery health & parasitic drain test, starter motor armature/carbon brush overhaul, one-way clutch bearing replacement."
     },
     {
       id: "SRV-ACC",
@@ -223,21 +187,22 @@ window.CC_CONFIG = {
     }
   ],
 
-  // 18 Curated Portfolio Items mapped to all uploaded images
   portfolioItems: [
     {
       img: "portfolio-superbike-inline4-rebuild.jpg",
       title: "Kawasaki Inline-4 Superbike Engine Rebuild",
       category: "Engine repair/rebuild",
-      vehicleClass: "Multi-Cylinder Superbike (600–2500cc)",
+      vehicleClass: "Multi-Cylinder Superbike (600–2500cc Petrol)",
+      ccFilter: "600-2500cc",
       badge: "600cc–2500cc Superbike Lab",
-      desc: "Complete 4-cylinder engine block teardown, crankshaft journal inspection, and factory torque assembly."
+      desc: "Complete 4-cylinder petrol engine block teardown, crankshaft journal inspection, and factory torque assembly."
     },
     {
       img: "portfolio-ducati-trellis-rebuild.jpg",
       title: "Ducati L-Twin Frame & Engine Overhaul",
       category: "Engine repair/rebuild",
-      vehicleClass: "Multi-Cylinder Superbike (600–2500cc)",
+      vehicleClass: "Multi-Cylinder Superbike (600–2500cc Petrol)",
+      ccFilter: "600-2500cc",
       badge: "Desmodromic & L-Twin Specialist",
       desc: "Desmo valve clearance check, timing belt service, and trellis frame engine diagnostics."
     },
@@ -245,7 +210,8 @@ window.CC_CONFIG = {
       img: "portfolio-aprilia-superbike-overhaul.jpg",
       title: "Aprilia V4 Superbike Full Diagnostic & Overhaul",
       category: "FI/ECU diagnostics",
-      vehicleClass: "Multi-Cylinder Superbike (600–2500cc)",
+      vehicleClass: "Multi-Cylinder Superbike (600–2500cc Petrol)",
+      ccFilter: "600-2500cc",
       badge: "Italian Superbike Care",
       desc: "Ride-by-wire throttle calibration, APRC sensor diagnostics, and cooling system overhaul."
     },
@@ -253,7 +219,8 @@ window.CC_CONFIG = {
       img: "portfolio-kawasaki-z900-exhaust.jpg",
       title: "Kawasaki Z900 Exhaust, Suspension & General Service",
       category: "General service",
-      vehicleClass: "Multi-Cylinder Superbike (600–2500cc)",
+      vehicleClass: "Multi-Cylinder Superbike (600–2500cc Petrol)",
+      ccFilter: "600-2500cc",
       badge: "Inline-4 Performance Bay",
       desc: "Full synthetic oil service, header torque check, chain laser alignment, and brake caliper cleaning."
     },
@@ -261,39 +228,44 @@ window.CC_CONFIG = {
       img: "portfolio-cylinder-head-valve-care.jpg",
       title: "Cylinder Head Resurfacing & Precision Valve Lapping",
       category: "Engine repair/rebuild",
-      vehicleClass: "Multi-Cylinder Superbike (600–2500cc)",
+      vehicleClass: "Multi-Cylinder Superbike (600–2500cc Petrol)",
+      ccFilter: "600-2500cc",
       badge: "Head & Valve Precision Care",
       desc: "Micro-tolerance cylinder head resurfacing and valve seat lapping for maximum compression restoration."
-    },
-    {
-      img: "portfolio-crankcase-precision-assembly.jpg",
-      title: "Bottom-End Crankcase & Gearbox Blueprinting",
-      category: "Clutch & transmission",
-      vehicleClass: "Sports (200–500cc)",
-      badge: "Transmission & Crank Lab",
-      desc: "Split crankcase bearing replacement, shift fork inspection, and precision torque assembly."
     },
     {
       img: "portfolio-fi-ecu-troubleshooting.jpg",
       title: "FI / ECU Circuit & Check-Engine Live Troubleshooting",
       category: "FI/ECU diagnostics",
-      vehicleClass: "Multi-Cylinder Superbike (600–2500cc)",
+      vehicleClass: "Multi-Cylinder Superbike (600–2500cc Petrol)",
+      ccFilter: "600-2500cc",
       badge: "ECU & Sensor Bench",
       desc: "Resolving stalling, no-start, and check-engine faults using digital oscilloscopes and OBD-II scanners."
+    },
+    {
+      img: "portfolio-crankcase-precision-assembly.jpg",
+      title: "Bottom-End Crankcase & Gearbox Blueprinting",
+      category: "Clutch & transmission",
+      vehicleClass: "Sports & Cruiser (200–500cc Petrol)",
+      ccFilter: "200-500cc",
+      badge: "Transmission & Crank Lab",
+      desc: "Split crankcase bearing replacement, shift fork inspection, and precision torque assembly."
     },
     {
       img: "portfolio-adventure-obd-scan.jpg",
       title: "Adventure Tourer Laptop OBD-II & ABS Calibration",
       category: "FI/ECU diagnostics",
-      vehicleClass: "Sports (200–500cc)",
+      vehicleClass: "Sports & Cruiser (200–500cc Petrol)",
+      ccFilter: "200-500cc",
       badge: "OBD-II Live Telemetry",
-      desc: "Computerized ECU fault reading, fuel trim mapping, and rear drivetrain service for adventure tourers."
+      desc: "Computerized ECU fault reading, petrol fuel trim mapping, and rear drivetrain service for adventure tourers."
     },
     {
       img: "portfolio-bmw-g310r-diagnostics.jpg",
       title: "BMW G310R Computerized Service & Fluid Flush",
       category: "General service",
-      vehicleClass: "Sports (200–500cc)",
+      vehicleClass: "Sports & Cruiser (200–500cc Petrol)",
+      ccFilter: "200-500cc",
       badge: "BMW Motorrad Specialist",
       desc: "Service interval reset, diagnostic scan, synthetic oil change, and hydraulic brake bleeding."
     },
@@ -301,7 +273,8 @@ window.CC_CONFIG = {
       img: "portfolio-himalayan-suspension-forks.jpg",
       title: "Royal Enfield Himalayan Front Fork & Suspension Rebuild",
       category: "Brake & suspension",
-      vehicleClass: "Sports (200–500cc)",
+      vehicleClass: "Sports & Cruiser (200–500cc Petrol)",
+      ccFilter: "200-500cc",
       badge: "Suspension & Steering Lab",
       desc: "Complete front fork oil & genuine oil-seal replacement, cone-set adjustment, and wheel alignment."
     },
@@ -309,7 +282,8 @@ window.CC_CONFIG = {
       img: "portfolio-royal-enfield-general.jpg",
       title: "Royal Enfield 350/650 Periodic Service & Detailing",
       category: "General service",
-      vehicleClass: "Sports (200–500cc)",
+      vehicleClass: "Sports & Cruiser (200–500cc Petrol)",
+      ccFilter: "200-500cc",
       badge: "Royal Enfield Care",
       desc: "Tappet clearance adjustment, fuel injector cleaning, chain lube, and 40-point safety inspection."
     },
@@ -317,7 +291,8 @@ window.CC_CONFIG = {
       img: "portfolio-cruiser-brake-service.jpg",
       title: "Cruiser Disc Brake Caliper & Wheel Bearing Overhaul",
       category: "Brake & suspension",
-      vehicleClass: "Sports (200–500cc)",
+      vehicleClass: "Sports & Cruiser (200–500cc Petrol)",
+      ccFilter: "200-500cc",
       badge: "Braking & ABS Safety",
       desc: "Master cylinder rebuild, sintered pad installation, rotor runout check, and ABS bleeding."
     },
@@ -325,15 +300,17 @@ window.CC_CONFIG = {
       img: "portfolio-commuter-sport-red.jpg",
       title: "Commuter & Naked Sport Periodic Maintenance",
       category: "General service",
-      vehicleClass: "Commuter (100–160cc)",
+      vehicleClass: "Commuter (100–160cc Petrol)",
+      ccFilter: "100-160cc",
       badge: "100cc–160cc Daily Rider Lab",
-      desc: "High-mileage engine care, carburetor/injector tuning, air filter replacement, and electrical check."
+      desc: "High-mileage petrol engine care, carburetor/injector tuning, air filter replacement, and electrical check."
     },
     {
       img: "portfolio-clutch-transmission-bay.jpg",
       title: "Multi-Plate Wet Clutch & Chain Drivetrain Overhaul",
       category: "Clutch & transmission",
-      vehicleClass: "Commuter (100–160cc)",
+      vehicleClass: "Commuter (100–160cc Petrol)",
+      ccFilter: "100-160cc",
       badge: "Clutch & Sprocket Bay",
       desc: "Genuine clutch plate set, pressure plates, clutch cable lubrication, and chain-sprocket kit installation."
     },
@@ -341,33 +318,106 @@ window.CC_CONFIG = {
       img: "portfolio-retro-electrical-wiring.jpg",
       title: "Complete Wiring Harness, Battery & Charging Restoration",
       category: "Electrical troubleshooting",
-      vehicleClass: "Commuter (100–160cc)",
+      vehicleClass: "Commuter (100–160cc Petrol)",
+      ccFilter: "100-160cc",
       badge: "Electrical & Battery Lab",
       desc: "Multimeter load testing, stator coil check, RR unit replacement, and custom relay harness protection."
     },
     {
       img: "portfolio-scooter-vespa-yellow.jpg",
-      title: "Vespa & Premium Gearless Scooter Full Service",
+      title: "Vespa & Premium Gearless Petrol Scooter Full Service",
       category: "General service",
-      vehicleClass: "Scooter / Gearless",
-      badge: "Gearless / Scooter Bay",
-      desc: "Complete gearless scooter maintenance, engine oil & gear oil replacement, and brake shoe renewal."
+      vehicleClass: "Scooter / Gearless (100–160cc Petrol)",
+      ccFilter: "Scooter",
+      badge: "Gearless Petrol Scooter Bay",
+      desc: "Complete gearless petrol scooter maintenance, engine oil & gear oil replacement, and brake shoe renewal."
     },
     {
       img: "portfolio-scooter-cvt-drivetrain.jpg",
       title: "Scooter CVT Variator, Belt & Clutch Bell Overhaul",
       category: "Clutch & transmission",
-      vehicleClass: "Scooter / Gearless",
+      vehicleClass: "Scooter / Gearless (100–160cc Petrol)",
+      ccFilter: "Scooter",
       badge: "CVT Drivetrain Care",
       desc: "Eliminating scooter vibration and mileage drop with genuine variator rollers, Kevlar belt, and clutch cleaning."
     },
     {
       img: "portfolio-scooter-vespa-red.jpg",
-      title: "Gearless Scooter Engine, Suspension & Body Restoration",
+      title: "Gearless Petrol Scooter Engine, Suspension & Body Restoration",
       category: "Accident repair",
-      vehicleClass: "Scooter / Gearless",
+      vehicleClass: "Scooter / Gearless (100–160cc Petrol)",
+      ccFilter: "Scooter",
       badge: "Scooter Restoration",
       desc: "Front link-suspension bushing overhaul, dent/paint restoration, and self-starter motor repair."
+    }
+  ],
+
+  // Pre-Populated Family Vehicle Garage Records (Accessible via Customer Mobile Lookup or Default View)
+  defaultFamilyGarage: [
+    {
+      reg_number: "KA 51 HW 3002",
+      vehicle_brand: "Honda",
+      vehicle_model: "Activa 125cc (Gearless Petrol)",
+      vehicle_class: "Scooter / Gearless (100–160cc Petrol)",
+      engine_cc: "125cc",
+      odometer_km: 28938,
+      last_service_date: "2026-11-12",
+      next_service_due_date: "2027-05-12",
+      next_service_due_km: 31938,
+      parts_changed: "Engine Oil 10W30, Gear Oil, Air Filter Element, CVT Belt Inspection & Brake Shoe Cleaning",
+      total_amount: 1450,
+      warranty_status: "Active — 30-Day Unconditional Workmanship Guarantee",
+      certificate_no: "CCM-CERT-3002",
+      supervised_by: "Mr. Nitish Kumar (Manager & Lead Dispatcher, +91 8333084261)"
+    },
+    {
+      reg_number: "TS 09 FK 1300",
+      vehicle_brand: "Suzuki",
+      vehicle_model: "Hayabusa 1300cc (Inline-4 Superbike)",
+      vehicle_class: "Multi-Cylinder Superbike (600–2500cc Petrol)",
+      engine_cc: "1300cc",
+      odometer_km: 14200,
+      last_service_date: "2026-10-28",
+      next_service_due_date: "2027-02-28",
+      next_service_due_km: 17200,
+      parts_changed: "Motul 300V Full Synthetic Oil, OEM K&N Filter Cleaning, OBD-II ECU Telemetry Calibration & Sintered Pads",
+      total_amount: 6850,
+      warranty_status: "Active — 30-Day Workmanship & Sensor Calibration Guarantee",
+      certificate_no: "CCM-CERT-1300",
+      supervised_by: "Mr. Nitish Kumar (Manager & Lead Dispatcher, +91 8333084261)"
+    },
+    {
+      reg_number: "TS 07 UL 0390",
+      vehicle_brand: "KTM",
+      vehicle_model: "Duke 390 (Performance Petrol)",
+      vehicle_class: "Sports & Cruiser (200–500cc Petrol)",
+      engine_cc: "390cc",
+      odometer_km: 19450,
+      last_service_date: "2026-11-04",
+      next_service_due_date: "2027-03-04",
+      next_service_due_km: 22450,
+      parts_changed: "Coolant Flush, Throttle Body Cleaning, Spark Plug & Slipper Clutch Inspection",
+      total_amount: 2790,
+      warranty_status: "Active — 30-Day Unconditional Workmanship Guarantee",
+      certificate_no: "CCM-CERT-0390",
+      supervised_by: "Mr. Nitish Kumar (Manager & Lead Dispatcher, +91 8333084261)"
+    },
+    {
+      reg_number: "TS 08 GP 0200",
+      vehicle_brand: "TVS",
+      vehicle_model: "Apache RTR 200 4V (Petrol)",
+      vehicle_class: "Sports & Cruiser (200–500cc Petrol)",
+      cc: "200cc",
+      engine_cc: "200cc",
+      odometer_km: 34120,
+      last_service_date: "2026-11-08",
+      next_service_due_date: "2027-03-08",
+      next_service_due_km: 37120,
+      parts_changed: "TVS Tru4 Synthetic Oil, Oil Filter, Front Fork Oil Seal Kit & ABS Hydraulic Bleeding",
+      total_amount: 2150,
+      warranty_status: "Active — 30-Day Unconditional Workmanship Guarantee",
+      certificate_no: "CCM-CERT-0200",
+      supervised_by: "Mr. Nitish Kumar (Manager & Lead Dispatcher, +91 8333084261)"
     }
   ]
 };

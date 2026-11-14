@@ -1,7 +1,7 @@
 {
   "name": "CC Motocrafts AI Engine Labs Service",
   "short_name": "CC Motocrafts",
-  "description": "Hyderabad's Premier Multi-Brand Two-Wheeler (100cc to 2500cc Petrol Bikes & Scooters) Diagnostic & Service Booking App.",
+  "description": "CC Motocrafts AI Engine Labs – Premium Multi-Brand Bike & Scooter Service in Hyderabad (Gachibowli, Manikonda, Jubilee Hills | 100cc–2500cc Petrol Only)",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

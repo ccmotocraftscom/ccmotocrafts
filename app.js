@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * CC MOTOCRAFTS AI ENGINE LABS SERVICE - MASTER PRODUCTION ENGINE (v9)
+ * CC MOTOCRAFTS AI ENGINE LABS SERVICE - PRODUCTION ENGINE (v11 GO-LIVE)
  * Strictly Petrol 100cc–2500cc Two-Wheelers (Bikes & Scooters Only — Zero EVs)
  * Manager & Lead Dispatcher: Mr. Nitish Kumar (+91 8333084261 | info@ccmotocrafts.in)
  * ============================================================================
@@ -10,47 +10,70 @@
   const CFG = window.CC_CONFIG;
 
   // ==========================================================================
-  // REQUIREMENT 3: GLOBAL TECHNICAL FALLBACK & ERROR MODAL (NO RAW CODE ERRORS)
+  // REQUIREMENT 5: GOOGLE ADS CONVERSION TRACKING HOOKS (Form, WhatsApp, Call)
   // ==========================================================================
-  window.showTechnicalFallbackModal = function () {
-    const modal = document.getElementById("technical-fallback-modal");
-    if (modal) modal.classList.add("open");
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { window.dataLayer.push(arguments); }
+  window.gtag = window.gtag || gtag;
+
+  window.trackGoogleAdsLead = function (leadType, meta = {}) {
+    try {
+      const eventPayload = {
+        event: "ccm_lead_conversion",
+        lead_type: leadType,
+        phone_target: "+918333084261",
+        value: 499,
+        currency: "INR",
+        timestamp: new Date().toISOString(),
+        ...meta
+      };
+      window.dataLayer.push(eventPayload);
+      if (typeof window.gtag === "function") {
+        window.gtag("event", "conversion", {
+          event_category: "Lead",
+          event_label: leadType,
+          value: 499,
+          currency: "INR"
+        });
+        window.gtag("event", "generate_lead", {
+          lead_type: leadType,
+          value: 499,
+          currency: "INR"
+        });
+      }
+    } catch (e) {}
   };
 
-  window.closeTechnicalFallbackModal = function () {
-    const modal = document.getElementById("technical-fallback-modal");
-    if (modal) modal.classList.remove("open");
-  };
-
-  window.addEventListener("error", function (event) {
-    event.preventDefault();
-    console.warn("Handled client notice:", event.message);
-  });
-
-  window.addEventListener("unhandledrejection", function (event) {
-    event.preventDefault();
-    console.warn("Handled async notice:", event.reason);
+  // Automatically track any click on wa.me/918333084261 or tel:+918333084261 across the entire site
+  document.addEventListener("click", function (e) {
+    const link = e.target.closest("a");
+    if (!link || !link.href) return;
+    if (link.href.includes("wa.me/918333084261")) {
+      window.trackGoogleAdsLead("whatsapp_click", { href: link.href });
+    } else if (link.href.includes("tel:+918333084261") || link.href.includes("tel:8333084261")) {
+      window.trackGoogleAdsLead("phone_call_click", { href: link.href });
+    }
   });
 
   // ==========================================================================
   // LOCAL & CLOUD STORAGE HELPERS
   // ==========================================================================
   function getServices() {
-    const saved = localStorage.getItem("ccm_services_db_v9");
+    const saved = localStorage.getItem("ccm_services_db_v11");
     if (saved) {
       try { return JSON.parse(saved); } catch (e) {}
     }
-    localStorage.setItem("ccm_services_db_v9", JSON.stringify(CFG.defaultServices));
+    localStorage.setItem("ccm_services_db_v11", JSON.stringify(CFG.defaultServices));
     return CFG.defaultServices;
   }
 
   function saveServices(list) {
-    localStorage.setItem("ccm_services_db_v9", JSON.stringify(list));
+    localStorage.setItem("ccm_services_db_v11", JSON.stringify(list));
     window.dispatchEvent(new Event("ccm_data_updated"));
   }
 
   function getBookings() {
-    const saved = localStorage.getItem("ccm_bookings_db_v9");
+    const saved = localStorage.getItem("ccm_bookings_db_v11");
     if (saved) {
       try { return JSON.parse(saved); } catch (e) {}
     }
@@ -58,29 +81,28 @@
   }
 
   function saveBookings(list) {
-    localStorage.setItem("ccm_bookings_db_v9", JSON.stringify(list));
+    localStorage.setItem("ccm_bookings_db_v11", JSON.stringify(list));
     window.dispatchEvent(new Event("ccm_data_updated"));
   }
 
   function getFamilyGarage() {
-    const saved = localStorage.getItem("ccm_family_garage_v9");
+    const saved = localStorage.getItem("ccm_family_garage_v11");
     if (saved) {
       try { return JSON.parse(saved); } catch (e) {}
     }
-    localStorage.setItem("ccm_family_garage_v9", JSON.stringify(CFG.defaultFamilyGarage));
+    localStorage.setItem("ccm_family_garage_v11", JSON.stringify(CFG.defaultFamilyGarage));
     return CFG.defaultFamilyGarage;
   }
 
   function saveFamilyGarage(list) {
-    localStorage.setItem("ccm_family_garage_v9", JSON.stringify(list));
+    localStorage.setItem("ccm_family_garage_v11", JSON.stringify(list));
   }
 
   // ==========================================================================
-  // CRITICAL FIX: DIRECT FORM-TO-DATABASE BINDING TO SUPABASE `bike_bookings`
-  // Dynamically binds exact typed customer inputs (`customer_name`, `phone`, `email`, etc.)
-  // with ZERO static test strings or owner phone/email fallbacks!
+  // REQUIREMENT 1: REAL-TIME SUPABASE BINDING & FAKE-SUCCESS BUG FIX
+  // Strictly awaits confirmed HTTP 200/201/204 insert into Supabase `bike_bookings`
   // ==========================================================================
-  async function postWithFallback(baseUrl, sbKey, table, payloads) {
+  async function insertIntoSupabaseTable(baseUrl, sbKey, table, payloads) {
     const cleanUrl = baseUrl.replace(/\/+$/, "");
     const headers = {
       "apikey": sbKey,
@@ -98,7 +120,7 @@
         });
         if (res.ok || res.status === 201 || res.status === 204) {
           const data = await res.json().catch(() => null);
-          return { ok: true, table, attempt: i + 1, status: res.status, data };
+          return { ok: true, table, status: res.status, data };
         }
       } catch (e) {}
     }
@@ -106,62 +128,50 @@
   }
 
   async function syncToSupabase(table, method, payload, query = "") {
-    const sbKey = CFG.supabasePublishableKey;
-    const endpoints = [CFG.supabaseUrl, CFG.supabaseSecondaryUrl].filter(Boolean);
+    const sbKey = CFG.SUPABASE_PUBLISHABLE_KEY || CFG.supabasePublishableKey;
+    const endpoints = [
+      CFG.SUPABASE_URL || "https://xrrlbqxbgxmetrwgiwvk.supabase.co",
+      CFG.SUPABASE_ACTIVE_URL || "https://unpbcjgnctdmtwzmoymt.supabase.co"
+    ].filter(Boolean);
 
     if (table === "bookings" && method === "POST" && payload) {
-      // Strictly map user's live typed values from payload (NO hardcoded fallback names or phones)
       const typedCustomerName = String(payload.customer_name || "").trim();
       const typedCustomerPhone = String(payload.phone || payload.customer_mobile || "").trim();
-      const typedCustomerEmail = String(payload.email || payload.customer_email || "").trim();
+      const typedBikeModel = String(payload.bike_model || payload.vehicle_model || "").trim();
+      const typedService = String(payload.service_type || payload.service_category || "General service").trim();
+      const typedArea = String(payload.area_name || "Hyderabad").trim();
+      const typedPin = String(payload.pincode || "500032").trim();
 
+      // Progressive payloads for `bike_bookings` (matches both full schema & core columns)
       const bikePayloads = [
         {
           booking_id: payload.booking_code,
           customer_name: typedCustomerName,
           phone: typedCustomerPhone,
-          email: typedCustomerEmail,
-          vehicle_brand: payload.vehicle_brand,
-          bike_model: payload.bike_model || payload.vehicle_model,
-          reg_number: payload.reg_number || payload.registration_no,
-          vehicle_class: payload.vehicle_class,
-          engine_cc: payload.engine_cc,
-          odometer_km: Number(payload.odometer_km || 0),
-          service_type: payload.service_type || payload.service_category,
-          area: `${payload.area_name} (${payload.pincode})`,
-          pincode: payload.pincode,
-          booking_date: payload.booking_date || payload.preferred_date,
-          time_slot: payload.time_slot || payload.preferred_time_window,
-          complaint_note: payload.complaint_note || payload.complaint_notes || "Standard diagnostic & service inspection",
-          address: payload.address || payload.street_address,
-          landmark: payload.landmark,
-          gps_coords: payload.gps_coords || "",
+          email: payload.email || "Collected on Confirmation Call",
+          vehicle_brand: typedBikeModel.split(" ")[0] || "Petrol 2W",
+          bike_model: typedBikeModel,
+          reg_number: payload.reg_number || "Collected by Dispatcher",
+          vehicle_class: payload.vehicle_class || "Petrol Two-Wheeler (100cc–2500cc)",
+          engine_cc: payload.engine_cc || "100cc–2500cc",
+          service_type: typedService,
+          area: `${typedArea} (${typedPin})`,
+          booking_date: payload.booking_date || new Date().toISOString().split("T")[0],
+          time_slot: payload.time_slot || "Priority Slot",
+          complaint_note: payload.complaint_note || `Express 4-Field Booking (${typedService})`,
+          address: `${typedArea} - PIN ${typedPin}`,
+          landmark: "Confirmed via Call by Mr. Nitish Kumar",
           status: "Booking Confirmed",
           pickup_zone_type: payload.is_vip_free_pickup ? "VIP_FREE" : "STANDARD_500",
-          pickup_charge: Number(payload.pickup_charge || 0),
-          cancellation_penalty: Number(payload.cancellation_fee || 300),
-          total_dispatch_fee: Number(payload.pickup_charge || 0),
-          vehicle_displacement_cc: payload.engine_cc,
-          workmanship_guarantee_days: 30,
-          admin_notes: `Supervised by ${CFG.managerAndDispatcher}`
+          pickup_charge: Number(payload.pickup_charge || 0)
         },
         {
           booking_id: payload.booking_code,
           customer_name: typedCustomerName,
           phone: typedCustomerPhone,
-          email: typedCustomerEmail,
-          vehicle_brand: payload.vehicle_brand,
-          bike_model: payload.bike_model || payload.vehicle_model,
-          reg_number: payload.reg_number || payload.registration_no,
-          vehicle_class: payload.vehicle_class,
-          engine_cc: payload.engine_cc,
-          service_type: payload.service_type || payload.service_category,
-          area: `${payload.area_name} (${payload.pincode})`,
-          booking_date: payload.booking_date || payload.preferred_date,
-          time_slot: payload.time_slot || payload.preferred_time_window,
-          complaint_note: payload.complaint_note || payload.complaint_notes || "Diagnostic check",
-          address: payload.address || payload.street_address,
-          landmark: payload.landmark,
+          bike_model: typedBikeModel,
+          service_type: typedService,
+          area: `${typedArea} (${typedPin})`,
           status: "Booking Confirmed"
         }
       ];
@@ -169,63 +179,33 @@
       const bookingsPayloads = [
         {
           job_id: payload.booking_code,
-          booking_code: payload.booking_code,
           division: "2W-PETROL",
           customer_name: typedCustomerName,
           customer_phone: typedCustomerPhone,
-          customer_mobile: typedCustomerPhone,
-          customer_email: typedCustomerEmail,
-          vehicle_brand: payload.vehicle_brand,
-          vehicle_model: `${payload.vehicle_brand} ${payload.bike_model || payload.vehicle_model}`,
-          vehicle_reg: payload.reg_number || payload.registration_no,
-          registration_no: payload.reg_number || payload.registration_no,
-          vehicle_class: payload.vehicle_class,
-          engine_cc: payload.engine_cc,
-          machinery_spec: payload.engine_cc,
-          service_package: payload.service_type || payload.service_category,
-          service_category: payload.service_type || payload.service_category,
-          complaint_notes: payload.complaint_note || payload.complaint_notes || "",
-          customer_notes: `${payload.complaint_note || ""} | Area: ${payload.area_name} | Address: ${payload.address || payload.street_address}, Landmark: ${payload.landmark}`,
-          area_name: payload.area_name,
-          pincode: payload.pincode,
+          vehicle_reg: payload.reg_number || "PENDING-CALL",
+          vehicle_class: payload.vehicle_class || "Petrol Two-Wheeler",
+          vehicle_model: typedBikeModel,
+          service_package: typedService,
+          pincode: typedPin,
           pickup_fee: Number(payload.pickup_charge || 0),
-          pickup_charge: Number(payload.pickup_charge || 0),
-          preferred_date: payload.booking_date || payload.preferred_date || null,
-          preferred_slot: payload.time_slot || payload.preferred_time_window,
-          street_address: payload.address || payload.street_address,
-          landmark: payload.landmark,
-          google_maps_link: payload.gps_coords || "",
-          base_price: Number(payload.estimated_cost || 0),
+          customer_notes: `Area: ${typedArea} (${typedPin}) | ${payload.complaint_note || ""}`,
           status: "Booking Confirmed"
         }
       ];
 
-      const requestPayloads = [
-        {
-          booking_id: payload.booking_code,
-          customer_name: typedCustomerName,
-          customer_phone: typedCustomerPhone,
-          customer_email: typedCustomerEmail,
-          description: `[${payload.booking_code}] ${typedCustomerName} (${typedCustomerPhone}) | ${payload.vehicle_brand} ${payload.bike_model || payload.vehicle_model} (${payload.reg_number || payload.registration_no}, ${payload.engine_cc}) | ${payload.service_type || payload.service_category} | Area: ${payload.area_name} (${payload.pincode})`,
-          status: "Booking Confirmed"
-        }
-      ];
-
-      let anySynced = false;
+      let confirmedInsert = false;
       for (const ep of endpoints) {
-        const [r1, r2, r3] = await Promise.all([
-          postWithFallback(ep, sbKey, "bike_bookings", bikePayloads),
-          postWithFallback(ep, sbKey, "bookings", bookingsPayloads),
-          postWithFallback(ep, sbKey, "customer_requests", requestPayloads)
+        const [rBike, rMain] = await Promise.all([
+          insertIntoSupabaseTable(ep, sbKey, "bike_bookings", bikePayloads),
+          insertIntoSupabaseTable(ep, sbKey, "bookings", bookingsPayloads)
         ]);
-        if (r1.ok || r2.ok || r3.ok) {
-          anySynced = true;
+        if (rBike.ok || rMain.ok) {
+          confirmedInsert = true;
         }
       }
-      return { synced: anySynced };
+      return { synced: confirmedInsert };
     }
 
-    // Generic table call (e.g. job_cards, family_vehicles)
     for (const ep of endpoints) {
       try {
         const cleanUrl = ep.replace(/\/+$/, "");
@@ -247,8 +227,11 @@
   }
 
   async function fetchCloudBookings() {
-    const sbKey = CFG.supabasePublishableKey;
-    const endpoints = [CFG.supabaseUrl, CFG.supabaseSecondaryUrl].filter(Boolean);
+    const sbKey = CFG.SUPABASE_PUBLISHABLE_KEY || CFG.supabasePublishableKey;
+    const endpoints = [
+      CFG.SUPABASE_URL || "https://xrrlbqxbgxmetrwgiwvk.supabase.co",
+      CFG.SUPABASE_ACTIVE_URL || "https://unpbcjgnctdmtwzmoymt.supabase.co"
+    ].filter(Boolean);
     const merged = [...getBookings()];
     const seen = new Set(merged.map(b => b.booking_code));
 
@@ -261,7 +244,6 @@
           const rows = await res1.json();
           if (Array.isArray(rows)) {
             rows.forEach(r => {
-              // Filter out any legacy hardcoded test row
               if (r.customer_name && (r.customer_name.includes("Live Verified") || r.customer_name.includes("Live Connection"))) return;
               const code = r.booking_id || ("CCM-" + String(r.id || "").slice(0, 6).toUpperCase());
               if (!seen.has(code)) {
@@ -271,29 +253,23 @@
                   customer_name: r.customer_name || "",
                   phone: r.phone || "",
                   customer_mobile: r.phone || "",
-                  email: r.email || "",
-                  customer_email: r.email || "",
                   vehicle_brand: r.vehicle_brand || "",
                   bike_model: r.bike_model || "",
                   vehicle_model: r.bike_model || "",
-                  reg_number: r.reg_number || "",
-                  registration_no: r.reg_number || "",
-                  vehicle_class: r.vehicle_class || "Petrol Two-Wheeler",
-                  engine_cc: r.engine_cc || "",
+                  reg_number: r.reg_number || "Confirmed on Call",
+                  registration_no: r.reg_number || "Confirmed on Call",
+                  vehicle_class: r.vehicle_class || "Petrol Two-Wheeler (100cc–2500cc)",
+                  engine_cc: r.engine_cc || "100cc–2500cc",
                   odometer_km: Number(r.odometer_km || 0),
                   service_type: r.service_type || "General service",
                   service_category: r.service_type || "General service",
                   complaint_note: r.complaint_note || "",
-                  complaint_notes: r.complaint_note || "",
                   area_name: r.area || "Hyderabad",
-                  pincode: r.pincode || "500033",
+                  pincode: r.pincode || "500032",
                   is_vip_free_pickup: r.pickup_zone_type === "VIP_FREE" || Number(r.pickup_charge) === 0,
                   pickup_charge: Number(r.pickup_charge || 0),
-                  cancellation_fee: Number(r.cancellation_penalty || 300),
                   preferred_date: r.booking_date || "",
-                  preferred_time_window: r.time_slot || "",
-                  street_address: r.address || "",
-                  landmark: r.landmark || "",
+                  preferred_time_window: r.time_slot || "Priority Dispatch",
                   booking_status: r.status === "Booking Confirmed" ? "received" : (r.status || "received"),
                   customer_parts_approval_status: "pending_inspection",
                   parts_changed: r.parts_changed || "40-Point Diagnostic & Genuine Parts Inspection",
@@ -316,26 +292,18 @@
       ? "✅ FREE VIP FLATBED PICKUP & DROP (₹0)"
       : "🚚 Standard Hyderabad Pickup & Drop (₹500)";
     return [
-      `*CC MOTOCRAFTS AI ENGINE LABS SERVICE — CONFIRMED BOOKING PASS*`,
+      `*CC MOTOCRAFTS AI ENGINE LABS — CONFIRMED EXPRESS BOOKING*`,
       `━━━━━━━━━━━━━━━━━━━━`,
       `🆔 *Booking ID:* ${b.booking_code}`,
       `👤 *Customer Name:* ${b.customer_name}`,
-      `📞 *Customer Mobile:* ${b.phone || b.customer_mobile}`,
-      b.email ? `📧 *Customer Email:* ${b.email}` : "",
-      `🏍️ *Vehicle:* ${b.vehicle_brand} ${b.bike_model || b.vehicle_model} (${b.engine_cc})`,
-      `🏷️ *Class:* ${b.vehicle_class}`,
-      `🔢 *Reg No:* ${b.reg_number || b.registration_no} ${b.odometer_km ? "| Odometer: " + b.odometer_km + " KM" : ""}`,
-      `🛠️ *Service:* ${b.service_type || b.service_category}`,
-      `📝 *Complaint:* ${b.complaint_note || b.complaint_notes || "Complete Diagnostic Inspection"}`,
-      `📍 *Area & PIN:* ${b.area_name} — ${b.pincode}`,
-      `🚚 *Pickup Tier:* ${vipText}`,
-      `📅 *Preferred Slot:* ${b.preferred_date} | ${b.preferred_time_window}`,
-      `🏠 *Address:* ${b.street_address} (Landmark: ${b.landmark})`,
-      b.gps_coords ? `🛰️ *Live GPS:* ${b.gps_coords}` : "",
+      `📞 *WhatsApp / Mobile:* ${b.phone || b.customer_mobile}`,
+      `🏍️ *Bike / Scooter Model:* ${b.bike_model || b.vehicle_model}`,
+      `📍 *Hyderabad Area / PIN:* ${b.area_name} (${b.pincode})`,
+      `🛠️ *Service Category:* ${b.service_type || b.service_category}`,
+      `🚚 *Pickup Eligibility:* ${vipText}`,
       `━━━━━━━━━━━━━━━━━━━━`,
-      `👨‍💼 *Supervised By:* ${CFG.managerAndDispatcher}`,
-      `🛡️ *Zero Unapproved Parts Guarantee:* Without your WhatsApp approval, not even 1 Paisa of extra part is replaced.`,
-      `📩 *Official Email:* ${CFG.officialEmail}`
+      `👨‍💼 *Dispatcher Manager:* ${CFG.managerAndDispatcher} will call you shortly to confirm exact pickup landmark & registration details.`,
+      `🛡️ *Zero Unapproved Parts Guarantee:* Without your WhatsApp approval, not even 1 Paisa of extra part is replaced.`
     ].filter(Boolean).join("\n");
   }
 
@@ -356,7 +324,6 @@
         pincode: cleanPin,
         isVip,
         pickupFee: isVip ? 0 : 500,
-        cancellationFee: isVip ? 300 : 500,
         label: isVip
           ? "🎉 FREE VIP Flatbed Van Pickup & Drop (₹0) — Priority 35–45 Min Dispatch!"
           : "🚚 Standard Greater Hyderabad Pickup & Drop: ₹500 (All 100cc–2500cc Petrol Two-Wheelers)"
@@ -384,7 +351,7 @@
           <p style="font-size:0.84rem;color:var(--text-muted);margin-bottom:14px;">${vc.examples}</p>
           <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border-subtle);padding-top:12px;">
             <span style="font-size:0.8rem;color:var(--amber-bright);font-weight:700;">Diagnostic Base: ${vc.baseInspect}</span>
-            <button type="button" class="btn btn-outline" style="padding:6px 12px;font-size:0.78rem;" onclick="selectVehicleClass('${vc.id}')">Select Class →</button>
+            <button type="button" class="btn btn-outline" style="padding:6px 12px;font-size:0.78rem;" onclick="selectVehicleClass('${vc.id}')">Book This Class →</button>
           </div>
         </div>
       `).join("");
@@ -394,55 +361,14 @@
     renderDynamicServicesGrid();
     window.addEventListener("ccm_data_updated", renderDynamicServicesGrid);
 
-    // 3. Populate Booking Form Area & Date
-    const areaSelect = document.getElementById("area");
+    // 3. Area Dropdown Listener (Zero Anxiety Anxiety)
+    const areaSelect = document.getElementById("area") || document.getElementById("bf-area");
     if (areaSelect) {
-      areaSelect.innerHTML = CFG.hyderabadAreas.map(a =>
-        `<option value="${a.pincode}" data-areaname="${a.area}">${a.label}</option>`
-      ).join("");
       areaSelect.addEventListener("change", updateBookingPickupPreview);
     }
-
-    const pinInput = document.getElementById("pincode");
-    if (pinInput) {
-      pinInput.addEventListener("input", () => updatePinBanner(pinInput.value));
-    }
-
-    const dateInput = document.getElementById("booking_date");
-    if (dateInput && !dateInput.value) {
-      dateInput.value = new Date().toISOString().split("T")[0];
-    }
-
     updateBookingPickupPreview();
 
-    // 4. Live GPS Capture
-    const gpsBtn = document.getElementById("btn-capture-gps");
-    if (gpsBtn) {
-      gpsBtn.addEventListener("click", () => {
-        const statusEl = document.getElementById("gps-status-text");
-        const gpsInput = document.getElementById("gps_coords");
-        if (!navigator.geolocation) {
-          statusEl.textContent = "Browser GPS not supported. Your selected Area & PIN will be used.";
-          return;
-        }
-        statusEl.textContent = "🛰️ Acquiring High-Accuracy Satellite GPS Coordinates...";
-        navigator.geolocation.getCurrentPosition(
-          (pos) => {
-            const lat = pos.coords.latitude.toFixed(5);
-            const lng = pos.coords.longitude.toFixed(5);
-            const mapsUrl = `https://maps.google.com/?q=${lat},${lng}`;
-            gpsInput.value = `${lat}, ${lng} (${mapsUrl})`;
-            statusEl.innerHTML = `✅ Live GPS Locked: <strong style="color:#34d399;">${lat}, ${lng}</strong> — Ready for Flatbed Dispatch!`;
-          },
-          () => {
-            statusEl.textContent = "ℹ️ Location permission skipped. Using your selected Area, PIN & Landmark.";
-          },
-          { enableHighAccuracy: true, timeout: 8000 }
-        );
-      });
-    }
-
-    // 5. Booking Form Submission (Direct Binding from #customer_name, #phone, #email, etc.)
+    // 4. Booking Form Submission (Strict Await on Supabase Insert)
     const bookingForm = document.getElementById("main-booking-form");
     if (bookingForm) {
       bookingForm.addEventListener("submit", async (e) => {
@@ -458,10 +384,10 @@
       });
     }
 
-    // 6. Render Portfolio Gallery
+    // 5. Render Portfolio Gallery
     renderPortfolioGallery("ALL");
 
-    // 7. Live Workshop Bay Tracker (#vip-zor) & My Orders / Family Vehicle Garage Hub
+    // 6. Live Workshop Bay Tracker (#vip-zor) & My Orders / Family Garage
     fetchCloudBookings().then(() => {
       renderCustomerLiveTracker("");
       renderMyOrdersAndFamilyGarage("");
@@ -483,21 +409,20 @@
       });
     }
 
-    // 8. Instant PIN Code Checker Bar
+    // 7. Instant PIN Code Checker Bar (Zero Anxiety Text)
     const btnCheckPin = document.getElementById("btn-quick-pin-check");
     if (btnCheckPin) {
       btnCheckPin.addEventListener("click", () => {
         const val = document.getElementById("quick-pin-input").value;
         const info = window.CCM_API.checkPinEligibility(val);
         const out = document.getElementById("quick-pin-result");
-        out.innerHTML = `<span style="color:${info.isVip ? "#34d399" : "#fbbf24"};font-weight:700;">${info.label} (Cancellation Fee: ₹${info.cancellationFee})</span>`;
+        out.innerHTML = `<span style="color:${info.isVip ? "#34d399" : "#fbbf24"};font-weight:700;">${info.label}</span>`;
       });
     }
   }
 
   function renderDynamicServicesGrid() {
     const sGrid = document.getElementById("dynamic-services-grid");
-    const sSelect = document.getElementById("service_type");
     const services = getServices();
 
     if (sGrid) {
@@ -522,38 +447,25 @@
         </div>
       `).join("");
     }
-
-    if (sSelect) {
-      sSelect.innerHTML = services.map(s =>
-        `<option value="${s.category}">${s.category} — ${s.name} (From ₹${s.scooter_price})</option>`
-      ).join("");
-    }
   }
 
   window.selectVehicleClass = function (vClass) {
     document.querySelectorAll(".vehicle-class-card").forEach(el => {
       el.classList.toggle("selected", el.getAttribute("data-vclass") === vClass);
     });
-    const sel = document.getElementById("vehicle_class");
-    if (sel) sel.value = vClass;
     const formSec = document.getElementById("booking-section");
     if (formSec) formSec.scrollIntoView({ behavior: "smooth" });
   };
 
-  window.prefillServiceBooking = function (categoryName, vClass) {
-    const sSelect = document.getElementById("service_type");
+  window.prefillServiceBooking = function (categoryName) {
+    const sSelect = document.getElementById("service_type") || document.getElementById("bf-service");
     if (sSelect) sSelect.value = categoryName;
-    if (vClass) {
-      const vSelect = document.getElementById("vehicle_class");
-      if (vSelect) vSelect.value = vClass;
-    }
     const formSec = document.getElementById("booking-section");
     if (formSec) formSec.scrollIntoView({ behavior: "smooth" });
   };
 
   window.selectVipPin = function (pin) {
-    const pinInput = document.getElementById("pincode");
-    const areaSelect = document.getElementById("area");
+    const areaSelect = document.getElementById("area") || document.getElementById("bf-area");
     if (areaSelect) {
       for (let i = 0; i < areaSelect.options.length; i++) {
         if (areaSelect.options[i].value === pin) {
@@ -562,234 +474,188 @@
         }
       }
     }
-    if (pinInput) pinInput.value = pin;
     updatePinBanner(pin);
     const formSec = document.getElementById("booking-section");
     if (formSec) formSec.scrollIntoView({ behavior: "smooth" });
   };
 
   function updateBookingPickupPreview() {
-    const areaSelect = document.getElementById("area");
-    const pinInput = document.getElementById("pincode");
-    if (!areaSelect || !pinInput) return;
-    const selectedPin = areaSelect.value;
-    pinInput.value = selectedPin;
-    updatePinBanner(selectedPin);
+    const areaSelect = document.getElementById("area") || document.getElementById("bf-area");
+    if (!areaSelect) return;
+    updatePinBanner(areaSelect.value);
   }
 
   function updatePinBanner(pin) {
     const info = window.CCM_API.checkPinEligibility(pin);
     const banner = document.getElementById("pickup-eligibility-banner");
     const summaryFee = document.getElementById("summary-pickup-fee");
-    const summaryCancel = document.getElementById("summary-cancel-fee");
     if (banner) {
       banner.style.borderColor = info.isVip ? "#10b981" : "#f59e0b";
       banner.style.background = info.isVip ? "rgba(16, 185, 129, 0.14)" : "rgba(245, 158, 11, 0.14)";
       banner.innerHTML = `
-        <div style="font-weight:800;color:${info.isVip ? "#34d399" : "#fbbf24"};font-size:0.93rem;">
+        <div style="font-weight:800;color:${info.isVip ? "#34d399" : "#fbbf24"};font-size:0.92rem;">
           ${info.label}
         </div>
-        <div style="font-size:0.79rem;color:#e2e8f0;margin-top:4px;">
-          PIN Code: <strong>${info.pincode || "N/A"}</strong> • Pickup & Drop: <strong>₹${info.pickupFee}</strong> • Disclosed Cancellation Fee: <strong>₹${info.cancellationFee}</strong>
+        <div style="font-size:0.79rem;color:#e2e8f0;margin-top:3px;">
+          PIN Code: <strong>${info.pincode || "500032"}</strong> • Doorstep Pickup & Drop: <strong>${info.isVip ? "₹0 FREE VIP" : "₹500"}</strong>
         </div>
       `;
     }
     if (summaryFee) summaryFee.textContent = info.isVip ? "₹0 (FREE VIP Zone)" : "₹500 (Standard Hyderabad)";
-    if (summaryCancel) summaryCancel.textContent = `₹${info.cancellationFee}`;
   }
 
   // ==========================================================================
-  // CRITICAL FIX: DIRECT INPUT ELEMENT READING (customer_name, phone, email, etc.)
+  // REQUIREMENT 1 & 2: 4-FIELD EXPRESS BOOKING + STRICT SUPABASE AWAIT
   // ==========================================================================
   async function handleBookingSubmit(openWhatsAppImmediately) {
-    try {
-      const customerNameEl = document.getElementById("customer_name");
-      const phoneEl = document.getElementById("phone");
-      const emailEl = document.getElementById("email");
-      const brandEl = document.getElementById("vehicle_brand");
-      const modelEl = document.getElementById("bike_model");
-      const regEl = document.getElementById("reg_number");
-      const odoEl = document.getElementById("odometer_km");
-      const vclassEl = document.getElementById("vehicle_class");
-      const ccEl = document.getElementById("engine_cc");
-      const serviceEl = document.getElementById("service_type");
-      const complaintEl = document.getElementById("complaint_note");
-      const areaSelect = document.getElementById("area");
-      const pincodeEl = document.getElementById("pincode");
-      const dateEl = document.getElementById("booking_date");
-      const timeEl = document.getElementById("time_slot");
-      const addressEl = document.getElementById("address");
-      const landmarkEl = document.getElementById("landmark");
-      const gpsEl = document.getElementById("gps_coords");
+    const submitBtn = document.getElementById("btn-submit-booking");
+    const customerNameEl = document.getElementById("customer_name") || document.getElementById("bf-name");
+    const phoneEl = document.getElementById("phone") || document.getElementById("bf-mobile");
+    const modelEl = document.getElementById("bike_model") || document.getElementById("bf-model");
+    const areaSelect = document.getElementById("area") || document.getElementById("bf-area");
+    const serviceEl = document.getElementById("service_type") || document.getElementById("bf-service");
 
-      const customer_name = (customerNameEl ? customerNameEl.value : "").trim();
-      const phone = (phoneEl ? phoneEl.value : "").trim();
-      const email = (emailEl ? emailEl.value : "").trim();
-      const vehicle_brand = brandEl ? brandEl.value : "Honda";
-      const bike_model = (modelEl ? modelEl.value : "").trim();
-      const reg_number = (regEl ? regEl.value : "").trim().toUpperCase();
-      const odometer_km = Number((odoEl ? odoEl.value : "0").trim() || 0);
-      const vehicle_class = vclassEl ? vclassEl.value : "Commuter (100–160cc Petrol)";
-      const engine_cc = ccEl ? ccEl.value : "100cc–125cc";
-      const service_type = serviceEl ? serviceEl.value : "General service";
-      const complaint_note = (complaintEl ? complaintEl.value : "").trim();
-      const area_name = areaSelect && areaSelect.options[areaSelect.selectedIndex]
-        ? areaSelect.options[areaSelect.selectedIndex].getAttribute("data-areaname") || "Hyderabad"
-        : "Hyderabad";
-      const pincode = (pincodeEl ? pincodeEl.value : "").trim();
-      const booking_date = dateEl ? dateEl.value : new Date().toISOString().split("T")[0];
-      const time_slot = timeEl ? timeEl.value : "09:00–11:00";
-      const address = (addressEl ? addressEl.value : "").trim();
-      const landmark = (landmarkEl ? landmarkEl.value : "").trim();
-      const gps_coords = (gpsEl ? gpsEl.value : "").trim();
+    const customer_name = (customerNameEl ? customerNameEl.value : "").trim();
+    const phone = (phoneEl ? phoneEl.value : "").trim();
+    const bike_model = (modelEl ? modelEl.value : "").trim();
+    const pincode = areaSelect ? areaSelect.value : "500032";
+    const area_name = areaSelect && areaSelect.options[areaSelect.selectedIndex]
+      ? areaSelect.options[areaSelect.selectedIndex].getAttribute("data-areaname") || "Hyderabad"
+      : "Hyderabad";
+    const service_type = serviceEl && serviceEl.value ? serviceEl.value : "General service";
 
-      if (!customer_name || !phone || !bike_model || !reg_number || !pincode || !address || !landmark) {
-        alert("Please enter your Name, 10-Digit Mobile Number, Bike/Scooter Model, Registration Number, PIN Code, Street Address, and Landmark.");
-        return;
-      }
+    if (!customer_name || !phone || !bike_model || !pincode) {
+      alert("Please fill in the 4 quick fields: Your Name, WhatsApp/Mobile Number, Bike/Scooter Model, and Hyderabad Area.");
+      return;
+    }
 
-      const pinInfo = window.CCM_API.checkPinEligibility(pincode);
-      const bookingCode = "CCM-" + Math.floor(100000 + Math.random() * 900000);
-      const nextDueKm = odometer_km > 0 ? odometer_km + 3000 : 3000;
-      const nextDueDateObj = new Date();
-      nextDueDateObj.setMonth(nextDueDateObj.getMonth() + 4);
-      const nextDueDate = nextDueDateObj.toISOString().split("T")[0];
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = "⏳ Saving Booking to Database...";
+    }
 
-      const newBooking = {
-        booking_code: bookingCode,
-        booking_id: bookingCode,
-        customer_name: customer_name,
-        phone: phone,
-        customer_mobile: phone,
-        email: email,
-        customer_email: email,
-        vehicle_brand: vehicle_brand,
-        bike_model: bike_model,
-        vehicle_model: bike_model,
-        reg_number: reg_number,
-        registration_no: reg_number,
-        odometer_km: odometer_km,
-        vehicle_class: vehicle_class,
-        engine_cc: engine_cc,
-        service_type: service_type,
-        service_category: service_type,
-        complaint_note: complaint_note,
-        complaint_notes: complaint_note,
-        area_name: area_name,
-        pincode: pincode,
-        is_vip_free_pickup: pinInfo.isVip,
-        pickup_charge: pinInfo.pickupFee,
-        cancellation_fee: pinInfo.cancellationFee,
-        booking_date: booking_date,
-        preferred_date: booking_date,
-        time_slot: time_slot,
-        preferred_time_window: time_slot,
-        address: address,
-        street_address: address,
-        landmark: landmark,
-        gps_coords: gps_coords,
-        bay_number: "BAY-01 (Assigned on Arrival)",
-        assigned_partner: CFG.managerAndDispatcher,
-        booking_status: "received",
-        customer_parts_approval_status: "pending_inspection",
-        parts_changed: `Booked for ${service_type} (100% Genuine OEM Parts — Prior WhatsApp Approval Required)`,
-        next_service_due_date: nextDueDate,
-        next_service_due_km: nextDueKm,
-        inspection_findings: "Awaiting flatbed pickup & 40-point digital diagnostic inspection.",
-        estimated_cost: pinInfo.pickupFee,
-        created_at: new Date().toISOString()
-      };
+    const pinInfo = window.CCM_API.checkPinEligibility(pincode);
+    const bookingCode = "CCM-" + Math.floor(100000 + Math.random() * 900000);
+    const today = new Date().toISOString().split("T")[0];
 
-      // Save Customer Profile on device for 1-click repeat booking
-      localStorage.setItem("ccm_customer_profile_v9", JSON.stringify({
-        customer_name, phone, email, vehicle_brand, bike_model, reg_number, odometer_km, pincode, address, landmark
-      }));
+    const newBooking = {
+      booking_code: bookingCode,
+      booking_id: bookingCode,
+      customer_name: customer_name,
+      phone: phone,
+      customer_mobile: phone,
+      email: "",
+      vehicle_brand: bike_model.split(" ")[0] || "Petrol 2W",
+      bike_model: bike_model,
+      vehicle_model: bike_model,
+      reg_number: "Collected on Call",
+      registration_no: "Collected on Call",
+      vehicle_class: "Petrol Two-Wheeler (100cc–2500cc)",
+      engine_cc: "100cc–2500cc",
+      service_type: service_type,
+      service_category: service_type,
+      complaint_note: `Express Booking: ${service_type}`,
+      area_name: area_name,
+      pincode: pincode,
+      is_vip_free_pickup: pinInfo.isVip,
+      pickup_charge: pinInfo.pickupFee,
+      booking_date: today,
+      preferred_date: today,
+      time_slot: "Priority Dispatch Slot",
+      preferred_time_window: "Priority Dispatch Slot",
+      address: `${area_name} (${pincode})`,
+      street_address: `${area_name} (${pincode})`,
+      landmark: "Confirmed by Dispatcher Mr. Nitish Kumar",
+      bay_number: "BAY-01 (Assigned on Arrival)",
+      assigned_partner: CFG.managerAndDispatcher,
+      booking_status: "received",
+      customer_parts_approval_status: "pending_inspection",
+      parts_changed: `Booked for ${service_type} (100% Genuine OEM Parts — Prior WhatsApp Approval Required)`,
+      next_service_due_date: "After 3,000 KM / 90 Days",
+      inspection_findings: "Awaiting flatbed pickup & 40-point digital diagnostic inspection.",
+      estimated_cost: pinInfo.pickupFee,
+      created_at: new Date().toISOString()
+    };
 
-      // Also add/update vehicle in Family Vehicles Garage Hub
-      const famList = getFamilyGarage();
-      const existingVehIdx = famList.findIndex(v => v.reg_number.replace(/\s+/g, "") === reg_number.replace(/\s+/g, ""));
-      const vehEntry = {
-        customer_phone: phone,
-        customer_name: customer_name,
-        reg_number: reg_number,
-        vehicle_brand: vehicle_brand,
-        vehicle_model: `${bike_model} (${engine_cc})`,
-        vehicle_class: vehicle_class,
-        engine_cc: engine_cc,
-        odometer_km: odometer_km || 15000,
-        last_service_date: booking_date,
-        next_service_due_date: nextDueDate,
-        next_service_due_km: nextDueKm,
-        parts_changed: `${service_type} — Scheduled (${bookingCode})`,
-        total_amount: pinInfo.pickupFee,
-        warranty_status: "Active — 30-Day Unconditional Workmanship Guarantee",
-        certificate_no: "CERT-" + bookingCode,
-        supervised_by: CFG.managerAndDispatcher
-      };
-      if (existingVehIdx >= 0) {
-        famList[existingVehIdx] = vehEntry;
-      } else {
-        famList.unshift(vehEntry);
-      }
-      saveFamilyGarage(famList);
+    // Save Customer Profile locally for 1-click repeat booking
+    localStorage.setItem("ccm_customer_profile_v11", JSON.stringify({
+      customer_name, phone, bike_model, pincode
+    }));
 
-      // Save to Local DB & Sync to Supabase (`bike_bookings` + `bookings` + `family_vehicles`)
-      const list = getBookings();
-      list.unshift(newBooking);
-      saveBookings(list);
+    // Strictly AWAIT Supabase insert BEFORE deciding whether to show the green pass modal!
+    const syncResult = await syncToSupabase("bookings", "POST", newBooking);
 
-      const syncResult = await syncToSupabase("bookings", "POST", newBooking);
-      if (window.queueOfflineBookingIfNeeded) {
-        window.queueOfflineBookingIfNeeded(newBooking, syncResult && syncResult.synced);
-      }
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "✅ Confirm Express Booking (15 Sec)";
+    }
 
-      // Build WhatsApp URL
-      const waText = buildWhatsAppMessage(newBooking);
-      const waUrl = `https://wa.me/${CFG.officialWhatsApp}?text=${encodeURIComponent(waText)}`;
+    const waText = buildWhatsAppMessage(newBooking);
+    const waUrl = `https://wa.me/${CFG.officialWhatsApp}?text=${encodeURIComponent(waText)}`;
 
-      // Populate & Open Booking Confirmation Pass Modal
-      const modal = document.getElementById("booking-pass-modal");
-      const passContent = document.getElementById("booking-pass-details");
-      const btnPassWa = document.getElementById("btn-pass-whatsapp");
-      const btnPassEmail = document.getElementById("btn-pass-email");
+    // Track Google Ads Lead Conversion
+    window.trackGoogleAdsLead("booking_form_submit", {
+      booking_id: bookingCode,
+      area: area_name,
+      pincode: pincode,
+      service: service_type,
+      supabase_synced: Boolean(syncResult && syncResult.synced)
+    });
 
-      if (passContent) {
-        passContent.innerHTML = `
-          <div style="background:rgba(16,185,129,0.12);border:1px solid #10b981;padding:12px;border-radius:8px;margin-bottom:14px;">
-            <div style="font-size:0.76rem;color:#34d399;font-weight:800;">DIGITAL BOOKING PASS & SUPABASE RECORD SAVED</div>
-            <div style="font-size:1.3rem;font-weight:900;color:#fff;">Booking ID: ${bookingCode}</div>
-            <div style="font-size:0.8rem;color:#e2e8f0;">Supervised by: <strong>${CFG.managerAndDispatcher}</strong></div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:0.84rem;margin-bottom:14px;">
-            <div><span style="color:var(--text-muted);">Customer Name & Phone:</span><br><strong>${customer_name} (${phone})</strong></div>
-            <div><span style="color:var(--text-muted);">Petrol Two-Wheeler:</span><br><strong>${vehicle_brand} ${bike_model} (${engine_cc})</strong></div>
-            <div><span style="color:var(--text-muted);">Reg No & Odometer:</span><br><strong>${reg_number} ${odometer_km ? "• " + odometer_km + " KM" : ""}</strong></div>
-            <div><span style="color:var(--text-muted);">Service Category:</span><br><strong>${service_type}</strong></div>
-            <div><span style="color:var(--text-muted);">Area & PIN:</span><br><strong>${area_name} (${pincode})</strong></div>
-            <div><span style="color:var(--text-muted);">Pickup & Drop Charge:</span><br><strong style="color:#34d399;">${pinInfo.isVip ? "FREE VIP PICKUP (₹0)" : "Standard ₹500"}</strong></div>
-            <div style="grid-column:1/-1;"><span style="color:var(--text-muted);">Pickup Slot & Address:</span><br><strong>${booking_date} (${time_slot}) — ${address}, Landmark: ${landmark}</strong></div>
-          </div>
-          <div style="background:rgba(245,158,11,0.12);border:1px solid var(--border-amber);padding:10px 12px;border-radius:8px;font-size:0.8rem;color:#fde68a;">
-            🛡️ <strong>Zero Unapproved Parts Guarantee:</strong> Our technician will inspect your petrol two-wheeler and send photos/video + quotation on WhatsApp. If you reply <strong>"Confirm Change"</strong>, we replace with 100% Genuine OEM parts. If you say <strong>"Nako / No"</strong>, we do not add even 1 Paisa of extra parts!
-          </div>
-        `;
-      }
+    // Save locally for Live Tracker & My Orders view
+    const list = getBookings();
+    list.unshift(newBooking);
+    saveBookings(list);
+    renderCustomerLiveTracker(bookingCode);
+    renderMyOrdersAndFamilyGarage(phone);
 
-      if (btnPassWa) btnPassWa.href = waUrl;
-      if (btnPassEmail) {
-        btnPassEmail.href = `mailto:${CFG.officialEmail}?subject=${encodeURIComponent("Confirmed Booking Pass " + bookingCode + " - " + customer_name + " (" + phone + ")")}&body=${encodeURIComponent(waText)}`;
-      }
+    // CRITICAL REQUIREMENT 1 FIX: DO NOT show the green "Booking Confirmed - CC Motocrafts Pass" modal unless Supabase returns a confirmed successful insert!
+    if (!syncResult || !syncResult.synced) {
+      alert(
+        "📲 Direct WhatsApp Dispatch Activated!
 
-      if (modal) modal.classList.add("open");
+" +
+        "Your booking details (" + bookingCode + " for " + bike_model + ") are ready to send directly to Manager & Lead Dispatcher Mr. Nitish Kumar (+91 8333084261) on WhatsApp for instant slot confirmation."
+      );
+      window.open(waUrl, "_blank");
+      return;
+    }
 
-      renderCustomerLiveTracker(bookingCode);
-      renderMyOrdersAndFamilyGarage(phone);
+    // Supabase returned a confirmed successful insert -> Show the green "Booking Confirmed — CC Motocrafts Pass" modal!
+    const modal = document.getElementById("booking-pass-modal");
+    const passContent = document.getElementById("booking-pass-details");
+    const btnPassWa = document.getElementById("btn-pass-whatsapp");
+    const btnPassEmail = document.getElementById("btn-pass-email");
 
-      if (openWhatsAppImmediately) {
-        window.open(waUrl, "_blank");
-      }
-    } catch (err) {
-      window.showTechnicalFallbackModal();
+    if (passContent) {
+      passContent.innerHTML = `
+        <div style="background:rgba(16,185,129,0.12);border:1px solid #10b981;padding:12px;border-radius:8px;margin-bottom:14px;">
+          <div style="font-size:0.76rem;color:#34d399;font-weight:800;">✓ VERIFIED SUPABASE DATABASE RECORD & DIGITAL BOOKING PASS</div>
+          <div style="font-size:1.3rem;font-weight:900;color:#fff;">Booking ID: ${bookingCode}</div>
+          <div style="font-size:0.8rem;color:#e2e8f0;">Supervised by: <strong>${CFG.managerAndDispatcher}</strong></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:0.84rem;margin-bottom:14px;">
+          <div><span style="color:var(--text-muted);">Customer Name & Phone:</span><br><strong>${customer_name} (${phone})</strong></div>
+          <div><span style="color:var(--text-muted);">Bike / Scooter Model:</span><br><strong>${bike_model}</strong></div>
+          <div><span style="color:var(--text-muted);">Service Category:</span><br><strong>${service_type}</strong></div>
+          <div><span style="color:var(--text-muted);">Area & PIN:</span><br><strong>${area_name} (${pincode})</strong></div>
+          <div style="grid-column:1/-1;"><span style="color:var(--text-muted);">Pickup & Drop Eligibility:</span><br><strong style="color:#34d399;">${pinInfo.isVip ? "FREE VIP FLATBED PICKUP & DROP (₹0)" : "Standard Hyderabad Pickup & Drop (₹500)"}</strong></div>
+        </div>
+        <div style="background:rgba(245,158,11,0.12);border:1px solid var(--border-amber);padding:10px 12px;border-radius:8px;font-size:0.8rem;color:#fde68a;">
+          🛡️ <strong>Zero Unapproved Parts Guarantee:</strong> Dispatcher Manager <strong>Mr. Nitish Kumar (+91 8333084261)</strong> will confirm your exact pickup landmark on call. Zero spare parts are replaced without prior WhatsApp video & quotation approval!
+        </div>
+      `;
+    }
+
+    if (btnPassWa) btnPassWa.href = waUrl;
+    if (btnPassEmail) {
+      btnPassEmail.href = `mailto:${CFG.officialEmail}?subject=${encodeURIComponent("Confirmed Booking Pass " + bookingCode + " - " + customer_name + " (" + phone + ")")}&body=${encodeURIComponent(waText)}`;
+    }
+
+    if (modal) modal.classList.add("open");
+
+    if (openWhatsAppImmediately) {
+      window.open(waUrl, "_blank");
     }
   }
 
@@ -799,7 +665,7 @@
   };
 
   // ==========================================================================
-  // PORTFOLIO FILTER BY CC CLASS (100cc-2500cc Petrol Bikes & Scooters)
+  // PORTFOLIO FILTER BY CC CLASS
   // ==========================================================================
   window.filterPortfolio = function (filterKey, btnEl) {
     document.querySelectorAll(".portfolio-filters .filter-btn").forEach(b => b.classList.remove("active"));
@@ -828,7 +694,7 @@
             <p>${item.desc}</p>
           </div>
           <div style="display:flex;gap:8px;">
-            <button type="button" class="btn btn-amber" style="flex:1;padding:8px 10px;font-size:0.8rem;" onclick="prefillServiceBooking('${item.category}', '${item.vehicleClass}')">Book This Service →</button>
+            <button type="button" class="btn btn-amber" style="flex:1;padding:8px 10px;font-size:0.8rem;" onclick="prefillServiceBooking('${item.category}')">Book This Service →</button>
             <a href="https://wa.me/${CFG.officialWhatsApp}?text=${encodeURIComponent("Hi CC Motocrafts, I saw your portfolio for: " + item.title + ". I want to book this service.")}" target="_blank" class="btn btn-whatsapp" style="padding:8px 10px;font-size:0.8rem;">💬</a>
           </div>
         </div>
@@ -882,15 +748,15 @@
     ];
     const currentIdx = Math.max(0, stages.findIndex(s => s.key === match.booking_status));
 
-    const approveWaMsg = `Hi Mr. Nitish Kumar (CC Motocrafts AI Engine Labs), for Booking ID *${match.booking_code}* (${match.vehicle_brand} ${match.bike_model || match.vehicle_model} - ${match.reg_number || match.registration_no}), I *CONFIRM & APPROVE* the genuine parts replacement quotation.`;
-    const rejectWaMsg = `Hi Mr. Nitish Kumar (CC Motocrafts AI Engine Labs), for Booking ID *${match.booking_code}* (${match.vehicle_brand} ${match.bike_model || match.vehicle_model}), *NAKO / DO NOT CHANGE* the extra parts. Please proceed only with standard approved service.`;
+    const approveWaMsg = `Hi Mr. Nitish Kumar (CC Motocrafts AI Engine Labs), for Booking ID *${match.booking_code}* (${match.bike_model || match.vehicle_model}), I *CONFIRM & APPROVE* the genuine parts replacement quotation.`;
+    const rejectWaMsg = `Hi Mr. Nitish Kumar (CC Motocrafts AI Engine Labs), for Booking ID *${match.booking_code}* (${match.bike_model || match.vehicle_model}), *NAKO / DO NOT CHANGE* the extra parts. Please proceed only with standard approved service.`;
 
     box.innerHTML = `
       <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border-cyan);border-radius:12px;padding:20px;">
         <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;">
           <div>
             <span class="cluster-tag">LIVE WORKSHOP BAY TRACKER • ${match.bay_number || "BAY-01"}</span>
-            <h3 style="color:#fff;font-size:1.22rem;">${match.booking_code} — ${match.vehicle_brand} ${match.bike_model || match.vehicle_model} (${match.reg_number || match.registration_no})</h3>
+            <h3 style="color:#fff;font-size:1.22rem;">${match.booking_code} — ${match.bike_model || match.vehicle_model}</h3>
             <p style="font-size:0.83rem;color:var(--text-muted);">Customer: <strong>${match.customer_name}</strong> • Area: <strong>${match.area_name} (${match.pincode})</strong> • Supervised By: <strong>${CFG.managerAndDispatcher}</strong></p>
           </div>
           <div style="text-align:right;">
@@ -930,7 +796,7 @@
   }
 
   // ==========================================================================
-  // REQUIREMENT 4 & 5: "MY ORDERS" & FAMILY VEHICLE GARAGE HUB + 1-CLICK WARRANTY DISPATCH
+  // "MY ORDERS" & FAMILY VEHICLE GARAGE HUB + 1-CLICK WARRANTY DISPATCH
   // ==========================================================================
   function renderMyOrdersAndFamilyGarage(mobileQuery) {
     const statsContainer = document.getElementById("my-orders-stats");
@@ -1002,13 +868,12 @@
       const combinedRows = [
         ...filteredBookings.map(b => ({
           code: b.booking_code,
-          date: b.booking_date || b.preferred_date || "2026-11-14",
-          vehicle: `${b.vehicle_brand} ${b.bike_model || b.vehicle_model} (${b.reg_number || b.registration_no})`,
+          date: b.booking_date || b.preferred_date || "2026-11-15",
+          vehicle: `${b.bike_model || b.vehicle_model} (${b.reg_number || "Confirmed on Call"})`,
           odo: b.odometer_km ? `${b.odometer_km} KM` : "Recorded at Intake",
           work: b.parts_changed || b.service_type || b.service_category,
           nextDue: b.next_service_due_date || "After 3,000 KM",
-          warranty: "30-Day Workmanship Guarantee Active",
-          customer: `${b.customer_name} (${b.phone || b.customer_mobile})`
+          warranty: "30-Day Workmanship Guarantee Active"
         })),
         ...familyVehicles.map(v => ({
           code: v.certificate_no,
@@ -1017,8 +882,7 @@
           odo: `${Number(v.odometer_km).toLocaleString()} KM`,
           work: v.parts_changed,
           nextDue: `${v.next_service_due_date} OR ${Number(v.next_service_due_km).toLocaleString()} KM`,
-          warranty: v.warranty_status,
-          customer: v.customer_name || "Registered Family Garage"
+          warranty: v.warranty_status
         }))
       ];
 
@@ -1099,10 +963,7 @@
   window.quickRebookFamilyVehicle = function (idx) {
     const v = getFamilyGarage()[idx];
     if (!v) return;
-    if (document.getElementById("vehicle_brand")) document.getElementById("vehicle_brand").value = v.vehicle_brand;
-    if (document.getElementById("bike_model")) document.getElementById("bike_model").value = v.vehicle_model;
-    if (document.getElementById("reg_number")) document.getElementById("reg_number").value = v.reg_number;
-    if (document.getElementById("odometer_km")) document.getElementById("odometer_km").value = v.odometer_km;
+    if (document.getElementById("bike_model")) document.getElementById("bike_model").value = `${v.vehicle_brand} ${v.vehicle_model}`;
     if (v.customer_phone && document.getElementById("phone")) document.getElementById("phone").value = v.customer_phone;
     const formSec = document.getElementById("booking-section");
     if (formSec) formSec.scrollIntoView({ behavior: "smooth" });
@@ -1116,7 +977,7 @@
 
   window.dispatchWarrantyCertificate = function (bookingCode) {
     const b = getBookings().find(x => x.booking_code === bookingCode);
-    const vehicleStr = b ? `${b.vehicle_brand} ${b.bike_model || b.vehicle_model} (${b.reg_number || b.registration_no})` : "Petrol Two-Wheeler";
+    const vehicleStr = b ? `${b.bike_model || b.vehicle_model}` : "Petrol Two-Wheeler";
     const odoStr = b && b.odometer_km ? `${b.odometer_km} KM` : "Recorded on Job Card";
     const nextStr = b && b.next_service_due_date ? b.next_service_due_date : "After 3,000 KM / 90 Days";
     sendDirectSignOffWhatsApp(bookingCode, vehicleStr, odoStr, nextStr);
@@ -1145,7 +1006,7 @@
       job_card_no: certCode,
       booking_id: certCode,
       vehicle_model: vehicleStr,
-      Inspection_notes: "Official Digital Service & Warranty Sign-Off Dispatched",
+      inspection_notes: "Official Digital Service & Warranty Sign-Off Dispatched",
       warranty_certificate_no: certCode,
       warranty_status: "30-Day Unconditional Workmanship Guarantee Active",
       dispatched_by: "Mr. Nitish Kumar (Manager & Lead Dispatcher, +91 8333084261)"
@@ -1172,26 +1033,25 @@
         </div>
         <div class="ai-chat-body">
           <div class="chat-msg bot">
-            👋 Welcome to <strong>CC Motocrafts AI Engine Labs</strong>! Enter your details below to log your booking in our database & confirm directly with Manager & Lead Dispatcher <strong>Mr. Nitish Kumar (+91 8333084261)</strong>:
+            👋 Welcome to <strong>CC Motocrafts AI Engine Labs</strong>! Enter your 4 details below to confirm directly with Manager & Lead Dispatcher <strong>Mr. Nitish Kumar (+91 8333084261)</strong>:
           </div>
           <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border-subtle);padding:12px;border-radius:8px;display:flex;flex-direction:column;gap:8px;">
-            <input type="text" id="qa-name" class="form-control" placeholder="Your Full Name *" style="padding:8px 10px;font-size:0.82rem;">
-            <input type="tel" id="qa-mobile" class="form-control" placeholder="10-Digit Mobile Number *" style="padding:8px 10px;font-size:0.82rem;">
-            <input type="text" id="qa-bike" class="form-control" placeholder="Petrol Bike/Scooter & Reg No (e.g. Activa / Hayabusa) *" style="padding:8px 10px;font-size:0.82rem;">
+            <input type="text" id="qa-name" class="form-control" placeholder="1. Your Full Name *" style="padding:8px 10px;font-size:0.82rem;">
+            <input type="tel" id="qa-mobile" class="form-control" placeholder="2. WhatsApp / Mobile Number *" style="padding:8px 10px;font-size:0.82rem;">
+            <input type="text" id="qa-bike" class="form-control" placeholder="3. Bike / Scooter Model (e.g. Activa / Hayabusa) *" style="padding:8px 10px;font-size:0.82rem;">
             <select id="qa-pin" class="form-control" style="padding:8px 10px;font-size:0.82rem;">
-              <option value="500033">500033 — Jubilee Hills / Film Nagar (FREE VIP Pickup)</option>
-              <option value="500034">500034 — Banjara Hills (FREE VIP Pickup)</option>
-              <option value="500096">500096 — Film Nagar / Nanakramguda (FREE VIP Pickup)</option>
-              <option value="500032">500032 — Gachibowli / Financial District (FREE VIP Pickup)</option>
-              <option value="500075">500075 — Kokapet / Narsingi (FREE VIP Pickup)</option>
-              <option value="500089">500089 — Manikonda / Puppalguda / Lanco Hills (FREE VIP)</option>
-              <option value="500081">500081 — HITEC City / Madhapur (FREE VIP Pickup)</option>
-              <option value="500084">500084 — Kondapur (FREE VIP Pickup)</option>
-              <option value="500008">Other Hyderabad Area / PIN (₹500 Pickup & Drop)</option>
+              <option value="500032">Gachibowli / Financial District — 500032 (FREE VIP Pickup)</option>
+              <option value="500089">Manikonda / Alkapur / Puppalguda — 500089 (FREE VIP Pickup)</option>
+              <option value="500084">Kondapur — 500084 (FREE VIP Pickup)</option>
+              <option value="500081">HITEC City / Madhapur — 500081 (FREE VIP Pickup)</option>
+              <option value="500033">Jubilee Hills — 500033 (FREE VIP Pickup)</option>
+              <option value="500034">Banjara Hills — 500034 (FREE VIP Pickup)</option>
+              <option value="500075">Narsingi / Kokapet — 500075 (FREE VIP Pickup)</option>
+              <option value="500096">Film Nagar / Nanakramguda — 500096 (FREE VIP Pickup)</option>
+              <option value="500008">Shaikpet / Other Hyderabad Area</option>
             </select>
-            <input type="text" id="qa-issue" class="form-control" placeholder="Symptom / Service Needed (e.g. General Service / ECU)" style="padding:8px 10px;font-size:0.82rem;">
             <button type="button" class="btn btn-whatsapp" style="width:100%;padding:9px;font-size:0.84rem;" onclick="submitQuickChatBooking()">
-              📲 Save Booking & Share on WhatsApp
+              📲 Confirm & Share on WhatsApp
             </button>
           </div>
         </div>
@@ -1215,12 +1075,11 @@
   window.submitQuickChatBooking = async function () {
     const customer_name = (document.getElementById("qa-name").value || "").trim();
     const phone = (document.getElementById("qa-mobile").value || "").trim();
-    const bike = (document.getElementById("qa-bike").value || "").trim();
+    const bike_model = (document.getElementById("qa-bike").value || "").trim();
     const pin = document.getElementById("qa-pin").value;
-    const issue = (document.getElementById("qa-issue").value || "").trim() || "AI Diagnostic & Service Check";
 
-    if (!customer_name || !phone || !bike) {
-      alert("Please enter your Name, 10-Digit Mobile Number, and Bike Model.");
+    if (!customer_name || !phone || !bike_model) {
+      alert("Please enter your Name, WhatsApp/Mobile Number, and Bike/Scooter Model.");
       return;
     }
 
@@ -1234,33 +1093,27 @@
       customer_name: customer_name,
       phone: phone,
       customer_mobile: phone,
-      email: "",
-      customer_email: "",
-      vehicle_brand: bike.split(" ")[0] || "Petrol Two-Wheeler",
-      bike_model: bike,
-      vehicle_model: bike,
-      reg_number: "QUICK-BOOK",
-      registration_no: "QUICK-BOOK",
-      vehicle_class: "Commuter (100–160cc Petrol)",
+      vehicle_brand: bike_model.split(" ")[0] || "Petrol 2W",
+      bike_model: bike_model,
+      vehicle_model: bike_model,
+      reg_number: "Collected on Call",
+      vehicle_class: "Petrol Two-Wheeler (100cc–2500cc)",
       engine_cc: "100cc–2500cc",
-      service_type: issue,
-      service_category: issue,
-      complaint_note: issue,
-      complaint_notes: issue,
-      area_name: pinInfo.isVip ? "VIP Free Pickup Zone" : "Greater Hyderabad",
+      service_type: "General service",
+      service_category: "General service",
+      complaint_note: "Quick Chat Booking",
+      area_name: pinInfo.isVip ? "VIP Free Pickup Zone" : "Hyderabad",
       pincode: pin,
       is_vip_free_pickup: pinInfo.isVip,
       pickup_charge: pinInfo.pickupFee,
-      cancellation_fee: pinInfo.cancellationFee,
       booking_date: today,
       preferred_date: today,
-      time_slot: "11:00–13:00",
-      preferred_time_window: "11:00–13:00",
-      address: "Shared via Quick Booking Widget",
-      street_address: "Shared via Quick Booking Widget",
-      landmark: "Hyderabad",
+      time_slot: "Priority Slot",
+      preferred_time_window: "Priority Slot",
+      address: `PIN ${pin}`,
+      street_address: `PIN ${pin}`,
+      landmark: "Confirmed on Call",
       booking_status: "received",
-      customer_parts_approval_status: "pending_inspection",
       created_at: new Date().toISOString()
     };
 
@@ -1268,6 +1121,7 @@
     list.unshift(quickRecord);
     saveBookings(list);
     await syncToSupabase("bookings", "POST", quickRecord);
+    window.trackGoogleAdsLead("quick_chat_booking", { booking_id: code, pincode: pin });
 
     const waText = buildWhatsAppMessage(quickRecord);
     window.open(`https://wa.me/${CFG.officialWhatsApp}?text=${encodeURIComponent(waText)}`, "_blank");
@@ -1277,17 +1131,36 @@
     const nav = document.getElementById("main-nav-links");
     if (nav) nav.classList.toggle("open");
   };
+
+  window.toggleQuickThreeDotMenu = function (e) {
+    if (e) e.stopPropagation();
+    const menu = document.getElementById("quick-three-dot-menu");
+    if (!menu) return;
+    menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+  };
+
+  window.closeQuickThreeDotMenu = function () {
+    const menu = document.getElementById("quick-three-dot-menu");
+    if (menu) menu.style.display = "none";
+  };
+
+  document.addEventListener("click", function (e) {
+    const menu = document.getElementById("quick-three-dot-menu");
+    if (menu && menu.style.display === "flex" && !menu.contains(e.target)) {
+      menu.style.display = "none";
+    }
+  });
 })();
 
 // ============================================================================
-// PWA INSTALLER & OFFLINE BOOKING SYNC
+// PWA INSTALLER & SAVED CUSTOMER PROFILE AUTO-FILL
 // ============================================================================
 (function () {
   let deferredInstallPrompt = null;
 
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js").catch(() => {});
+      navigator.serviceWorker.register("./sw.js?v=11").catch(() => {});
     });
   }
 
@@ -1308,28 +1181,20 @@
       alert(
         "📲 Install CC Motocrafts Native App:\n\n" +
         "• On Android Chrome: Tap the 3 dots (⋮) at top-right → tap 'Install app' or 'Add to Home screen'.\n" +
-        "• On iPhone Safari: Tap 'Share' → tap 'Add to Home Screen'.\n\n" +
-        "Opens full-screen with hidden browser URL bars and works online & offline!"
+        "• On iPhone Safari: Tap 'Share' → tap 'Add to Home Screen'."
       );
     }
   };
 
   function autoFillSavedCustomerProfile() {
-    const saved = localStorage.getItem("ccm_customer_profile_v9");
+    const saved = localStorage.getItem("ccm_customer_profile_v11");
     if (!saved) return;
     try {
       const p = JSON.parse(saved);
       const setVal = (id, v) => { const el = document.getElementById(id); if (el && v && !el.value) el.value = v; };
       setVal("customer_name", p.customer_name);
       setVal("phone", p.phone);
-      setVal("email", p.email);
-      if (p.vehicle_brand && document.getElementById("vehicle_brand")) document.getElementById("vehicle_brand").value = p.vehicle_brand;
       setVal("bike_model", p.bike_model);
-      setVal("reg_number", p.reg_number);
-      if (p.odometer_km) setVal("odometer_km", p.odometer_km);
-      if (p.pincode && document.getElementById("pincode")) document.getElementById("pincode").value = p.pincode;
-      setVal("address", p.address);
-      setVal("landmark", p.landmark);
     } catch (e) {}
   }
 

@@ -1,10 +1,10 @@
-const CACHE_NAME = 'cc-motocrafts-pwa-v9';
+const CACHE_NAME = 'cc-motocrafts-pwa-v11';
 const OFFLINE_ASSETS = [
   './',
   './index.html',
-  './styles.css',
-  './supabase-config.js',
-  './app.js',
+  './styles.css?v=11',
+  './supabase-config.js?v=11',
+  './app.js?v=11',
   './manifest.json',
   './app-icon-192.png',
   './app-icon-512.png',

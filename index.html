@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>CC Motocrafts AI Engine Labs Service | 100cc–2500cc Petrol Two-Wheeler Diagnostic & Service Platform Hyderabad</title>
-  <meta name="description" content="CC Motocrafts AI Engine Labs Service — Hyderabad's #1 Multi-Brand Petrol Two-Wheeler (100cc to 2500cc Bikes & Gearless Scooters) Diagnostic & Overhaul Lab. Free VIP Flatbed Pickup & Drop in Jubilee Hills, Banjara Hills, Film Nagar, Gachibowli, Financial District, Kokapet, Narsingi, Puppalguda, HITEC City, Madhapur, Kondapur & Lanco Hills. Supervised by Manager & Lead Dispatcher Mr. Nitish Kumar (+91 8333084261).">
+  <title>CC Motocrafts AI Engine Labs – Premium Multi-Brand Bike & Scooter Service in Hyderabad (Gachibowli, Manikonda, Jubilee Hills | 100cc–2500cc Petrol Only)</title>
+  <meta name="description" content="CC Motocrafts AI Engine Labs – Premium Multi-Brand Bike & Scooter Service in Hyderabad (Gachibowli, Manikonda, Jubilee Hills | 100cc–2500cc Petrol Only). Free VIP Flatbed Pickup & Drop in Gachibowli, Financial District, Manikonda, Alkapur, Kondapur, HITEC City, Jubilee Hills, Banjara Hills, Narsingi, Kokapet, Puppalguda & Shaikpet. Call/WhatsApp +91 8333084261.">
+  <meta name="keywords" content="bike service center near me, bike service, online bike service in gachibowli hyderabad, online bike service in manikonda hyderabad, bike service jubilee hills, superbike service hyderabad, 100cc to 2500cc petrol bike service, CC Motocrafts AI Engine Labs">
   <link rel="canonical" href="https://ccmotocrafts.in/">
   <link rel="icon" type="image/jpeg" href="logo-cc-crafts-3d.jpg">
   <link rel="manifest" href="manifest.json">
@@ -12,7 +13,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="apple-touch-icon" href="app-icon-192.png">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=11">
   <style>
 /* ============================================================================
    CC MOTOCRAFTS AI ENGINE LABS SERVICE - NATIVE PWA & DIAGNOSTIC PLATFORM CSS
@@ -1144,12 +1145,12 @@ section {
 
   <!-- TOP VIP ANNOUNCEMENT BAR -->
   <div class="top-vip-bar">
-    <span class="vip-pill">100cc–2500cc PETROL BIKES & SCOOTERS ONLY (ZERO EVs)</span>
-    <span><strong>FREE VIP Pickup & Drop (₹0):</strong> Jubilee Hills, Banjara Hills, Film Nagar, Gachibowli, Financial District, Kokapet, Narsingi, Puppalguda, HITEC City, Madhapur, Kondapur & Lanco Hills • Other Areas: <strong>₹500</strong></span>
-    <span>📞 Manager & Lead Dispatcher (Mr. Nitish Kumar): <a href="https://wa.me/918333084261" target="_blank" style="color:#34d399;font-weight:800;">+91 8333084261</a> | ✉️ <a href="mailto:info@ccmotocrafts.in" style="color:#38bdf8;font-weight:700;">info@ccmotocrafts.in</a></span>
+    <span class="vip-pill">100cc–2500cc PETROL BIKES & SCOOTERS ONLY</span>
+    <span><strong>FREE VIP Pickup & Drop (₹0):</strong> Gachibowli, Financial District, Manikonda, Alkapur, Kondapur, HITEC City, Jubilee Hills, Banjara Hills, Narsingi, Kokapet, Puppalguda & Shaikpet</span>
+    <span>📞 Helpline & WhatsApp (Mr. Nitish Kumar): <a href="https://wa.me/918333084261" target="_blank" style="color:#34d399;font-weight:800;">+91 8333084261</a> | ✉️ <a href="mailto:info@ccmotocrafts.in" style="color:#38bdf8;font-weight:700;">info@ccmotocrafts.in</a></span>
   </div>
 
-  <!-- STICKY HEADER -->
+  <!-- STICKY HEADER WITH 3-DOT (⋮) QUICK ACTION MENU RIGHT NEXT TO INSTALL APP -->
   <header class="site-header">
     <div class="header-inner">
       <a href="#top-home" class="brand-wrap">
@@ -1162,33 +1163,48 @@ section {
 
       <nav class="main-nav" id="main-nav-links" onclick="if(window.innerWidth<=1120)this.classList.remove('open')">
         <a href="#top-home">Home</a>
-        <a href="#booking-section">Instant Booking</a>
+        <a href="#booking-section">Express Booking</a>
         <a href="#vip-zor">Live Bay Tracker</a>
-        <a href="#my-orders-sec">My Orders & Family Garage</a>
-        <a href="#portfolio-sec">Service Portfolio (CC Filter)</a>
-        <a href="#services-sec">Transparent Pricing</a>
-        <a href="#certificate-sec">Warranty & Certificate</a>
+        <a href="#my-orders-sec">My Orders & Garage</a>
+        <a href="#portfolio-sec">Portfolio (CC Filter)</a>
+        <a href="#services-sec">Pricing</a>
+        <a href="#certificate-sec">Warranty</a>
       </nav>
 
-      <div class="header-ctas">
+      <div class="header-ctas" style="position:relative;">
         <button type="button" class="btn btn-cyan pwa-install-btn" onclick="installCCMotocraftsApp()" style="padding:7px 11px;font-size:0.76rem;">📲 Install App</button>
+        <button type="button" class="btn btn-outline" onclick="toggleQuickThreeDotMenu(event)" title="Quick Action Menu" style="padding:7px 11px;font-size:1.08rem;font-weight:900;line-height:1;border-color:var(--border-amber);color:var(--amber-bright);">⋮</button>
         <a href="#booking-section" class="btn btn-amber">🛠️ Book</a>
         <a href="https://wa.me/918333084261?text=Hello%20Mr.%20Nitish%20Kumar%20(CC%20Motocrafts%20AI%20Engine%20Labs)!%20I%20want%20to%20book%20a%20petrol%20two-wheeler%20service." target="_blank" class="btn btn-whatsapp hide-on-xs">💬 WhatsApp</a>
         <button type="button" class="mobile-menu-btn" onclick="toggleMobileNav()" aria-label="Toggle Menu">☰</button>
+
+        <!-- 3-DOT (⋮) QUICK ACTION MENU DROPDOWN -->
+        <div id="quick-three-dot-menu" style="display:none;position:absolute;top:calc(100% + 10px);right:0;width:275px;background:#111827;border:2px solid var(--amber);border-radius:12px;padding:10px;box-shadow:0 18px 40px rgba(0,0,0,0.88);z-index:1200;flex-direction:column;gap:6px;">
+          <div style="font-size:0.72rem;font-weight:800;color:var(--amber-bright);padding:4px 8px;border-bottom:1px solid var(--border-subtle);">⚡ QUICK ACTION MENU (⋮)</div>
+          <a href="#booking-section" onclick="closeQuickThreeDotMenu()" style="padding:8px 10px;border-radius:6px;font-size:0.84rem;font-weight:700;color:#fff;background:rgba(255,255,255,0.04);">🛠️ 15-Sec Express Booking</a>
+          <a href="#vip-zor" onclick="closeQuickThreeDotMenu()" style="padding:8px 10px;border-radius:6px;font-size:0.84rem;font-weight:700;color:#fff;background:rgba(255,255,255,0.04);">📡 Live Workshop Bay Tracker</a>
+          <a href="#my-orders-sec" onclick="closeQuickThreeDotMenu()" style="padding:8px 10px;border-radius:6px;font-size:0.84rem;font-weight:700;color:#fff;background:rgba(255,255,255,0.04);">🏠 My Orders & Family Garage Hub</a>
+          <a href="#portfolio-sec" onclick="closeQuickThreeDotMenu()" style="padding:8px 10px;border-radius:6px;font-size:0.84rem;font-weight:700;color:#fff;background:rgba(255,255,255,0.04);">🏍️ 100cc–2500cc Service Portfolio</a>
+          <a href="#services-sec" onclick="closeQuickThreeDotMenu()" style="padding:8px 10px;border-radius:6px;font-size:0.84rem;font-weight:700;color:#fff;background:rgba(255,255,255,0.04);">💰 Transparent Pricing Modules</a>
+          <a href="#certificate-sec" onclick="closeQuickThreeDotMenu()" style="padding:8px 10px;border-radius:6px;font-size:0.84rem;font-weight:700;color:#fff;background:rgba(255,255,255,0.04);">🏅 Master Certificate & Warranty</a>
+          <button type="button" class="btn btn-cyan" onclick="installCCMotocraftsApp();closeQuickThreeDotMenu();" style="width:100%;padding:8px;font-size:0.8rem;margin-top:4px;">📲 Install Offline App on Device</button>
+          <a href="tel:+918333084261" class="btn btn-amber" style="width:100%;padding:8px;font-size:0.8rem;">☎️ Call +91 8333084261</a>
+          <a href="https://wa.me/918333084261?text=Hello%20Mr.%20Nitish%20Kumar%20(CC%20Motocrafts%20Support),%20I%20need%20assistance." target="_blank" class="btn btn-whatsapp" style="width:100%;padding:8px;font-size:0.8rem;">💬 Direct WhatsApp (+91 8333084261)</a>
+        </div>
       </div>
     </div>
   </header>
 
-  <!-- 1. HERO BOOKING CTA SECTION (STRICTLY PETROL 100cc TO 2500cc BIKES & SCOOTERS) -->
+  <!-- 1. HERO BOOKING CTA SECTION (REQUIREMENT 5 EXACT H1 HEADING) -->
   <section class="hero-section">
     <div class="container hero-grid">
       <div>
-        <div class="eyebrow">⚡ HYDERABAD'S PREMIER PETROL TWO-WHEELER DIAGNOSTIC PLATFORM</div>
-        <h1 class="hero-title">
-          Precision Engineering & OBD-II Diagnostics for <span>100cc to 2500cc Petrol Machines</span>
+        <div class="eyebrow">⚡ HYDERABAD'S #1 PETROL TWO-WHEELER DIAGNOSTIC & SERVICE NETWORK</div>
+        <h1 class="hero-title" style="font-size:clamp(1.55rem, 3.3vw, 2.55rem);">
+          CC Motocrafts AI Engine Labs – <span>Premium Multi-Brand Bike & Scooter Service in Hyderabad (Gachibowli, Manikonda, Jubilee Hills | 100cc–2500cc Petrol Only)</span>
         </h1>
         <p class="hero-lead">
-          Strictly dedicated to petrol two-wheelers — from gearless scooters (Activa, Jupiter, Access, Vespa, Aerox) and commuters to KTM, Apache, Royal Enfield, and Multi-Cylinder Superbikes (Suzuki Hayabusa, Benelli 600i, Kawasaki Z900, Triumph, Ducati, BMW, Harley-Davidson). Supervised by Master Technician <strong>Mr. Shaik Mujahid Qadri</strong> and Manager & Lead Dispatcher <strong>Mr. Nitish Kumar (+91 8333084261)</strong>.
+          Strictly dedicated to petrol two-wheelers — from gearless scooters (Activa, Jupiter, Access, Vespa, Aerox) and commuters to KTM, Apache, Royal Enfield, and Multi-Cylinder Superbikes (Suzuki Hayabusa, Benelli 600i, Kawasaki Z900, Triumph, Ducati, BMW, Harley-Davidson). Supervised by Master Technician <strong>Mr. Shaik Mujahid Qadri</strong> and Dispatcher Manager <strong>Mr. Nitish Kumar (+91 8333084261)</strong>.
         </p>
 
         <!-- ZERO UNAPPROVED PARTS GUARANTEE BADGE -->
@@ -1200,20 +1216,20 @@ section {
         </div>
 
         <div class="hero-actions">
-          <a href="#booking-section" class="btn btn-amber">🏍️ Book Instant Service + GPS Pickup</a>
+          <a href="#booking-section" class="btn btn-amber">🏍️ Book Express Service (15 Sec)</a>
           <a href="https://wa.me/918333084261?text=Hi%20Mr.%20Nitish%20Kumar%20(CC%20Motocrafts%20AI%20Engine%20Labs),%20I%20want%20to%20book%20a%20petrol%20two-wheeler%20service." target="_blank" class="btn btn-whatsapp">💬 Book on WhatsApp (+91 8333084261)</a>
-          <a href="#my-orders-sec" class="btn btn-cyan">🏠 My Orders & Family Garage Hub</a>
-          <button type="button" class="btn btn-outline pwa-install-btn" onclick="installCCMotocraftsApp()">📲 Install Native App</button>
+          <a href="tel:+918333084261" class="btn btn-cyan">☎️ Call +91 8333084261</a>
+          <button type="button" class="btn btn-outline pwa-install-btn" onclick="installCCMotocraftsApp()">📲 Install App</button>
         </div>
 
         <div class="hero-badges">
           <div class="hero-badge-card">
             <strong>100cc → 2500cc Petrol</strong>
-            <span>Gearless Scooters to Inline-4/V4 Superbikes (No EVs)</span>
+            <span>Gearless Scooters to Inline-4/V4 Superbikes</span>
           </div>
           <div class="hero-badge-card">
             <strong>FREE VIP Pickup (₹0)</strong>
-            <span>8 Prime Hyderabad PIN Codes • ₹500 Rest of Hyd</span>
+            <span>Gachibowli, Manikonda, Jubilee Hills & Core Hubs</span>
           </div>
           <div class="hero-badge-card">
             <strong>Zero-Unapproved Parts</strong>
@@ -1267,14 +1283,14 @@ section {
     </div>
   </section>
 
-  <!-- 2. INSTANT CUSTOMER BOOKING FORM (DIRECT FORM-TO-DATABASE BINDING) -->
+  <!-- 2. REQUIREMENT 2: SIMPLIFIED 4-FIELD EXPRESS BOOKING FORM (ZERO USER BOUNCE) -->
   <section id="booking-section">
     <div class="container">
       <div class="section-header">
-        <span class="eyebrow">📲 INSTANT DIGITAL BOOKING & LIVE GPS INTAKE</span>
-        <h2 class="section-title">Book Petrol Two-Wheeler Service (100cc–2500cc)</h2>
+        <span class="eyebrow">📲 15-SECOND EXPRESS BOOKING (4 ESSENTIAL FIELDS)</span>
+        <h2 class="section-title">Book Doorstep Pickup or Workshop Slot in 15 Seconds</h2>
         <p class="section-desc">
-          Fill out your details below to generate your <strong>Digital Booking Pass</strong> and dispatch directly to Manager & Lead Dispatcher <strong>Mr. Nitish Kumar (+91 8333084261)</strong>.
+          Enter just 4 quick details below. Dispatcher Manager <strong>Mr. Nitish Kumar (+91 8333084261)</strong> will confirm your exact landmark and registration number during the confirmation call.
         </p>
       </div>
 
@@ -1282,155 +1298,85 @@ section {
         <div class="form-card">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
             <div>
-              <h3 style="color:#fff;font-size:1.15rem;">Customer, Petrol Vehicle & GPS Pickup Intake</h3>
-              <div style="font-size:0.75rem;color:#34d399;font-weight:700;margin-top:2px;">● Live Database Sync Active • Zero-Unapproved Parts Guarantee</div>
+              <h3 style="color:#fff;font-size:1.18rem;">Express 4-Field Service Intake</h3>
+              <div style="font-size:0.76rem;color:#34d399;font-weight:700;margin-top:2px;">● Instant Priority Dispatch • Zero-Unapproved Parts Guarantee</div>
             </div>
           </div>
 
           <form id="main-booking-form">
             <div class="form-grid">
+              <!-- FIELD 1: CUSTOMER FULL NAME -->
               <div class="form-group">
-                <label for="customer_name">Customer Full Name *</label>
+                <label for="customer_name">1. Customer Full Name *</label>
                 <input type="text" id="customer_name" name="customer_name" class="form-control" placeholder="Enter your full name" required>
               </div>
+
+              <!-- FIELD 2: WHATSAPP / MOBILE NUMBER -->
               <div class="form-group">
-                <label for="phone">10-Digit Mobile / WhatsApp Number *</label>
-                <input type="tel" id="phone" name="phone" class="form-control" placeholder="Enter Customer 10-Digit Mobile Number" pattern="[0-9+\-\s]{10,15}" required>
+                <label for="phone">2. WhatsApp / Mobile Number *</label>
+                <input type="tel" id="phone" name="phone" class="form-control" placeholder="Enter 10-Digit Mobile Number" pattern="[0-9+\-\s]{10,15}" required>
               </div>
+
+              <!-- FIELD 3: BIKE / SCOOTER MODEL -->
               <div class="form-group">
-                <label for="email">Customer Email Address (Optional)</label>
-                <input type="email" id="email" name="email" class="form-control" placeholder="yourname@email.com">
+                <label for="bike_model">3. Bike / Scooter Model (100cc–2500cc Petrol) *</label>
+                <input type="text" id="bike_model" name="bike_model" class="form-control" placeholder="e.g. Honda Activa 125 / Royal Enfield 350 / Duke 390 / Z900" required>
               </div>
+
+              <!-- FIELD 4: HYDERABAD AREA / PIN CODE (HARDCODED VIP AREAS) -->
               <div class="form-group">
-                <label for="vehicle_brand">Petrol Two-Wheeler Brand (No EVs) *</label>
-                <select id="vehicle_brand" name="vehicle_brand" class="form-control">
-                  <option value="Honda">Honda</option>
-                  <option value="Hero">Hero</option>
-                  <option value="TVS">TVS</option>
-                  <option value="Bajaj">Bajaj</option>
-                  <option value="Royal Enfield">Royal Enfield</option>
-                  <option value="Yamaha">Yamaha</option>
-                  <option value="Suzuki">Suzuki</option>
-                  <option value="KTM">KTM</option>
-                  <option value="Kawasaki">Kawasaki</option>
-                  <option value="Benelli">Benelli</option>
-                  <option value="BMW Motorrad">BMW Motorrad</option>
-                  <option value="Triumph">Triumph</option>
-                  <option value="Ducati">Ducati</option>
-                  <option value="Harley-Davidson">Harley-Davidson</option>
-                  <option value="Aprilia">Aprilia</option>
-                  <option value="Vespa / Piaggio">Vespa / Piaggio</option>
-                  <option value="Jawa / Yezdi">Jawa / Yezdi</option>
-                  <option value="Other Petrol Brand">Other Petrol Two-Wheeler</option>
+                <label for="area">4. Hyderabad Area / PIN Code *</label>
+                <select id="area" name="area" class="form-control" required>
+                  <option value="500032" data-areaname="Gachibowli">Gachibowli — 500032 (FREE VIP Pickup & Drop ₹0)</option>
+                  <option value="500032" data-areaname="Financial District">Financial District — 500032 (FREE VIP Pickup & Drop ₹0)</option>
+                  <option value="500089" data-areaname="Manikonda">Manikonda — 500089 (FREE VIP Pickup & Drop ₹0)</option>
+                  <option value="500089" data-areaname="Alkapur Township">Alkapur Township — 500089 (FREE VIP Pickup & Drop ₹0)</option>
+                  <option value="500089" data-areaname="Puppalguda">Puppalguda — 500089 (FREE VIP Pickup & Drop ₹0)</option>
+                  <option value="500084" data-areaname="Kondapur">Kondapur — 500084 (FREE VIP Pickup & Drop ₹0)</option>
+                  <option value="500081" data-areaname="HITEC City / Madhapur">HITEC City / Madhapur — 500081 (FREE VIP Pickup & Drop ₹0)</option>
+                  <option value="500033" data-areaname="Jubilee Hills">Jubilee Hills — 500033 (FREE VIP Pickup & Drop ₹0)</option>
+                  <option value="500034" data-areaname="Banjara Hills">Banjara Hills — 500034 (FREE VIP Pickup & Drop ₹0)</option>
+                  <option value="500075" data-areaname="Narsingi">Narsingi — 500075 (FREE VIP Pickup & Drop ₹0)</option>
+                  <option value="500075" data-areaname="Kokapet">Kokapet — 500075 (FREE VIP Pickup & Drop ₹0)</option>
+                  <option value="500096" data-areaname="Film Nagar / Nanakramguda">Film Nagar / Nanakramguda — 500096 (FREE VIP Pickup & Drop ₹0)</option>
+                  <option value="500008" data-areaname="Shaikpet / Tolichowki">Shaikpet / Tolichowki — 500008 (FREE VIP Pickup & Drop ₹0)</option>
+                  <option value="500028" data-areaname="Mehdipatnam / Attapur">Mehdipatnam / Attapur — 500028 (Standard ₹500 Pickup & Drop)</option>
+                  <option value="500072" data-areaname="Other Hyderabad Area">Other Hyderabad Area (Standard ₹500 Pickup & Drop)</option>
                 </select>
               </div>
 
-              <div class="form-group">
-                <label for="bike_model">Exact Petrol Bike / Scooter Model *</label>
-                <input type="text" id="bike_model" name="bike_model" class="form-control" placeholder="e.g. Activa 125 / Hayabusa / Duke 390 / Apache 200" required>
-              </div>
-              <div class="form-group">
-                <label for="reg_number">Vehicle Registration Number *</label>
-                <input type="text" id="reg_number" name="reg_number" class="form-control" placeholder="e.g. KA 51 HW 3002 / TS09AB1234" required>
-              </div>
-
-              <div class="form-group">
-                <label for="vehicle_class">Petrol Vehicle Class *</label>
-                <select id="vehicle_class" name="vehicle_class" class="form-control">
-                  <option value="Scooter / Gearless (100–160cc Petrol)">Scooter / Gearless (100–160cc Petrol)</option>
-                  <option value="Commuter (100–160cc Petrol)">Commuter (100–160cc Petrol)</option>
-                  <option value="Sports & Cruiser (200–500cc Petrol)">Sports & Cruiser (200–500cc Petrol)</option>
-                  <option value="Multi-Cylinder Superbike (600–2500cc Petrol)">Multi-Cylinder Superbike (600–2500cc Petrol)</option>
+              <!-- OPTIONAL DROPDOWN: SERVICE CATEGORY (8 APPROVED MODULES HARDCODED) -->
+              <div class="form-group full-width">
+                <label for="service_type">Service Category (Optional — 8 Approved Modules)</label>
+                <select id="service_type" name="service_type" class="form-control">
+                  <option value="General service">General service — General Periodic Service & 40-Point AI Lab Inspection (From ₹899)</option>
+                  <option value="Engine repair/rebuild">Engine repair/rebuild — Complete Engine Repair, Overhaul & Precision Rebuild (From ₹3,499)</option>
+                  <option value="FI/ECU diagnostics">FI/ECU diagnostics — FI / ECU / OBD-II Computerized Diagnostics & Tuning (From ₹499)</option>
+                  <option value="Electrical troubleshooting">Electrical troubleshooting — Electrical Wiring Harness, Stator & Sensor Troubleshooting (From ₹399)</option>
+                  <option value="Brake & suspension">Brake & suspension — Brake Caliper Overhaul, ABS Bleeding & Fork Suspension Rebuild (From ₹699)</option>
+                  <option value="Clutch & transmission">Clutch & transmission — Clutch Overhaul, Slipper Clutch & Scooter CVT Drivetrain (From ₹799)</option>
+                  <option value="Battery & starting">Battery & starting — Battery CCA Load Test, Self-Starter Motor & Charging Care (From ₹299)</option>
+                  <option value="Accident repair">Accident repair — Laser Chassis Alignment, Fork Truing & Accident Restoration (From ₹1,999)</option>
                 </select>
-              </div>
-              <div class="form-group">
-                <label for="engine_cc">Engine Displacement (100cc – 2500cc) *</label>
-                <select id="engine_cc" name="engine_cc" class="form-control">
-                  <option value="100cc–125cc">100cc – 125cc (Petrol Scooter / Commuter)</option>
-                  <option value="150cc–160cc">150cc – 160cc</option>
-                  <option value="200cc–250cc">200cc – 250cc</option>
-                  <option value="300cc–350cc">300cc – 350cc</option>
-                  <option value="390cc–500cc">390cc – 500cc</option>
-                  <option value="600cc–650cc">600cc – 650cc (Twin / Inline-4)</option>
-                  <option value="750cc–900cc">750cc – 900cc (Superbike)</option>
-                  <option value="1000cc–1300cc">1000cc – 1300cc (Hayabusa / Liter-Class)</option>
-                  <option value="1400cc–2500cc">1400cc – 2500cc (Heavy Cruiser / Rocket 3)</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label for="odometer_km">Current Odometer Reading (KM)</label>
-                <input type="number" id="odometer_km" name="odometer_km" class="form-control" placeholder="e.g. 28938">
-              </div>
-              <div class="form-group">
-                <label for="service_type">Service Category (8 Core Modules) *</label>
-                <select id="service_type" name="service_type" class="form-control"></select>
-              </div>
-
-              <div class="form-group">
-                <label for="area">Hyderabad Service Area / Cluster *</label>
-                <select id="area" name="area" class="form-control"></select>
-              </div>
-              <div class="form-group">
-                <label for="pincode">6-Digit PIN Code *</label>
-                <input type="text" id="pincode" name="pincode" class="form-control" value="500033" maxlength="6" required>
               </div>
 
               <div class="form-group full-width">
                 <div id="pickup-eligibility-banner" style="padding:12px 14px;border-radius:8px;border:1px solid #10b981;"></div>
               </div>
-
-              <div class="form-group">
-                <label for="booking_date">Preferred Service Date *</label>
-                <input type="date" id="booking_date" name="booking_date" class="form-control" required>
-              </div>
-              <div class="form-group">
-                <label for="time_slot">Preferred Pickup Time Window *</label>
-                <select id="time_slot" name="time_slot" class="form-control">
-                  <option value="09:00–11:00">09:00 AM – 11:00 AM</option>
-                  <option value="11:00–13:00">11:00 AM – 01:00 PM</option>
-                  <option value="13:00–15:00">01:00 PM – 03:00 PM</option>
-                  <option value="15:00–17:00">03:00 PM – 05:00 PM</option>
-                  <option value="17:00–19:30">05:00 PM – 07:30 PM</option>
-                </select>
-              </div>
-
-              <div class="form-group full-width">
-                <label>🛰️ Live Current Location (GPS Coordinates for Flatbed Van Pickup)</label>
-                <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                  <button type="button" id="btn-capture-gps" class="btn btn-cyan" style="padding:10px 16px;">📍 Detect My Current GPS Location</button>
-                  <input type="text" id="gps_coords" name="gps_coords" class="form-control" placeholder="GPS Lat/Lng or Google Maps Link (Auto-filled on tap)" style="flex:1;">
-                </div>
-                <small id="gps-status-text" style="color:var(--text-muted);font-size:0.78rem;">Tap "Detect My Current GPS Location" for exact doorstep flatbed dispatch.</small>
-              </div>
-
-              <div class="form-group">
-                <label for="address">Exact Street / Building / Flat Address *</label>
-                <input type="text" id="address" name="address" class="form-control" placeholder="House/Flat No, Society, Road No." required>
-              </div>
-              <div class="form-group">
-                <label for="landmark">Nearby Landmark (Required) *</label>
-                <input type="text" id="landmark" name="landmark" class="form-control" placeholder="e.g. Near Peddamma Temple / Golden Temple Rd" required>
-              </div>
-
-              <div class="form-group full-width">
-                <label for="complaint_note">Specific Complaint / Custom Problem Note</label>
-                <textarea id="complaint_note" name="complaint_note" class="form-control" rows="2" placeholder="Describe any engine sound, starting trouble, mileage drop, vibration, or service requirement..."></textarea>
-              </div>
             </div>
 
-            <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:20px;">
-              <button type="submit" class="btn btn-amber" style="flex:1;padding:14px;">
-                ✅ Confirm Online Booking & Generate Pass
+            <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:18px;">
+              <button type="submit" id="btn-submit-booking" class="btn btn-amber" style="flex:1;padding:14px;font-size:0.95rem;">
+                ✅ Confirm Express Booking (15 Sec)
               </button>
-              <button type="button" id="btn-booking-whatsapp" class="btn btn-whatsapp" style="flex:1;padding:14px;">
-                📲 Confirm & Send Booking Details on WhatsApp
+              <button type="button" id="btn-booking-whatsapp" class="btn btn-whatsapp" style="flex:1;padding:14px;font-size:0.95rem;">
+                📲 Confirm & Send on WhatsApp (+91 8333084261)
               </button>
             </div>
           </form>
         </div>
 
-        <!-- SUMMARY & TRANSPARENCY SIDEBAR -->
+        <!-- SUMMARY & TRANSPARENCY SIDEBAR (ZERO CANCELLATION FEE ANXIETY) -->
         <div class="summary-card">
           <span class="cluster-tag">ZERO-UNAPPROVED PARTS GUARANTEE</span>
           <h3 style="color:#fff;font-size:1.2rem;margin-bottom:12px;">Your Booking Protection & Pickup Summary</h3>
@@ -1441,11 +1387,7 @@ section {
               <strong id="summary-pickup-fee" style="color:#34d399;">₹0 (FREE VIP Zone)</strong>
             </div>
             <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
-              <span style="color:var(--text-muted);">Disclosed Cancellation Fee:</span>
-              <strong id="summary-cancel-fee" style="color:#fbbf24;">₹300</strong>
-            </div>
-            <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
-              <span style="color:var(--text-muted);">Manager & Lead Dispatcher:</span>
+              <span style="color:var(--text-muted);">Dispatcher Manager:</span>
               <strong style="color:#fff;">Mr. Nitish Kumar</strong>
             </div>
             <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
@@ -1458,9 +1400,9 @@ section {
             </div>
           </div>
 
-          <h4 style="color:var(--amber-bright);font-size:0.94rem;margin-bottom:8px;">🔒 Official Workshop Standards:</h4>
+          <h4 style="color:var(--amber-bright);font-size:0.94rem;margin-bottom:8px;">🔒 Why Hyderabad Riders Choose CC Motocrafts:</h4>
           <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;font-size:0.84rem;color:#e2e8f0;">
-            <li>✅ <strong>Strictly Petrol 100cc–2500cc Machines:</strong> Specialized tooling for petrol scooters, commuters, sports bikes, and multi-cylinder superbikes (Zero EVs).</li>
+            <li>✅ <strong>Fast 4-Field Booking:</strong> No long forms! Dispatcher Manager Mr. Nitish Kumar collects your exact landmark & registration details during the confirmation call.</li>
             <li>✅ <strong>WhatsApp Digital Approval ("Confirm Change / Nako"):</strong> Zero parts replaced without sending you live inspection photos/video and getting your confirmation on WhatsApp.</li>
             <li>✅ <strong>30-Day Unconditional Workmanship Guarantee:</strong> Plus written Major Engine Overhaul Warranty and 1-click Digital Certificate dispatch.</li>
           </ul>
@@ -1487,67 +1429,56 @@ section {
 
       <div id="live-tracker-result" style="margin-bottom:42px;"></div>
 
-      <!-- 3 CORE VIP FREE PICKUP CORRIDORS -->
+      <!-- 3 CORE VIP FREE PICKUP CORRIDORS (ZERO CANCELLATION FEE ANXIETY TEXT) -->
       <div class="clusters-grid">
         <div class="cluster-card">
           <span class="cluster-tag">POST 1 • FREE VIP PICKUP & DROP (₹0)</span>
           <h3>Jubilee Hills, Banjara Hills & Film Nagar Special</h3>
           <div class="cluster-pins">
-            <span class="pin-badge" onclick="selectVipPin('500033')">📍 500033 (Jubilee Hills / Film Nagar)</span>
+            <span class="pin-badge" onclick="selectVipPin('500033')">📍 500033 (Jubilee Hills)</span>
             <span class="pin-badge" onclick="selectVipPin('500034')">📍 500034 (Banjara Hills)</span>
             <span class="pin-badge" onclick="selectVipPin('500096')">📍 500096 (Film Nagar / Nanakramguda)</span>
           </div>
-          <div style="font-size:0.8rem;color:#34d399;font-weight:700;">✓ Pickup & Drop: ₹0 FREE • Cancellation Fee: ₹300</div>
+          <div style="font-size:0.8rem;color:#34d399;font-weight:700;">✓ Doorstep Flatbed Pickup & Drop: ₹0 FREE</div>
         </div>
 
         <div class="cluster-card">
           <span class="cluster-tag">POST 2 • FREE VIP PICKUP & DROP (₹0)</span>
-          <h3>Gachibowli, Financial District, Kokapet, Narsingi & Puppalguda</h3>
+          <h3>Gachibowli, Financial District, Manikonda, Alkapur, Kokapet, Narsingi & Puppalguda</h3>
           <div class="cluster-pins">
             <span class="pin-badge" onclick="selectVipPin('500032')">📍 500032 (Gachibowli / Financial Dist)</span>
             <span class="pin-badge" onclick="selectVipPin('500075')">📍 500075 (Kokapet / Narsingi)</span>
-            <span class="pin-badge" onclick="selectVipPin('500089')">📍 500089 (Puppalguda / Manikonda)</span>
+            <span class="pin-badge" onclick="selectVipPin('500089')">📍 500089 (Manikonda / Alkapur / Puppalguda)</span>
           </div>
-          <div style="font-size:0.8rem;color:#34d399;font-weight:700;">✓ Pickup & Drop: ₹0 FREE • Cancellation Fee: ₹300</div>
+          <div style="font-size:0.8rem;color:#34d399;font-weight:700;">✓ Doorstep Flatbed Pickup & Drop: ₹0 FREE</div>
         </div>
 
         <div class="cluster-card">
           <span class="cluster-tag">POST 3 • FREE VIP PICKUP & DROP (₹0)</span>
-          <h3>Hitech City, Madhapur, Kondapur & Lanco Hills</h3>
+          <h3>HITEC City, Madhapur, Kondapur, Lanco Hills & Shaikpet</h3>
           <div class="cluster-pins">
             <span class="pin-badge" onclick="selectVipPin('500081')">📍 500081 (HITEC City / Madhapur)</span>
             <span class="pin-badge" onclick="selectVipPin('500084')">📍 500084 (Kondapur)</span>
-            <span class="pin-badge" onclick="selectVipPin('500089')">📍 500089 (Lanco Hills Corridor)</span>
+            <span class="pin-badge" onclick="selectVipPin('500008')">📍 500008 (Shaikpet / Tolichowki)</span>
           </div>
-          <div style="font-size:0.8rem;color:#34d399;font-weight:700;">✓ Pickup & Drop: ₹0 FREE • Cancellation Fee: ₹300</div>
-        </div>
-
-        <div class="cluster-card standard-zone">
-          <span class="cluster-tag" style="background:rgba(6,182,212,0.16);color:#22d3ee;border-color:rgba(6,182,212,0.4);">ALL OVER HYDERABAD • FLAT ₹500 PICKUP & DROP</span>
-          <h3>Rest of Greater Hyderabad & Secunderabad</h3>
-          <div class="cluster-pins">
-            <span class="pin-badge" onclick="selectVipPin('500008')">📍 500008 (Tolichowki / Shaikpet)</span>
-            <span class="pin-badge" onclick="selectVipPin('500028')">📍 500028 (Mehdipatnam)</span>
-            <span class="pin-badge" onclick="selectVipPin('500072')">📍 500072 (Kukatpally)</span>
-          </div>
-          <div style="font-size:0.8rem;color:#fbbf24;font-weight:700;">🚚 Two-Way Flatbed Pickup & Drop: ₹500 • Cancellation Fee: ₹500</div>
+          <div style="font-size:0.8rem;color:#34d399;font-weight:700;">✓ Doorstep Flatbed Pickup & Drop: ₹0 FREE</div>
         </div>
       </div>
 
       <div class="pin-checker-bar">
         <div>
           <strong style="color:#fff;font-size:0.98rem;">🔍 Check Instant Pickup & Drop Eligibility by PIN Code:</strong>
-          <div id="quick-pin-result" style="font-size:0.85rem;color:var(--text-muted);margin-top:4px;">Enter any 6-digit Hyderabad PIN code (e.g., 500033, 500032, 500081, 500028).</div>
+          <div id="quick-pin-result" style="font-size:0.85rem;color:var(--text-muted);margin-top:4px;">Enter any 6-digit Hyderabad PIN code (e.g., 500032, 500089, 500033, 500081).</div>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
-          <input type="text" id="quick-pin-input" class="form-control" placeholder="Enter 6-Digit PIN (e.g. 500033)" maxlength="6" style="width:210px;">
+          <input type="text" id="quick-pin-input" class="form-control" placeholder="Enter 6-Digit PIN (e.g. 500032)" maxlength="6" style="width:210px;">
           <button type="button" id="btn-quick-pin-check" class="btn btn-amber">Check PIN Eligibility</button>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 4. "MY ORDERS" & FAMILY VEHICLE GARAGE HUB (REQUIREMENT 4 & 5) -->
+  <!-- 4. "MY ORDERS" & FAMILY VEHICLE GARAGE HUB -->
   <section id="my-orders-sec">
     <div class="container">
       <div class="section-header">
@@ -1558,21 +1489,17 @@ section {
         </p>
       </div>
 
-      <!-- MOBILE NUMBER LOOKUP BAR -->
       <div style="max-width:680px;margin:0 auto 24px;display:flex;gap:10px;flex-wrap:wrap;">
         <input type="tel" id="garage-mobile-input" class="form-control" placeholder="Enter Customer 10-Digit Mobile Number to Filter My Orders" style="flex:1;">
         <button type="button" id="btn-garage-lookup" class="btn btn-amber">🔎 Lookup My Garage & Orders</button>
         <button type="button" class="btn btn-outline" onclick="document.getElementById('garage-mobile-input').value='';document.getElementById('btn-garage-lookup').click();">Show All</button>
       </div>
 
-      <!-- TOTAL SERVICES & WARRANTY KPI ROW -->
       <div class="hero-badges" id="my-orders-stats" style="margin-bottom:26px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));"></div>
 
-      <!-- FAMILY VEHICLES GARAGE CARDS (Activa, Hayabusa, KTM, Apache, etc.) -->
       <h3 style="color:#fff;font-size:1.25rem;margin-bottom:14px;">🏍️ Registered Family Vehicles Garage (Multi-Vehicle Odometer & Warranty Tracker)</h3>
       <div class="services-grid" id="family-garage-grid" style="margin-bottom:32px;"></div>
 
-      <!-- ADD ANOTHER FAMILY VEHICLE FORM + ITEMIZED SERVICE LOGS -->
       <div class="booking-layout" style="margin-bottom:28px;">
         <div class="form-card">
           <span class="cluster-tag">REGISTER ADDITIONAL FAMILY TWO-WHEELER</span>
@@ -1630,7 +1557,6 @@ section {
         </div>
       </div>
 
-      <!-- ITEMIZED SERVICE HISTORY TABLE -->
       <div class="form-card">
         <span class="cluster-tag">ITEMIZED SERVICE HISTORY & WARRANTY STATUS</span>
         <h3 style="color:#fff;font-size:1.18rem;margin-bottom:12px;">Complete Job History, Parts Changed & Next Service Due</h3>
@@ -1738,7 +1664,7 @@ section {
     </div>
   </section>
 
-  <!-- BOOKING CONFIRMATION PASS MODAL POPUP -->
+  <!-- BOOKING CONFIRMATION PASS MODAL POPUP (ONLY SHOWN AFTER VERIFIED SUPABASE INSERT) -->
   <div class="modal-backdrop" id="booking-pass-modal">
     <div class="modal-card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
@@ -1754,28 +1680,10 @@ section {
     </div>
   </div>
 
-  <!-- REQUIREMENT 3: TECHNICAL FALLBACK & ERROR MODAL (NO RAW CODE ERRORS) -->
-  <div class="modal-backdrop" id="technical-fallback-modal">
-    <div class="modal-card" style="border-color:var(--amber);">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <span class="cluster-tag" style="background:rgba(245,158,11,0.2);color:#fbbf24;border-color:#f59e0b;">CONNECTION SYNC NOTICE</span>
-        <button type="button" onclick="closeTechnicalFallbackModal()" style="background:none;border:none;color:#fff;font-size:1.3rem;cursor:pointer;">✕</button>
-      </div>
-      <p style="font-size:0.96rem;color:#fff;line-height:1.6;margin-bottom:18px;">
-        ⚠️ Technical Notice: We detected a minor connection sync issue on your device. Please reach out to our support team instantly via WhatsApp (<strong>+91 8333084261</strong>) or Email (<strong>info@ccmotocrafts.in</strong>). Our technical team will assist you right away!
-      </p>
-      <div style="display:flex;flex-wrap:wrap;gap:10px;">
-        <a href="https://wa.me/918333084261?text=Hello%20Mr.%20Nitish%20Kumar%20(CC%20Motocrafts%20Support),%20I%20need%20quick%20assistance%20with%20my%20service%20booking." target="_blank" class="btn btn-whatsapp" style="flex:1;">💬 WhatsApp Support (+91 8333084261)</a>
-        <a href="mailto:info@ccmotocrafts.in?subject=CC%20Motocrafts%20Booking%20Support" class="btn btn-cyan" style="flex:1;">✉️ Email info@ccmotocrafts.in</a>
-        <button type="button" class="btn btn-outline" onclick="closeTechnicalFallbackModal()">Close</button>
-      </div>
-    </div>
-  </div>
-
   <!-- GLOBAL FLOATING AI ASSISTANT & WHATSAPP WIDGET -->
   <div class="floating-Dock" id="global-floating-dock"></div>
 
-  <!-- REQUIREMENT 2: FIXED BOTTOM APP NAVIGATION BAR (Home, Bookings, Live Tracker, Portfolio) -->
+  <!-- FIXED BOTTOM APP NAVIGATION BAR (Home, Bookings, Live Tracker, Portfolio) -->
   <nav class="pwa-bottom-nav" aria-label="App Bottom Navigation">
     <a href="#top-home" class="active">
       <span class="nav-ico">🏠</span>
@@ -1818,21 +1726,22 @@ section {
         <div>
           <h4>VIP Free Pickup Pincodes (₹0)</h4>
           <ul class="footer-links">
-            <li>📍 500033 — Jubilee Hills & Film Nagar</li>
-            <li>📍 500034 — Banjara Hills</li>
-            <li>📍 500096 — Film Nagar & Nanakramguda</li>
             <li>📍 500032 — Gachibowli & Financial District</li>
-            <li>📍 500075 — Kokapet & Narsingi</li>
-            <li>📍 500089 — Puppalguda, Manikonda & Lanco Hills</li>
-            <li>📍 500081 — HITEC City & Madhapur</li>
+            <li>📍 500089 — Manikonda, Alkapur & Puppalguda</li>
             <li>📍 500084 — Kondapur</li>
+            <li>📍 500081 — HITEC City & Madhapur</li>
+            <li>📍 500033 — Jubilee Hills</li>
+            <li>📍 500034 — Banjara Hills</li>
+            <li>📍 500075 — Kokapet & Narsingi</li>
+            <li>📍 500096 — Film Nagar & Nanakramguda</li>
+            <li>📍 500008 — Shaikpet & Tolichowki</li>
           </ul>
         </div>
 
         <div>
           <h4>Customer Quick Navigation</h4>
           <ul class="footer-links">
-            <li><a href="#booking-section">Instant Online Service Booking</a></li>
+            <li><a href="#booking-section">15-Sec Express Service Booking</a></li>
             <li><a href="#vip-zor">Live Workshop Bay Status Tracker</a></li>
             <li><a href="#my-orders-sec">My Orders & Family Vehicle Garage Hub</a></li>
             <li><a href="#portfolio-sec">100cc–2500cc Service Portfolio</a></li>
@@ -1854,7 +1763,7 @@ section {
     </div>
   </footer>
 
-  <script src="supabase-config.js"></script>
-  <script src="app.js"></script>
+  <script src="supabase-config.js?v=11"></script>
+  <script src="app.js?v=11"></script>
 </body>
 </html>

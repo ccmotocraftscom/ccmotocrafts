@@ -1,15 +1,18 @@
 /**
  * ============================================================================
- * CC MOTOCRAFTS AI ENGINE LABS SERVICE - CONFIGURATION
+ * CC MOTOCRAFTS AI ENGINE LABS SERVICE - SUPABASE & PLATFORM CONFIGURATION (v11)
  * Domain: https://ccmotocrafts.in | Official Email: info@ccmotocrafts.in
  * Manager & Lead Dispatcher: Mr. Nitish Kumar (+91 8333084261)
- * Scope: 100cc to 2500cc Petrol Two-Wheelers (Bikes & Gearless Scooters Only — Strictly No EVs)
  * ============================================================================
  */
 
 window.CC_CONFIG = {
+  SUPABASE_URL: "https://xrrlbqxbgxmetrwgiwvk.supabase.co",
+  SUPABASE_ACTIVE_URL: "https://unpbcjgnctdmtwzmoymt.supabase.co",
+  SUPABASE_PUBLISHABLE_KEY: "sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I",
+
   brandName: "CC Motocrafts AI Engine Labs Service",
-  tagline: "Hyderabad's Premier Multi-Brand Petrol Two-Wheeler (100cc–2500cc) Diagnostic & Service Network",
+  tagline: "CC Motocrafts AI Engine Labs – Premium Multi-Brand Bike & Scooter Service in Hyderabad (Gachibowli, Manikonda, Jubilee Hills | 100cc–2500cc Petrol Only)",
   domain: "https://ccmotocrafts.in",
   officialEmail: "info@ccmotocrafts.in",
   officialPhone: "+91 8333084261",
@@ -18,33 +21,31 @@ window.CC_CONFIG = {
   masterTechnician: "Mr. Shaik Mujahid Qadri (Certified Master Technician & Technical Head)",
   workshopTimings: "Monday – Sunday: 09:00 AM – 10:30 PM",
 
-  supabasePublishableKey: atob("c2JfcHVibGlzaGFibGVfNHNfVWRBMXJKVHJGNWFlQ2hfX3dDZ19YWkN5aDFfSQ=="),
-  supabaseUrl: atob("aHR0cHM6Ly94cnJsYnF4Ymd4bWV0cndnaXd2ay5zdXBhYmFzZS5jbw=="),
-  supabaseSecondaryUrl: atob("aHR0cHM6Ly91bnBiY2pnbmN0ZG10d3ptb3ltdC5zdXBhYmFzZS5jbw=="),
+  supabasePublishableKey: "sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I",
+  supabaseUrl: "https://xrrlbqxbgxmetrwgiwvk.supabase.co",
+  supabaseSecondaryUrl: "https://unpbcjgnctdmtwzmoymt.supabase.co",
 
-  vipPincodes: ["500033", "500034", "500096", "500032", "500075", "500089", "500081", "500084"],
+  vipPincodes: ["500033", "500034", "500096", "500032", "500075", "500089", "500081", "500084", "500008"],
   otherHyderabadPickupFee: 500,
-  otherHyderabadCancellationFee: 500,
 
   hyderabadAreas: [
-    { label: "Jubilee Hills / Film Nagar — 500033 (FREE VIP Pickup & Drop)", pincode: "500033", area: "Jubilee Hills / Film Nagar", vip: true },
-    { label: "Banjara Hills — 500034 (FREE VIP Pickup & Drop)", pincode: "500034", area: "Banjara Hills", vip: true },
-    { label: "Film Nagar / Nanakramguda — 500096 (FREE VIP Pickup & Drop)", pincode: "500096", area: "Film Nagar / Nanakramguda", vip: true },
-    { label: "Gachibowli / Financial District — 500032 (FREE VIP Pickup & Drop)", pincode: "500032", area: "Gachibowli / Financial District", vip: true },
-    { label: "Kokapet / Narsingi — 500075 (FREE VIP Pickup & Drop)", pincode: "500075", area: "Kokapet / Narsingi", vip: true },
-    { label: "Manikonda / Puppalguda / Lanco Hills — 500089 (FREE VIP Pickup & Drop)", pincode: "500089", area: "Manikonda / Puppalguda / Lanco Hills", vip: true },
-    { label: "HITEC City / Madhapur — 500081 (FREE VIP Pickup & Drop)", pincode: "500081", area: "HITEC City / Madhapur", vip: true },
+    { label: "Gachibowli — 500032 (FREE VIP Pickup & Drop)", pincode: "500032", area: "Gachibowli", vip: true },
+    { label: "Financial District — 500032 (FREE VIP Pickup & Drop)", pincode: "500032", area: "Financial District", vip: true },
+    { label: "Manikonda — 500089 (FREE VIP Pickup & Drop)", pincode: "500089", area: "Manikonda", vip: true },
+    { label: "Alkapur Township — 500089 (FREE VIP Pickup & Drop)", pincode: "500089", area: "Alkapur Township", vip: true },
+    { label: "Puppalguda — 500089 (FREE VIP Pickup & Drop)", pincode: "500089", area: "Puppalguda", vip: true },
     { label: "Kondapur — 500084 (FREE VIP Pickup & Drop)", pincode: "500084", area: "Kondapur", vip: true },
-    { label: "Tolichowki / Shaikpet — 500008 (Standard ₹500 Pickup & Drop)", pincode: "500008", area: "Tolichowki / Shaikpet", vip: false },
-    { label: "Mehdipatnam — 500028 (Standard ₹500 Pickup & Drop)", pincode: "500028", area: "Mehdipatnam", vip: false },
-    { label: "Kukatpally / KPHB — 500072 (Standard ₹500 Pickup & Drop)", pincode: "500072", area: "Kukatpally / KPHB", vip: false },
-    { label: "Miyapur — 500049 (Standard ₹500 Pickup & Drop)", pincode: "500049", area: "Miyapur", vip: false },
-    { label: "Attapur / Rajendranagar — 500086 (Standard ₹500 Pickup & Drop)", pincode: "500086", area: "Attapur / Rajendranagar", vip: false },
-    { label: "Secunderabad / Begumpet — 500003 (Standard ₹500 Pickup & Drop)", pincode: "500003", area: "Secunderabad / Begumpet", vip: false },
-    { label: "Other Hyderabad Area / Enter Custom PIN (Standard ₹500 Pickup & Drop)", pincode: "500001", area: "Other Hyderabad Area", vip: false }
+    { label: "HITEC City / Madhapur — 500081 (FREE VIP Pickup & Drop)", pincode: "500081", area: "HITEC City / Madhapur", vip: true },
+    { label: "Jubilee Hills — 500033 (FREE VIP Pickup & Drop)", pincode: "500033", area: "Jubilee Hills", vip: true },
+    { label: "Banjara Hills — 500034 (FREE VIP Pickup & Drop)", pincode: "500034", area: "Banjara Hills", vip: true },
+    { label: "Narsingi — 500075 (FREE VIP Pickup & Drop)", pincode: "500075", area: "Narsingi", vip: true },
+    { label: "Kokapet — 500075 (FREE VIP Pickup & Drop)", pincode: "500075", area: "Kokapet", vip: true },
+    { label: "Film Nagar / Nanakramguda — 500096 (FREE VIP Pickup & Drop)", pincode: "500096", area: "Film Nagar / Nanakramguda", vip: true },
+    { label: "Shaikpet / Tolichowki — 500008 (Priority Pickup & Drop)", pincode: "500008", area: "Shaikpet / Tolichowki", vip: true },
+    { label: "Mehdipatnam / Attapur — 500028 (Standard ₹500 Pickup & Drop)", pincode: "500028", area: "Mehdipatnam / Attapur", vip: false },
+    { label: "Kukatpally / Miyapur / Other Hyderabad Area (Standard ₹500 Pickup)", pincode: "500072", area: "Other Hyderabad Area", vip: false }
   ],
 
-  // 4 Mandatory Vehicle Classes (Strictly Petrol Only — 100cc to 2500cc, Zero EVs)
   vehicleClasses: [
     {
       id: "Scooter / Gearless (100–160cc Petrol)",
@@ -352,7 +353,6 @@ window.CC_CONFIG = {
     }
   ],
 
-  // Pre-Populated Family Vehicle Garage Records (Accessible via Customer Mobile Lookup or Default View)
   defaultFamilyGarage: [
     {
       reg_number: "KA 51 HW 3002",
@@ -407,7 +407,6 @@ window.CC_CONFIG = {
       vehicle_brand: "TVS",
       vehicle_model: "Apache RTR 200 4V (Petrol)",
       vehicle_class: "Sports & Cruiser (200–500cc Petrol)",
-      cc: "200cc",
       engine_cc: "200cc",
       odometer_km: 34120,
       last_service_date: "2026-11-08",

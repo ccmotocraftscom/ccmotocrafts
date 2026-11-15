@@ -7,9 +7,9 @@
  */
 
 window.CC_CONFIG = {
-  SUPABASE_URL: "https://xrrlbqxbgxmetrwgiwvk.supabase.co",
-  SUPABASE_ACTIVE_URL: "https://unpbcjgnctdmtwzmoymt.supabase.co",
-  SUPABASE_PUBLISHABLE_KEY: "sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I",
+  SUPABASE_URL: "https://mnwrebfyappibbnrkjct.supabase.co",
+  SUPABASE_ACTIVE_URL: "https://mnwrebfyappibbnrkjct.supabase.co",
+  SUPABASE_PUBLISHABLE_KEY: "sb_publishable__tSqrIUKNrSttvdG0PLk3g_4CnXeKw0",
 
   brandName: "CC Motocrafts AI Engine Labs Service",
   tagline: "CC Motocrafts AI Engine Labs – Premium Multi-Brand Bike & Scooter Service in Hyderabad (Gachibowli, Manikonda, Jubilee Hills | 100cc–2500cc Petrol Only)",
@@ -21,7 +21,7 @@ window.CC_CONFIG = {
   masterTechnician: "Mr. Shaik Mujahid Qadri (Certified Master Technician & Technical Head)",
   workshopTimings: "Monday – Sunday: 09:00 AM – 10:30 PM",
 
-  supabasePublishableKey: "sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I",
+  supabasePublishableKey: "sb_publishable__tSqrIUKNrSttvdG0PLk3g_4CnXeKw0",
   supabaseUrl: "https://unpbcjgnctdmtwzmoymt.supabase.co",
   supabaseSecondaryUrl: "https://xrrlbqxbgxmetrwgiwvk.supabase.co",
 

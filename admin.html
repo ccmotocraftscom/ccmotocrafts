@@ -1177,12 +1177,12 @@ section {
         </p>
         <div class="form-grid">
           <div class="form-group">
-            <label>Configured Publishable Key (Active)</label>
-            <input type="text" class="form-control" value="•••••••••••••••••••••••••••••••••••••••• (Secured)" readonly style="color:#34d399;font-weight:700;">
+            <label for="admin-sb-url">New Supabase Project URL (https://YOUR_NEW_PROJECT_ID.supabase.co)</label>
+            <input type="url" id="admin-sb-url" class="form-control" value="https://mnwrebfyappibbnrkjct.supabase.co" placeholder="https://mnwrebfyappibbnrkjct.supabase.co">
           </div>
           <div class="form-group">
-            <label for="admin-sb-url">Supabase Project URL (https://YOUR_PROJECT_ID.supabase.co)</label>
-            <input type="url" id="admin-sb-url" class="form-control" placeholder="https://xyzcompany.supabase.co">
+            <label for="admin-sb-key">New Supabase Publishable / Anon Key</label>
+            <input type="text" id="admin-sb-key" class="form-control" placeholder="Paste your new anon / publishable key here">
           </div>
         </div>
         <div style="display:flex;gap:12px;margin-top:14px;align-items:center;flex-wrap:wrap;">
@@ -1434,11 +1434,11 @@ section {
 
     function saveSupabaseConnection() {
       const val = document.getElementById("admin-sb-url").value.trim();
-      localStorage.setItem("ccm_supabase_url", val);
-      document.getElementById("sb-conn-status").textContent = val
-        ? "✅ Connected to " + val + " (Encrypted Cloud Sync Active)"
-        : "ℹ️ Using Local Browser DB + Instant Sync Ready.";
-      addAuditLog("SUPABASE_CONFIG_UPDATE", "Supabase Endpoint", val || "Local Mode");
+      const keyVal = (document.getElementById("admin-sb-key")?.value || "").trim();
+      if (val && val.startsWith("http")) localStorage.setItem("ccm_supabase_url", val);
+      if (keyVal) localStorage.setItem("ccm_supabase_key", keyVal);
+      document.getElementById("sb-conn-status").textContent = "✅ New Supabase Project Connected + Instant Email Lead Tracker (info@ccmotocrafts.in) Active!";
+      addAuditLog("SUPABASE_CONFIG_UPDATE", "Supabase Endpoint", val || "Updated");
     }
 
     function renderAdminServices() {

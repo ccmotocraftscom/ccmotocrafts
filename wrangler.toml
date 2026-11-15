@@ -5,6 +5,6 @@ compatibility_date = "2026-11-01"
 [vars]
 OFFICIAL_EMAIL = "info@ccmotocrafts.in"
 OFFICIAL_WHATSAPP = "+918333084261"
-SUPABASE_PUBLISHABLE_KEY = "sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I"
+SUPABASE_PUBLISHABLE_KEY = "sb_publishable__tSqrIUKNrSttvdG0PLk3g_4CnXeKw0"
 # Add your SUPABASE_URL in Cloudflare Worker Variables or via assets/js/supabase-config.js:
 # SUPABASE_URL = "https://YOUR_PROJECT_REF.supabase.co"

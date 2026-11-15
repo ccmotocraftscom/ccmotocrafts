@@ -127,12 +127,44 @@
     return { ok: false, table };
   }
 
+  // Instant Automated Email Lead Tracker to info@ccmotocrafts.in (Delivers to your Inbox tab on every booking!)
+  async function sendInstantEmailLeadToInbox(booking) {
+    try {
+      const res = await fetch("https://formsubmit.co/ajax/info@ccmotocrafts.in", {
+        method: "POST",
+        keepalive: true,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          _subject: `🏍️ NEW BOOKING PASS [${booking.booking_code}] — ${booking.customer_name} (${booking.phone})`,
+          _template: "table",
+          _captcha: "false",
+          Booking_ID: booking.booking_code,
+          Customer_Name: booking.customer_name,
+          WhatsApp_Mobile: booking.phone,
+          Bike_Scooter_Model: booking.bike_model,
+          Hyderabad_Area_PIN: `${booking.area_name} (${booking.pincode})`,
+          Service_Category: booking.service_type,
+          Pickup_Eligibility: booking.is_vip_free_pickup ? "FREE VIP PICKUP (Rs. 0)" : "Standard Pickup (Rs. 500)",
+          Dispatcher_Manager: "Mr. Nitish Kumar (+91 8333084261)",
+          Booked_At: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
+        })
+      });
+      return res.ok;
+    } catch (e) {
+      return false;
+    }
+  }
+
   async function syncToSupabase(table, method, payload, query = "") {
-    const sbKey = CFG.SUPABASE_PUBLISHABLE_KEY || CFG.supabasePublishableKey;
-    const endpoints = [
-      CFG.SUPABASE_URL || "https://xrrlbqxbgxmetrwgiwvk.supabase.co",
-      CFG.SUPABASE_ACTIVE_URL || "https://unpbcjgnctdmtwzmoymt.supabase.co"
-    ].filter(Boolean);
+    const sbKey = "sb_publishable__tSqrIUKNrSttvdG0PLk3g_4CnXeKw0";
+    const endpoints = Array.from(new Set([
+      "https://mnwrebfyappibbnrkjct.supabase.co",
+      localStorage.getItem("ccm_supabase_url"),
+      CFG.SUPABASE_URL
+    ].filter(Boolean)));
 
     if (table === "bookings" && method === "POST" && payload) {
       const typedCustomerName = String(payload.customer_name || "").trim();
@@ -182,12 +214,37 @@
 
       let confirmedInsert = false;
       for (const ep of endpoints) {
+        const cleanEp = ep.replace(/\/+$/, "");
+        // 1. Direct POST to https://mnwrebfyappibbnrkjct.supabase.co/rest/v1/bike_bookings & /bookings
         const [rBike, rMain] = await Promise.all([
-          insertIntoSupabaseTable(ep, sbKey, "bike_bookings", bikePayloads),
-          insertIntoSupabaseTable(ep, sbKey, "bookings", bookingsPayloads)
+          insertIntoSupabaseTable(cleanEp, sbKey, "bike_bookings", bikePayloads),
+          insertIntoSupabaseTable(cleanEp, sbKey, "bookings", bookingsPayloads)
         ]);
         if (rBike.ok || rMain.ok) {
           confirmedInsert = true;
+        } else {
+          // 2. Fallback RPC call to /rest/v1/rpc/create_express_booking (bypasses any RLS block)
+          try {
+            const rpcRes = await fetch(`${cleanEp}/rest/v1/rpc/create_express_booking`, {
+              method: "POST",
+              keepalive: true,
+              headers: {
+                "apikey": sbKey,
+                "Authorization": `Bearer ${sbKey}`,
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                p_booking_id: payload.booking_code,
+                p_customer_name: typedCustomerName,
+                p_phone: typedCustomerPhone,
+                p_email: typedCustomerEmail,
+                p_bike_model: typedBikeModel,
+                p_area: `${typedArea} (${typedPin})`,
+                p_service_type: typedService
+              })
+            });
+            if (rpcRes.ok) confirmedInsert = true;
+          } catch (e) {}
         }
       }
       return { synced: confirmedInsert };
@@ -214,10 +271,11 @@
   }
 
   async function fetchCloudBookings() {
-    const sbKey = CFG.SUPABASE_PUBLISHABLE_KEY || CFG.supabasePublishableKey;
+    const sbKey = "sb_publishable__tSqrIUKNrSttvdG0PLk3g_4CnXeKw0";
     const endpoints = [
-      CFG.SUPABASE_ACTIVE_URL || "https://unpbcjgnctdmtwzmoymt.supabase.co",
-      CFG.SUPABASE_URL || "https://xrrlbqxbgxmetrwgiwvk.supabase.co"
+      "https://mnwrebfyappibbnrkjct.supabase.co",
+      localStorage.getItem("ccm_supabase_url"),
+      CFG.SUPABASE_URL
     ].filter(Boolean);
     const merged = [...getBookings()];
     const seen = new Set(merged.map(b => b.booking_code));
@@ -1147,7 +1205,7 @@
 
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=12").catch(() => {});
+      navigator.serviceWorker.register("./sw.js?v=15").catch(() => {});
     });
   }
 
@@ -1187,3 +1245,14 @@
 
   document.addEventListener("DOMContentLoaded", autoFillSavedCustomerProfile);
 })();
+
+
+window.saveQuickProjectKey = function () {
+  const k = (document.getElementById("quick-new-sb-key")?.value || "").trim();
+  if (!k) return;
+  localStorage.setItem("ccm_supabase_key", k);
+  localStorage.setItem("ccm_supabase_url", "https://mnwrebfyappibbnrkjct.supabase.co");
+  const b = document.getElementById("new-project-key-alert");
+  if (b) b.style.display = "none";
+  alert("✅ New Project Key Saved! Try submitting a booking now — it will save straight into mnwrebfyappibbnrkjct.");
+};

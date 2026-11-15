@@ -24,7 +24,7 @@ export default {
 
     const url = new URL(request.url);
     const supabaseUrl = env.SUPABASE_URL || '';
-    const supabaseKey = env.SUPABASE_SERVICE_ROLE_KEY || env.SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I';
+    const supabaseKey = env.SUPABASE_SERVICE_ROLE_KEY || env.SUPABASE_PUBLISHABLE_KEY || 'sb_publishable__tSqrIUKNrSttvdG0PLk3g_4CnXeKw0';
 
     try {
       // 1. Health & Configuration Check

@@ -22,8 +22,8 @@ window.CC_CONFIG = {
   workshopTimings: "Monday – Sunday: 09:00 AM – 10:30 PM",
 
   supabasePublishableKey: "sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I",
-  supabaseUrl: "https://xrrlbqxbgxmetrwgiwvk.supabase.co",
-  supabaseSecondaryUrl: "https://unpbcjgnctdmtwzmoymt.supabase.co",
+  supabaseUrl: "https://unpbcjgnctdmtwzmoymt.supabase.co",
+  supabaseSecondaryUrl: "https://xrrlbqxbgxmetrwgiwvk.supabase.co",
 
   vipPincodes: ["500033", "500034", "500096", "500032", "500075", "500089", "500081", "500084", "500008"],
   otherHyderabadPickupFee: 500,

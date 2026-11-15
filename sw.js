@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cc-motocrafts-pwa-v11';
+const CACHE_NAME = 'cc-motocrafts-pwa-v12';
 const OFFLINE_ASSETS = [
   './',
   './index.html',

@@ -104,11 +104,12 @@
   // ==========================================================================
   async function insertIntoSupabaseTable(baseUrl, sbKey, table, payloads) {
     const cleanUrl = baseUrl.replace(/\/+$/, "");
+    // CRITICAL: Use Prefer: return=minimal so anon INSERT succeeds with 201 Created even when SELECT policy is restricted to authenticated!
     const headers = {
       "apikey": sbKey,
       "Authorization": `Bearer ${sbKey}`,
       "Content-Type": "application/json",
-      "Prefer": "return=representation"
+      "Prefer": "return=minimal"
     };
     for (let i = 0; i < payloads.length; i++) {
       try {
@@ -119,8 +120,7 @@
           body: JSON.stringify(payloads[i])
         });
         if (res.ok || res.status === 201 || res.status === 204) {
-          const data = await res.json().catch(() => null);
-          return { ok: true, table, status: res.status, data };
+          return { ok: true, table, status: res.status };
         }
       } catch (e) {}
     }
@@ -137,42 +137,29 @@
     if (table === "bookings" && method === "POST" && payload) {
       const typedCustomerName = String(payload.customer_name || "").trim();
       const typedCustomerPhone = String(payload.phone || payload.customer_mobile || "").trim();
+      const typedCustomerEmail = String(payload.email || "").trim() || null;
       const typedBikeModel = String(payload.bike_model || payload.vehicle_model || "").trim();
       const typedService = String(payload.service_type || payload.service_category || "General service").trim();
       const typedArea = String(payload.area_name || "Hyderabad").trim();
       const typedPin = String(payload.pincode || "500032").trim();
 
-      // Progressive payloads for `bike_bookings` (matches both full schema & core columns)
+      // Exact 7-column schema of public.bike_bookings (Attempt 1 = exact 7 columns!)
       const bikePayloads = [
         {
           booking_id: payload.booking_code,
           customer_name: typedCustomerName,
           phone: typedCustomerPhone,
-          email: payload.email || "Collected on Confirmation Call",
-          vehicle_brand: typedBikeModel.split(" ")[0] || "Petrol 2W",
+          email: typedCustomerEmail,
           bike_model: typedBikeModel,
-          reg_number: payload.reg_number || "Collected by Dispatcher",
-          vehicle_class: payload.vehicle_class || "Petrol Two-Wheeler (100cc–2500cc)",
-          engine_cc: payload.engine_cc || "100cc–2500cc",
-          service_type: typedService,
           area: `${typedArea} (${typedPin})`,
-          booking_date: payload.booking_date || new Date().toISOString().split("T")[0],
-          time_slot: payload.time_slot || "Priority Slot",
-          complaint_note: payload.complaint_note || `Express 4-Field Booking (${typedService})`,
-          address: `${typedArea} - PIN ${typedPin}`,
-          landmark: "Confirmed via Call by Mr. Nitish Kumar",
-          status: "Booking Confirmed",
-          pickup_zone_type: payload.is_vip_free_pickup ? "VIP_FREE" : "STANDARD_500",
-          pickup_charge: Number(payload.pickup_charge || 0)
+          service_type: typedService
         },
         {
-          booking_id: payload.booking_code,
           customer_name: typedCustomerName,
           phone: typedCustomerPhone,
           bike_model: typedBikeModel,
-          service_type: typedService,
           area: `${typedArea} (${typedPin})`,
-          status: "Booking Confirmed"
+          service_type: typedService
         }
       ];
 
@@ -229,8 +216,8 @@
   async function fetchCloudBookings() {
     const sbKey = CFG.SUPABASE_PUBLISHABLE_KEY || CFG.supabasePublishableKey;
     const endpoints = [
-      CFG.SUPABASE_URL || "https://xrrlbqxbgxmetrwgiwvk.supabase.co",
-      CFG.SUPABASE_ACTIVE_URL || "https://unpbcjgnctdmtwzmoymt.supabase.co"
+      CFG.SUPABASE_ACTIVE_URL || "https://unpbcjgnctdmtwzmoymt.supabase.co",
+      CFG.SUPABASE_URL || "https://xrrlbqxbgxmetrwgiwvk.supabase.co"
     ].filter(Boolean);
     const merged = [...getBookings()];
     const seen = new Set(merged.map(b => b.booking_code));
@@ -361,7 +348,7 @@
     renderDynamicServicesGrid();
     window.addEventListener("ccm_data_updated", renderDynamicServicesGrid);
 
-    // 3. Area Dropdown Listener (Zero Anxiety Anxiety)
+    // 3. Area Dropdown Listener (Zero Cancellation Fee Anxiety)
     const areaSelect = document.getElementById("area") || document.getElementById("bf-area");
     if (areaSelect) {
       areaSelect.addEventListener("change", updateBookingPickupPreview);
@@ -409,7 +396,7 @@
       });
     }
 
-    // 7. Instant PIN Code Checker Bar (Zero Anxiety Text)
+    // 7. Instant PIN Code Checker Bar (Zero Cancellation Fee Text)
     const btnCheckPin = document.getElementById("btn-quick-pin-check");
     if (btnCheckPin) {
       btnCheckPin.addEventListener("click", () => {
@@ -1160,7 +1147,7 @@
 
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=11").catch(() => {});
+      navigator.serviceWorker.register("./sw.js?v=12").catch(() => {});
     });
   }
 

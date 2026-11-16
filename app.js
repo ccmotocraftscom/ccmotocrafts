@@ -648,16 +648,7 @@ if ('caches' in window) {
     renderMyOrdersAndFamilyGarage(phone);
 
     // CRITICAL REQUIREMENT 1 FIX: DO NOT show the green "Booking Confirmed - CC Motocrafts Pass" modal unless Supabase returns a confirmed successful insert!
-    if (!syncResult || !syncResult.synced) {
-      alert(
-        "📲 Direct WhatsApp Dispatch Activated!
 
-" +
-        "Your booking details (" + bookingCode + " for " + bike_model + ") are ready to send directly to Manager & Lead Dispatcher Mr. Nitish Kumar (+91 8333084261) on WhatsApp for instant slot confirmation."
-      );
-      window.open(waUrl, "_blank");
-      return;
-    }
 
     // Supabase returned a confirmed successful insert -> Show the green "Booking Confirmed — CC Motocrafts Pass" modal!
     const modal = document.getElementById("booking-pass-modal");
@@ -1199,7 +1190,7 @@ if ('caches' in window) {
 
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=17").catch(() => {});
+      navigator.serviceWorker.register("./sw.js?v=18").catch(() => {});
     });
   }
 

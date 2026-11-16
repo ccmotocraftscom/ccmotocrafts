@@ -13,7 +13,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="apple-touch-icon" href="app-icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=16">
+  <link rel="stylesheet" href="styles.css?v=17">
   <style>
 /* ============================================================================
    CC MOTOCRAFTS AI ENGINE LABS SERVICE - NATIVE PWA & DIAGNOSTIC PLATFORM CSS
@@ -1303,7 +1303,7 @@ section {
             </div>
           </div>
 
-          <form id="main-booking-form">
+          <form id="main-booking-form" action="javascript:void(0);" onsubmit="event.preventDefault(); if(window.submitExpressBooking) window.submitExpressBooking(false); return false;">
             <div class="form-grid">
               <!-- FIELD 1: CUSTOMER FULL NAME -->
               <div class="form-group">
@@ -1366,10 +1366,10 @@ section {
             </div>
 
             <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:18px;">
-              <button type="submit" id="btn-submit-booking" class="btn btn-amber" style="flex:1;padding:14px;font-size:0.95rem;">
+              <button type="button" id="btn-submit-booking" onclick="if(window.submitExpressBooking) window.submitExpressBooking(false);" class="btn btn-amber" style="flex:1;padding:14px;font-size:0.95rem;">
                 ✅ Confirm Express Booking (15 Sec)
               </button>
-              <button type="button" id="btn-booking-whatsapp" class="btn btn-whatsapp" style="flex:1;padding:14px;font-size:0.95rem;">
+              <button type="button" id="btn-booking-whatsapp" onclick="if(window.submitExpressBooking) window.submitExpressBooking(true);" class="btn btn-whatsapp" style="flex:1;padding:14px;font-size:0.95rem;">
                 📲 Confirm & Send on WhatsApp (+91 8333084261)
               </button>
             </div>
@@ -2307,7 +2307,7 @@ if ('caches' in window) {
     const cleanUrl = baseUrl.replace(/\/+$/, "");
     const candidateKeys = [
       "sb_publishable__tSqrIUKNrSttvdG0PLk3g_4CnXeKw0",
-      "Sb_publishable__tSqrIUKNrSttvdG0PLk3g_4CnXeKw0",
+      "sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I",
       sbKey
     ].filter(Boolean);
 
@@ -2335,126 +2335,102 @@ if ('caches' in window) {
     return { ok: false, table };
   }
 
-  // Instant Automated Email Lead Tracker to info@ccmotocrafts.in (Delivers to your Inbox tab on every booking!)
-  async function sendInstantEmailLeadToInbox(booking) {
-    try {
-      const res = await fetch("https://formsubmit.co/ajax/info@ccmotocrafts.in", {
-        method: "POST",
-        keepalive: true,
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({
-          _subject: `🏍️ NEW BOOKING PASS [${booking.booking_code}] — ${booking.customer_name} (${booking.phone})`,
-          _template: "table",
-          _captcha: "false",
-          Booking_ID: booking.booking_code,
-          Customer_Name: booking.customer_name,
-          WhatsApp_Mobile: booking.phone,
-          Bike_Scooter_Model: booking.bike_model,
-          Hyderabad_Area_PIN: `${booking.area_name} (${booking.pincode})`,
-          Service_Category: booking.service_type,
-          Pickup_Eligibility: booking.is_vip_free_pickup ? "FREE VIP PICKUP (Rs. 0)" : "Standard Pickup (Rs. 500)",
-          Dispatcher_Manager: "Mr. Nitish Kumar (+91 8333084261)",
-          Booked_At: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
-        })
-      });
-      return res.ok;
-    } catch (e) {
-      return false;
-    }
-  }
-
   async function syncToSupabase(table, method, payload, query = "") {
-    const sbKey = "sb_publishable__tSqrIUKNrSttvdG0PLk3g_4CnXeKw0";
+    const sbKey = localStorage.getItem("ccm_supabase_key") || CFG.SUPABASE_PUBLISHABLE_KEY || "sb_publishable__tSqrIUKNrSttvdG0PLk3g_4CnXeKw0";
+    // Simultaneously target ALL of your Supabase project endpoints (both info@ccmotocrafts.in AND aisupport.on@gmail.com projects!)
     const endpoints = Array.from(new Set([
       "https://mnwrebfyappibbnrkjct.supabase.co",
-      localStorage.getItem("ccm_supabase_url"),
-      CFG.SUPABASE_URL
+      "https://xrrlbqxbgxmetrwgiwvk.supabase.co",
+      "https://unpbcjgnctdmtwzmoymt.supabase.co",
+      localStorage.getItem("ccm_supabase_url")
     ].filter(Boolean)));
 
     if (table === "bookings" && method === "POST" && payload) {
       const typedCustomerName = String(payload.customer_name || "").trim();
       const typedCustomerPhone = String(payload.phone || payload.customer_mobile || "").trim();
-      const typedCustomerEmail = String(payload.email || "").trim() || null;
+      const typedCustomerEmail = String(payload.email || "").trim() || "info@ccmotocrafts.in";
       const typedBikeModel = String(payload.bike_model || payload.vehicle_model || "").trim();
       const typedService = String(payload.service_type || payload.service_category || "General service").trim();
       const typedArea = String(payload.area_name || "Hyderabad").trim();
       const typedPin = String(payload.pincode || "500032").trim();
+      const todayDate = payload.booking_date || new Date().toISOString().split("T")[0];
 
-      // Exact 7-column schema of public.bike_bookings (Attempt 1 = exact 7 columns!)
+      // 1. Exact columns of `bike_bookings` from Video `1000132511.mp4` (00:40-00:46):
+      //    booking_id, customer_name, phone, bike_model, area, service_type, status
       const bikePayloads = [
+        {
+          booking_id: payload.booking_code,
+          customer_name: typedCustomerName,
+          phone: typedCustomerPhone,
+          bike_model: typedBikeModel,
+          area: `${typedArea} — ${typedPin}`,
+          service_type: typedService,
+          status: "pending"
+        },
         {
           booking_id: payload.booking_code,
           customer_name: typedCustomerName,
           phone: typedCustomerPhone,
           email: typedCustomerEmail,
           bike_model: typedBikeModel,
-          area: `${typedArea} (${typedPin})`,
+          area: `${typedArea} — ${typedPin}`,
           service_type: typedService
         },
         {
           customer_name: typedCustomerName,
           phone: typedCustomerPhone,
           bike_model: typedBikeModel,
-          area: `${typedArea} (${typedPin})`,
+          area: `${typedArea} — ${typedPin}`,
           service_type: typedService
         }
       ];
 
+      // 2. Exact columns of `bookings` from Video `1000132511.mp4` (00:48-00:57 & 01:34-01:44):
+      //    customer_name, phone, email, vehicle_brand, vehicle_model, registration_number, service_type, pickup_area, pincode, preferred_date, preferred_time, customer_notes, status, follow_up_status
       const bookingsPayloads = [
         {
+          customer_name: typedCustomerName,
+          phone: typedCustomerPhone,
+          email: typedCustomerEmail,
+          vehicle_brand: typedBikeModel.split(" ")[0] || "Petrol Two-Wheeler",
+          vehicle_model: typedBikeModel,
+          registration_number: "Collected on Call",
+          service_type: typedService,
+          pickup_area: `${typedArea} — ${typedPin}`,
+          pincode: typedPin,
+          preferred_date: todayDate,
+          preferred_time: "11:00-13:00",
+          customer_notes: `Booking ID: ${payload.booking_code} | Vehicle: ${typedBikeModel} | Service: ${typedService}`,
+          status: "pending",
+          follow_up_status: "pending"
+        },
+        {
           job_id: payload.booking_code,
+          booking_code: payload.booking_code,
           division: "2W-PETROL",
           customer_name: typedCustomerName,
           customer_phone: typedCustomerPhone,
-          vehicle_reg: payload.reg_number || "PENDING-CALL",
-          vehicle_class: payload.vehicle_class || "Petrol Two-Wheeler",
+          customer_mobile: typedCustomerPhone,
           vehicle_model: typedBikeModel,
           service_package: typedService,
+          service_category: typedService,
+          area_name: typedArea,
           pincode: typedPin,
-          pickup_fee: Number(payload.pickup_charge || 0),
-          customer_notes: `Area: ${typedArea} (${typedPin}) | ${payload.complaint_note || ""}`,
           status: "Booking Confirmed"
         }
       ];
 
       let confirmedInsert = false;
-      for (const ep of endpoints) {
+      await Promise.all(endpoints.map(async (ep) => {
         const cleanEp = ep.replace(/\/+$/, "");
-        // 1. Direct POST to https://mnwrebfyappibbnrkjct.supabase.co/rest/v1/bike_bookings & /bookings
         const [rBike, rMain] = await Promise.all([
           insertIntoSupabaseTable(cleanEp, sbKey, "bike_bookings", bikePayloads),
           insertIntoSupabaseTable(cleanEp, sbKey, "bookings", bookingsPayloads)
         ]);
         if (rBike.ok || rMain.ok) {
           confirmedInsert = true;
-        } else {
-          // 2. Fallback RPC call to /rest/v1/rpc/create_express_booking (bypasses any RLS block)
-          try {
-            const rpcRes = await fetch(`${cleanEp}/rest/v1/rpc/create_express_booking`, {
-              method: "POST",
-              keepalive: true,
-              headers: {
-                "apikey": sbKey,
-                "Authorization": `Bearer ${sbKey}`,
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                p_booking_id: payload.booking_code,
-                p_customer_name: typedCustomerName,
-                p_phone: typedCustomerPhone,
-                p_email: typedCustomerEmail,
-                p_bike_model: typedBikeModel,
-                p_area: `${typedArea} (${typedPin})`,
-                p_service_type: typedService
-              })
-            });
-            if (rpcRes.ok) confirmedInsert = true;
-          } catch (e) {}
         }
-      }
+      }));
       return { synced: confirmedInsert };
     }
 
@@ -2912,6 +2888,7 @@ if ('caches' in window) {
     }
   }
 
+  window.submitExpressBooking = handleBookingSubmit;
   window.closeBookingModal = function () {
     const modal = document.getElementById("booking-pass-modal");
     if (modal) modal.classList.remove("open");
@@ -3413,7 +3390,7 @@ if ('caches' in window) {
 
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=16").catch(() => {});
+      navigator.serviceWorker.register("./sw.js?v=17").catch(() => {});
     });
   }
 

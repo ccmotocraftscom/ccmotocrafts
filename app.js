@@ -1,3 +1,13 @@
+
+// Purge any old cached Service Worker caches so live Supabase endpoint is always fresh
+if ('caches' in window) {
+  caches.keys().then((names) => {
+    names.forEach((n) => {
+      if (n !== 'cc-motocrafts-pwa-v16') caches.delete(n);
+    });
+  });
+}
+
 /**
  * ============================================================================
  * CC MOTOCRAFTS AI ENGINE LABS SERVICE - PRODUCTION ENGINE (v11 GO-LIVE)
@@ -104,25 +114,32 @@
   // ==========================================================================
   async function insertIntoSupabaseTable(baseUrl, sbKey, table, payloads) {
     const cleanUrl = baseUrl.replace(/\/+$/, "");
-    // CRITICAL: Use Prefer: return=minimal so anon INSERT succeeds with 201 Created even when SELECT policy is restricted to authenticated!
-    const headers = {
-      "apikey": sbKey,
-      "Authorization": `Bearer ${sbKey}`,
-      "Content-Type": "application/json",
-      "Prefer": "return=minimal"
-    };
-    for (let i = 0; i < payloads.length; i++) {
-      try {
-        const res = await fetch(`${cleanUrl}/rest/v1/${table}`, {
-          method: "POST",
-          keepalive: true,
-          headers: headers,
-          body: JSON.stringify(payloads[i])
-        });
-        if (res.ok || res.status === 201 || res.status === 204) {
-          return { ok: true, table, status: res.status };
-        }
-      } catch (e) {}
+    const candidateKeys = [
+      "sb_publishable__tSqrIUKNrSttvdG0PLk3g_4CnXeKw0",
+      "Sb_publishable__tSqrIUKNrSttvdG0PLk3g_4CnXeKw0",
+      sbKey
+    ].filter(Boolean);
+
+    for (const keyVariant of Array.from(new Set(candidateKeys))) {
+      const headers = {
+        "apikey": keyVariant,
+        "Authorization": `Bearer ${keyVariant}`,
+        "Content-Type": "application/json",
+        "Prefer": "return=minimal"
+      };
+      for (let i = 0; i < payloads.length; i++) {
+        try {
+          const res = await fetch(`${cleanUrl}/rest/v1/${table}`, {
+            method: "POST",
+            keepalive: true,
+            headers: headers,
+            body: JSON.stringify(payloads[i])
+          });
+          if (res.ok || res.status === 201 || res.status === 204) {
+            return { ok: true, table, status: res.status };
+          }
+        } catch (e) {}
+      }
     }
     return { ok: false, table };
   }
@@ -1205,7 +1222,7 @@
 
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=15").catch(() => {});
+      navigator.serviceWorker.register("./sw.js?v=16").catch(() => {});
     });
   }
 
@@ -1245,14 +1262,3 @@
 
   document.addEventListener("DOMContentLoaded", autoFillSavedCustomerProfile);
 })();
-
-
-window.saveQuickProjectKey = function () {
-  const k = (document.getElementById("quick-new-sb-key")?.value || "").trim();
-  if (!k) return;
-  localStorage.setItem("ccm_supabase_key", k);
-  localStorage.setItem("ccm_supabase_url", "https://mnwrebfyappibbnrkjct.supabase.co");
-  const b = document.getElementById("new-project-key-alert");
-  if (b) b.style.display = "none";
-  alert("✅ New Project Key Saved! Try submitting a booking now — it will save straight into mnwrebfyappibbnrkjct.");
-};

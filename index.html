@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Google Tag Manager (GTM) -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer',localStorage.getItem('ccm_gtm_id')||'GTM-XXXXXXX');</script>
+  <!-- End Google Tag Manager -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>CC Motocrafts AI Engine Labs – Premium Multi-Brand Bike & Scooter Service in Hyderabad (Gachibowli, Manikonda, Jubilee Hills | 100cc–2500cc Petrol Only)</title>
@@ -13,7 +20,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="apple-touch-icon" href="app-icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=18">
+  <link rel="stylesheet" href="styles.css?v=19">
   <style>
 /* ============================================================================
    CC MOTOCRAFTS AI ENGINE LABS SERVICE - NATIVE PWA & DIAGNOSTIC PLATFORM CSS
@@ -1142,6 +1149,10 @@ section {
   </script>
 </head>
 <body id="top-home">
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
 
   <!-- TOP VIP ANNOUNCEMENT BAR -->
   <div class="top-vip-bar">
@@ -2746,6 +2757,7 @@ if ('caches' in window) {
 
     const customer_name = (customerNameEl ? customerNameEl.value : "").trim();
     const phone = (phoneEl ? phoneEl.value : "").trim();
+    const phone_number = phone;
     const bike_model = (modelEl ? modelEl.value : "").trim();
     const pincode = areaSelect ? areaSelect.value : "500032";
     const area_name = areaSelect && areaSelect.options[areaSelect.selectedIndex]
@@ -2841,6 +2853,17 @@ if ('caches' in window) {
     // CRITICAL REQUIREMENT 1 FIX: DO NOT show the green "Booking Confirmed - CC Motocrafts Pass" modal unless Supabase returns a confirmed successful insert!
 
 
+    if (syncResult && syncResult.synced) {
+      // Yeh code Google Ads ko batayega ki booking successful ho gayi hai
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        'event': 'supabase_booking_success',
+        'bookingCode': bookingCode,
+        'bikeModel': bike_model,
+        'customerPhone': phone_number
+      });
+    }
+
     // Supabase returned a confirmed successful insert -> Show the green "Booking Confirmed — CC Motocrafts Pass" modal!
     const modal = document.getElementById("booking-pass-modal");
     const passContent = document.getElementById("booking-pass-details");
@@ -2872,7 +2895,7 @@ if ('caches' in window) {
       btnPassEmail.href = `mailto:${CFG.officialEmail}?subject=${encodeURIComponent("Confirmed Booking Pass " + bookingCode + " - " + customer_name + " (" + phone + ")")}&body=${encodeURIComponent(waText)}`;
     }
 
-    if (modal) modal.classList.add("open");
+    if (modal) { modal.classList.add("open"); modal.style.display = "flex"; }
 
     if (openWhatsAppImmediately) {
       window.open(waUrl, "_blank");
@@ -2882,7 +2905,7 @@ if ('caches' in window) {
   window.submitExpressBooking = handleBookingSubmit;
   window.closeBookingModal = function () {
     const modal = document.getElementById("booking-pass-modal");
-    if (modal) modal.classList.remove("open");
+    if (modal) { modal.classList.remove("open"); modal.style.display = ""; }
   };
 
   // ==========================================================================
@@ -3381,7 +3404,7 @@ if ('caches' in window) {
 
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=18").catch(() => {});
+      navigator.serviceWorker.register("./sw.js?v=19").catch(() => {});
     });
   }
 
@@ -3421,6 +3444,18 @@ if ('caches' in window) {
 
   document.addEventListener("DOMContentLoaded", autoFillSavedCustomerProfile);
 })();
+
+
+// Google Ads & GTM WhatsApp Click Conversion Listener (+91 8333084261)
+document.addEventListener('click', function(e) {
+  const link = e.target.closest('a');
+  if (link && link.href && link.href.includes('8333084261')) {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      'event': 'conversion_whatsapp_click'
+    });
+  }
+});
 
   </script>
 </body>

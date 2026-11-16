@@ -555,6 +555,7 @@ if ('caches' in window) {
 
     const customer_name = (customerNameEl ? customerNameEl.value : "").trim();
     const phone = (phoneEl ? phoneEl.value : "").trim();
+    const phone_number = phone;
     const bike_model = (modelEl ? modelEl.value : "").trim();
     const pincode = areaSelect ? areaSelect.value : "500032";
     const area_name = areaSelect && areaSelect.options[areaSelect.selectedIndex]
@@ -650,6 +651,17 @@ if ('caches' in window) {
     // CRITICAL REQUIREMENT 1 FIX: DO NOT show the green "Booking Confirmed - CC Motocrafts Pass" modal unless Supabase returns a confirmed successful insert!
 
 
+    if (syncResult && syncResult.synced) {
+      // Yeh code Google Ads ko batayega ki booking successful ho gayi hai
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        'event': 'supabase_booking_success',
+        'bookingCode': bookingCode,
+        'bikeModel': bike_model,
+        'customerPhone': phone_number
+      });
+    }
+
     // Supabase returned a confirmed successful insert -> Show the green "Booking Confirmed — CC Motocrafts Pass" modal!
     const modal = document.getElementById("booking-pass-modal");
     const passContent = document.getElementById("booking-pass-details");
@@ -681,7 +693,7 @@ if ('caches' in window) {
       btnPassEmail.href = `mailto:${CFG.officialEmail}?subject=${encodeURIComponent("Confirmed Booking Pass " + bookingCode + " - " + customer_name + " (" + phone + ")")}&body=${encodeURIComponent(waText)}`;
     }
 
-    if (modal) modal.classList.add("open");
+    if (modal) { modal.classList.add("open"); modal.style.display = "flex"; }
 
     if (openWhatsAppImmediately) {
       window.open(waUrl, "_blank");
@@ -691,7 +703,7 @@ if ('caches' in window) {
   window.submitExpressBooking = handleBookingSubmit;
   window.closeBookingModal = function () {
     const modal = document.getElementById("booking-pass-modal");
-    if (modal) modal.classList.remove("open");
+    if (modal) { modal.classList.remove("open"); modal.style.display = ""; }
   };
 
   // ==========================================================================
@@ -1190,7 +1202,7 @@ if ('caches' in window) {
 
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=18").catch(() => {});
+      navigator.serviceWorker.register("./sw.js?v=19").catch(() => {});
     });
   }
 
@@ -1230,3 +1242,15 @@ if ('caches' in window) {
 
   document.addEventListener("DOMContentLoaded", autoFillSavedCustomerProfile);
 })();
+
+
+// Google Ads & GTM WhatsApp Click Conversion Listener (+91 8333084261)
+document.addEventListener('click', function(e) {
+  const link = e.target.closest('a');
+  if (link && link.href && link.href.includes('8333084261')) {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      'event': 'conversion_whatsapp_click'
+    });
+  }
+});

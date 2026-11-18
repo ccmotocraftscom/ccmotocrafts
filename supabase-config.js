@@ -10,6 +10,8 @@ window.CC_CONFIG = {
   SUPABASE_URL: "https://mnwrebfyappibbnrkjct.supabase.co",
   SUPABASE_ACTIVE_URL: "https://mnwrebfyappibbnrkjct.supabase.co",
   SUPABASE_PUBLISHABLE_KEY: "sb_publishable__tSqrIUKNrSttvdG0PLk3g_4CnXeKw0",
+  GOOGLE_ADS_ID: "AW-18345537681",
+  GTM_ID: "GTM-57JRWFN3",
 
   brandName: "CC Motocrafts AI Engine Labs Service",
   tagline: "CC Motocrafts AI Engine Labs – Premium Multi-Brand Bike & Scooter Service in Hyderabad (Gachibowli, Manikonda, Jubilee Hills | 100cc–2500cc Petrol Only)",

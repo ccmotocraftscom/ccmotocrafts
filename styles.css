@@ -1106,3 +1106,201 @@ section {
     text-overflow: ellipsis;
   }
 }
+
+
+/* CC MOTOCRAFTS AI EXPERT (3-IN-1 SMART DIAGNOSTIC, PRICE/PICKUP & WHATSAPP WIDGET) */
+.ai-chat-window {
+  width: 390px;
+  max-width: calc(100vw - 24px);
+  background: #0f172a;
+  border: 2px solid var(--amber);
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.92);
+  overflow: hidden;
+  display: none;
+}
+
+.ai-chat-window.open {
+  display: block;
+}
+
+.ai-expert-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background: #090d16;
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 6px;
+  gap: 5px;
+}
+
+.ai-expert-tab-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #cbd5e1;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 7px 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  line-height: 1.25;
+  transition: all 0.2s ease;
+}
+
+.ai-expert-tab-btn.active {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: #090d16;
+  border-color: #fbbf24;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
+}
+
+.ai-expert-panel {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ai-expert-panel.active {
+  display: flex;
+}
+
+.ai-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ai-symptom-chip {
+  background: rgba(6, 182, 212, 0.12);
+  border: 1px solid rgba(6, 182, 212, 0.4);
+  color: #67e8f9;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 5px 9px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.ai-symptom-chip:hover {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: var(--amber);
+  color: #fde68a;
+}
+
+.ai-diag-result-card {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(52, 211, 153, 0.45);
+  border-left: 4px solid #10b981;
+  border-radius: 10px;
+  padding: 11px 12px;
+  font-size: 0.8rem;
+  color: #f1f5f9;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.ai-calc-summary-box {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(6, 182, 212, 0.1) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.45);
+  border-radius: 10px;
+  padding: 11px 12px;
+  font-size: 0.8rem;
+  color: #f8fafc;
+}
+
+
+/* ==========================================================================
+   v23 CYBERPUNK 3D AI ENGINE LABS HUD & NEON TELEMETRY UPGRADE
+   ========================================================================== */
+:root {
+  --cyber-cyan: #00f0ff;
+  --cyber-amber: #ffb800;
+  --cyber-green: #00ff9d;
+  --cyber-bg-deep: #060913;
+}
+
+body {
+  background-color: var(--cyber-bg-deep);
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(0, 240, 255, 0.09) 0%, transparent 36%),
+    radial-gradient(circle at 88% 12%, rgba(245, 158, 11, 0.10) 0%, transparent 38%),
+    linear-gradient(rgba(0, 240, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.025) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
+}
+
+.cyber-telemetry-strip {
+  background: linear-gradient(90deg, #050811 0%, #0b192c 50%, #050811 100%);
+  border-bottom: 1px solid rgba(0, 240, 255, 0.35);
+  padding: 6px 14px;
+  font-size: 0.73rem;
+  font-weight: 800;
+  color: #a5f3fc;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 18px rgba(0, 240, 255, 0.12);
+}
+
+.cyber-telemetry-strip .cyber-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00ff9d;
+  box-shadow: 0 0 10px #00ff9d;
+  margin-right: 5px;
+}
+
+.site-header {
+  background: rgba(8, 12, 24, 0.92);
+  border-bottom: 1px solid rgba(0, 240, 255, 0.35);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.75), 0 1px 0 rgba(245, 158, 11, 0.25);
+}
+
+.brand-logo {
+  border: 2px solid var(--cyber-cyan);
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.45), 0 0 28px rgba(245, 158, 11, 0.25);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.brand-logo:hover {
+  transform: scale(1.06) rotate(-2deg);
+  box-shadow: 0 0 22px rgba(0, 240, 255, 0.75), 0 0 36px rgba(245, 158, 11, 0.45);
+}
+
+.vehicle-class-card,
+.service-card,
+.cluster-card,
+.portfolio-card,
+.booking-form-card {
+  background: linear-gradient(155deg, rgba(17, 24, 39, 0.94) 0%, rgba(10, 15, 29, 0.97) 100%);
+  border: 1px solid rgba(0, 240, 255, 0.28);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.vehicle-class-card:hover,
+.service-card:hover,
+.cluster-card:hover,
+.portfolio-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--cyber-amber);
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.8), 0 0 20px rgba(245, 158, 11, 0.24);
+}
+
+.booking-form-card {
+  border: 2px solid rgba(245, 158, 11, 0.65);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85), 0 0 28px rgba(0, 240, 255, 0.18);
+}
+
+.ai-chat-window {
+  border: 2px solid var(--cyber-cyan);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.95), 0 0 26px rgba(0, 240, 255, 0.32);
+}

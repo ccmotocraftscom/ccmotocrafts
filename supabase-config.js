@@ -15,7 +15,8 @@ window.CC_CONFIG = {
 
   brandName: "CC Motocrafts AI Engine Labs Service",
   tagline: "CC Motocrafts AI Engine Labs – Premium Multi-Brand Bike & Scooter Service in Hyderabad (Gachibowli, Manikonda, Jubilee Hills | 100cc–2500cc Petrol Only)",
-  domain: "https://ccmotocrafts.in",
+  domain: "https://www.ccmotocrafts.in",
+  serviceLocation: "CC Motocrafts — All Over Hyderabad, Telangana (Free Doorstep Pickup & Drop)",
   officialEmail: "info@ccmotocrafts.in",
   officialPhone: "+91 8333084261",
   officialWhatsApp: "918333084261",

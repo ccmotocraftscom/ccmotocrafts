@@ -1304,3 +1304,87 @@ body {
   border: 2px solid var(--cyber-cyan);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.95), 0 0 26px rgba(0, 240, 255, 0.32);
 }
+
+
+/* v26 FRAMED GOVT. OF INDIA MSME / UDYAM REGISTRATION TRUST CARD */
+.udyam-cert-frame {
+  background: linear-gradient(160deg, #0b132b 0%, #111827 60%, #090d16 100%);
+  border: 2px solid #fbbf24;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.78), inset 0 0 0 1px rgba(251, 191, 36, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.udyam-cert-banner {
+  background: linear-gradient(90deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%);
+  border: 1px solid rgba(251, 191, 36, 0.55);
+  border-radius: 10px;
+  padding: 10px 14px;
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.udyam-cert-banner .gov-top {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #fde68a;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.udyam-cert-banner h4 {
+  font-size: 1.02rem;
+  font-weight: 900;
+  color: #ffffff;
+  margin-top: 2px;
+  letter-spacing: 0.04em;
+}
+
+.udyam-reg-pill {
+  display: inline-block;
+  background: rgba(16, 185, 129, 0.16);
+  border: 1px solid #10b981;
+  color: #34d399;
+  font-weight: 900;
+  font-size: 0.92rem;
+  padding: 6px 14px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+  margin: 4px 0 12px;
+}
+
+.udyam-spec-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 540px) {
+  .udyam-spec-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.udyam-spec-item {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 0.78rem;
+}
+
+.udyam-spec-item span {
+  display: block;
+  font-size: 0.67rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.udyam-spec-item strong {
+  color: #f8fafc;
+  font-weight: 800;
+}

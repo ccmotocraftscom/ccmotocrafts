@@ -1,26 +1,32 @@
 {
   "name": "CC Motocrafts AI Engine Labs Service",
   "short_name": "CC Motocrafts",
-  "description": "CC Motocrafts AI Engine Labs – Premium Multi-Brand Bike & Scooter Service in Hyderabad (Gachibowli, Manikonda, Jubilee Hills | 100cc–2500cc Petrol Only)",
+  "description": "CC Motocrafts — All Over Hyderabad, Telangana (Free Doorstep Pickup & Drop) | 100cc–2500cc Petrol Bike & Scooter Digital Service Platform",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "display_override": ["standalone", "fullscreen"],
   "orientation": "portrait-primary",
-  "background_color": "#0b0f19",
+  "background_color": "#060913",
   "theme_color": "#f59e0b",
   "icons": [
     {
       "src": "app-icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "app-icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

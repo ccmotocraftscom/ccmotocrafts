@@ -578,7 +578,7 @@ if ('caches' in window) {
 
     if (submitBtn) {
       submitBtn.disabled = true;
-      submitBtn.textContent = "⏳ Saving Booking to Database...";
+      submitBtn.textContent = "⏳ Confirming Your Booking...";
     }
 
     const pinInfo = window.CCM_API.checkPinEligibility(pincode);
@@ -634,7 +634,7 @@ if ('caches' in window) {
 
     if (submitBtn) {
       submitBtn.disabled = false;
-      submitBtn.textContent = "✅ Confirm Express Booking (15 Sec)";
+      submitBtn.textContent = "✅ Book Express Pickup (15 Sec)";
     }
 
     const waText = buildWhatsAppMessage(newBooking);
@@ -684,7 +684,7 @@ if ('caches' in window) {
     if (passContent) {
       passContent.innerHTML = `
         <div style="background:rgba(16,185,129,0.12);border:1px solid #10b981;padding:12px;border-radius:8px;margin-bottom:14px;">
-          <div style="font-size:0.76rem;color:#34d399;font-weight:800;">✓ VERIFIED SUPABASE DATABASE RECORD & DIGITAL BOOKING PASS</div>
+          <div style="font-size:0.76rem;color:#34d399;font-weight:800;">✓ CONFIRMED DIGITAL BOOKING PASS</div>
           <div style="font-size:1.3rem;font-weight:900;color:#fff;">Booking ID: ${bookingCode}</div>
           <div style="font-size:0.8rem;color:#e2e8f0;">Supervised by: <strong>${CFG.managerAndDispatcher}</strong></div>
         </div>
@@ -833,6 +833,46 @@ if ('caches' in window) {
   };
 
   window.submitExpressBooking = handleBookingSubmit;
+
+  // ==========================================================================
+  // v27 LEGAL POLICY MODAL (PRIVACY POLICY, TERMS & CONDITIONS, WARRANTY)
+  // ==========================================================================
+  window.openLegalPolicyModal = function (policyType) {
+    const modal = document.getElementById("legal-policy-modal");
+    const titleEl = document.getElementById("legal-policy-title");
+    const bodyEl = document.getElementById("legal-policy-body");
+    if (!modal || !titleEl || !bodyEl) return;
+
+    if (policyType === "privacy") {
+      titleEl.textContent = "🔒 Privacy Policy — CC Motocrafts";
+      bodyEl.innerHTML =
+        "<p>CC Motocrafts (<strong>www.ccmotocrafts.in</strong>) collects only your Name, Mobile/WhatsApp Number, Bike/Scooter Model, and Hyderabad Pickup Area solely to arrange vehicle pickup, share live inspection videos/quotes, and issue your digital service pass and warranty.</p>" +
+        "<p style='margin-top:8px;'>We never sell or share customer phone numbers with third parties. For data queries, contact <strong>Mr. Nitish Kumar (+91 8333084261)</strong> or email <strong>info@ccmotocrafts.in</strong>.</p>";
+    } else if (policyType === "terms") {
+      titleEl.textContent = "📜 Terms & Conditions — CC Motocrafts";
+      bodyEl.innerHTML =
+        "<p>• Service Scope: Exclusively <strong>100cc to 2500cc Petrol Two-Wheelers</strong> (Gearless Scooters, Commuters, Cruisers &amp; Superbikes) across <strong>All Over Hyderabad, Telangana</strong>.</p>" +
+        "<p style='margin-top:6px;'>• Zero-Unapproved Parts Policy: No spare part is replaced or billed without your prior WhatsApp photo/video &amp; quotation confirmation (<strong>'Confirm Change'</strong>).</p>" +
+        "<p style='margin-top:6px;'>• Registered Entity: Central Government of India Registered MSME • <strong>UDYAM-TS-02-0387659</strong> • NIC Code: <strong>45403</strong>.</p>";
+    } else {
+      titleEl.textContent = "🛡️ Warranty Policy — CC Motocrafts";
+      bodyEl.innerHTML =
+        "<p>• <strong>30-Day Workmanship Guarantee:</strong> Covers all general periodic services and diagnostic repairs as recorded on your official digital job card.</p>" +
+        "<p style='margin-top:6px;'>• <strong>1-Year Engine Warranty:</strong> Applies to full engine rebuilds/overhauls subject to timely periodic maintenance (first post-repair check within 15–30 days or 500–750 km, and regular intervals every 1,800–2,000 km or 45–60 days).</p>" +
+        "<p style='margin-top:6px;'>• Warranty Support: Call or WhatsApp <strong>+91 8333084261 (Mr. Nitish Kumar)</strong>.</p>";
+    }
+    modal.classList.add("open");
+    modal.style.display = "flex";
+  };
+
+  window.closeLegalPolicyModal = function () {
+    const modal = document.getElementById("legal-policy-modal");
+    if (modal) {
+      modal.classList.remove("open");
+      modal.style.display = "";
+    }
+  };
+
   window.closeBookingModal = function () {
     const modal = document.getElementById("booking-pass-modal");
     if (modal) { modal.classList.remove("open"); modal.style.display = ""; }
@@ -1615,7 +1655,7 @@ if ('caches' in window) {
 
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=23").catch(() => {});
+      navigator.serviceWorker.register("./sw.js?v=27").catch(() => {});
     });
   }
 

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cc-motocrafts-pwa-v28';
+const CACHE_NAME = 'cc-motocrafts-pwa-v29';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();

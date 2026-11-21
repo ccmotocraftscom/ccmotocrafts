@@ -7,8 +7,8 @@
  */
 
 window.CC_CONFIG = {
-  SUPABASE_URL: "https://mnwrebfyappibbnrkjct.supabase.co",
-  SUPABASE_ACTIVE_URL: "https://mnwrebfyappibbnrkjct.supabase.co",
+  SUPABASE_URL: "https://xrrlbqxbgxmetrwgiwvk.supabase.co",
+  SUPABASE_ACTIVE_URL: "https://xrrlbqxbgxmetrwgiwvk.supabase.co",
   SUPABASE_PUBLISHABLE_KEY: "sb_publishable__tSqrIUKNrSttvdG0PLk3g_4CnXeKw0",
   GOOGLE_ADS_ID: "AW-18345537681",
   GTM_ID: "GTM-57JRWFN3",
@@ -29,7 +29,7 @@ window.CC_CONFIG = {
   supabaseSecondaryUrl: "https://xrrlbqxbgxmetrwgiwvk.supabase.co",
 
   vipPincodes: ["500033", "500034", "500096", "500032", "500075", "500089", "500081", "500084", "500008"],
-  otherHyderabadPickupFee: 500,
+  otherHyderabadPickupFee: 0,
 
   hyderabadAreas: [
     { label: "Gachibowli — 500032 (FREE VIP Pickup & Drop)", pincode: "500032", area: "Gachibowli", vip: true },
@@ -45,8 +45,8 @@ window.CC_CONFIG = {
     { label: "Kokapet — 500075 (FREE VIP Pickup & Drop)", pincode: "500075", area: "Kokapet", vip: true },
     { label: "Film Nagar / Nanakramguda — 500096 (FREE VIP Pickup & Drop)", pincode: "500096", area: "Film Nagar / Nanakramguda", vip: true },
     { label: "Shaikpet / Tolichowki — 500008 (Priority Pickup & Drop)", pincode: "500008", area: "Shaikpet / Tolichowki", vip: true },
-    { label: "Mehdipatnam / Attapur — 500028 (Standard ₹500 Pickup & Drop)", pincode: "500028", area: "Mehdipatnam / Attapur", vip: false },
-    { label: "Kukatpally / Miyapur / Other Hyderabad Area (Standard ₹500 Pickup)", pincode: "500072", area: "Other Hyderabad Area", vip: false }
+    { label: "Mehdipatnam / Attapur — 500028 (Free Doorstep Pickup & Drop ₹0)", pincode: "500028", area: "Mehdipatnam / Attapur", vip: false },
+    { label: "Kukatpally / Miyapur / Other Hyderabad Area (Standard ₹0 FREE Pickup)", pincode: "500072", area: "Other Hyderabad Area", vip: false }
   ],
 
   vehicleClasses: [

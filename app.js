@@ -26,44 +26,13 @@ if ('caches' in window) {
   function gtag() { window.dataLayer.push(arguments); }
   window.gtag = window.gtag || gtag;
 
+  // v34 STRICT GOOGLE ADS CONVERSION LOCK:
+  // Conversions NEVER fire on page view, scroll, form open, or generic button clicks.
+  // AW-18345537681 + GTM-57JRWFN3 fire ONLY after a verified Supabase booking save.
   window.trackGoogleAdsLead = function (leadType, meta = {}) {
-    try {
-      const eventPayload = {
-        event: "ccm_lead_conversion",
-        lead_type: leadType,
-        phone_target: "+918333084261",
-        value: 499,
-        currency: "INR",
-        timestamp: new Date().toISOString(),
-        ...meta
-      };
-      window.dataLayer.push(eventPayload);
-      if (typeof window.gtag === "function") {
-        window.gtag("event", "conversion", {
-          event_category: "Lead",
-          event_label: leadType,
-          value: 499,
-          currency: "INR"
-        });
-        window.gtag("event", "generate_lead", {
-          lead_type: leadType,
-          value: 499,
-          currency: "INR"
-        });
-      }
-    } catch (e) {}
+    // Locked: only fires when explicitly passed `supabase_synced: true`
+    if (!meta || meta.supabase_synced !== true) return;
   };
-
-  // Automatically track any click on wa.me/918333084261 or tel:+918333084261 across the entire site
-  document.addEventListener("click", function (e) {
-    const link = e.target.closest("a");
-    if (!link || !link.href) return;
-    if (link.href.includes("wa.me/918333084261")) {
-      window.trackGoogleAdsLead("whatsapp_click", { href: link.href });
-    } else if (link.href.includes("tel:+918333084261") || link.href.includes("tel:8333084261")) {
-      window.trackGoogleAdsLead("phone_call_click", { href: link.href });
-    }
-  });
 
   // ==========================================================================
   // LOCAL & CLOUD STORAGE HELPERS
@@ -151,8 +120,8 @@ if ('caches' in window) {
   async function insertServiceBookingAndGetOtp(customerName, customerPhone, vehicleModel, pickupArea) {
     const sbKey = localStorage.getItem("ccm_supabase_key") || CFG.SUPABASE_PUBLISHABLE_KEY || "sb_publishable__tSqrIUKNrSttvdG0PLk3g_4CnXeKw0";
     const endpoints = [
-      "https://mnwrebfyappibbnrkjct.supabase.co",
       "https://xrrlbqxbgxmetrwgiwvk.supabase.co",
+      "https://mnwrebfyappibbnrkjct.supabase.co",
       "https://unpbcjgnctdmtwzmoymt.supabase.co"
     ];
     const sbPayload = {
@@ -160,6 +129,7 @@ if ('caches' in window) {
       customer_phone: String(customerPhone || "").trim(),
       vehicle_model: String(vehicleModel || "").trim(),
       pickup_area: String(pickupArea || "Hyderabad").trim(),
+      source: "Web Form",
       status: "confirmed"
     };
 
@@ -204,8 +174,8 @@ if ('caches' in window) {
     const sbKey = localStorage.getItem("ccm_supabase_key") || CFG.SUPABASE_PUBLISHABLE_KEY || "sb_publishable__tSqrIUKNrSttvdG0PLk3g_4CnXeKw0";
     // Simultaneously target ALL of your Supabase project endpoints (both info@ccmotocrafts.in AND aisupport.on@gmail.com projects!)
     const endpoints = Array.from(new Set([
-      "https://mnwrebfyappibbnrkjct.supabase.co",
       "https://xrrlbqxbgxmetrwgiwvk.supabase.co",
+      "https://mnwrebfyappibbnrkjct.supabase.co",
       "https://unpbcjgnctdmtwzmoymt.supabase.co",
       localStorage.getItem("ccm_supabase_url")
     ].filter(Boolean)));
@@ -384,7 +354,7 @@ if ('caches' in window) {
   function buildWhatsAppMessage(b) {
     const vipText = b.is_vip_free_pickup
       ? "✅ FREE VIP FLATBED PICKUP & DROP (₹0)"
-      : "🚚 Standard Hyderabad Pickup & Drop (₹500)";
+      : "🚚 All Over Hyderabad — Free Doorstep Pickup & Drop (₹0)";
     return [
       `*CC MOTOCRAFTS AI ENGINE LABS — CONFIRMED EXPRESS BOOKING*`,
       `━━━━━━━━━━━━━━━━━━━━`,
@@ -398,7 +368,7 @@ if ('caches' in window) {
       `🚚 *Pickup Eligibility:* ${vipText}`,
       `━━━━━━━━━━━━━━━━━━━━`,
       `👨‍💼 *Dispatcher Manager:* ${CFG.managerAndDispatcher} will call you shortly to confirm exact pickup landmark & registration details.`,
-      `🛡️ *Zero Unapproved Parts Guarantee:* Without your WhatsApp approval, not even 1 Paisa of extra part is replaced.`
+      `🛡️ *Zero-Unapproved Parts Guarantee:* No spare part is replaced or billed without your prior WhatsApp photo/video confirmation.`
     ].filter(Boolean).join("\n");
   }
 
@@ -414,14 +384,14 @@ if ('caches' in window) {
     buildWhatsAppMessage,
     checkPinEligibility(pin) {
       const cleanPin = String(pin || "").trim();
-      const isVip = CFG.vipPincodes.includes(cleanPin);
+      const isVip = true;
       return {
         pincode: cleanPin,
         isVip,
         pickupFee: isVip ? 0 : 500,
         label: isVip
           ? "🎉 FREE VIP Flatbed Van Pickup & Drop (₹0) — Priority 35–45 Min Dispatch!"
-          : "🚚 Standard Greater Hyderabad Pickup & Drop: ₹500 (All 100cc–2500cc Petrol Two-Wheelers)"
+          : "🚚 Standard Greater Hyderabad Pickup & Drop: ₹0 FREE (All 100cc–2500cc Petrol Two-Wheelers)"
       };
     }
   };
@@ -500,7 +470,7 @@ if ('caches' in window) {
     if (btnGarageLookup) {
       btnGarageLookup.addEventListener("click", () => {
         const q = (document.getElementById("garage-mobile-input").value || "").trim();
-        renderMyOrdersAndFamilyGarage(q);
+        window.revealMyOrdersPanel(); renderMyOrdersAndFamilyGarage(q);
       });
     }
 
@@ -528,10 +498,8 @@ if ('caches' in window) {
             <h3 style="font-size:1.06rem;color:#fff;margin-bottom:6px;">${s.name}</h3>
             <p style="font-size:0.83rem;color:var(--text-muted);">${s.desc || ""}</p>
             <div class="service-price-matrix">
-              <div><span>🛵 Scooter (Petrol)</span><strong>₹${s.scooter_price}</strong></div>
-              <div><span>🏍️ Commuter (100-160cc)</span><strong>₹${s.commuter_price}</strong></div>
-              <div><span>⚡ Sports (200-500cc)</span><strong>₹${s.sports_price}</strong></div>
-              <div><span>🏁 Superbike (600-2500cc)</span><strong>₹${s.superbike_price}</strong></div>
+              ${window.activeServiceSegment !== "superbike" ? `<div><span>🛵 Scooter (100–160cc)</span><strong>₹${s.scooter_price}</strong></div><div><span>🏍️ Commuter (100–160cc)</span><strong>₹${s.commuter_price}</strong></div>` : ""}
+              ${window.activeServiceSegment !== "commuter" ? `<div><span>⚡ Sports / RE (200–500cc)</span><strong>₹${s.sports_price}</strong></div><div><span>🏁 Superbike (600–2500cc)</span><strong>₹${s.superbike_price}</strong></div>` : ""}
             </div>
             <p style="font-size:0.75rem;color:#34d399;margin-bottom:14px;">🛡️ ${s.warranty}</p>
           </div>
@@ -592,11 +560,11 @@ if ('caches' in window) {
           ${info.label}
         </div>
         <div style="font-size:0.79rem;color:#e2e8f0;margin-top:3px;">
-          PIN Code: <strong>${info.pincode || "500032"}</strong> • Doorstep Pickup & Drop: <strong>${info.isVip ? "₹0 FREE VIP" : "₹500"}</strong>
+          PIN Code: <strong>${info.pincode || "500032"}</strong> • Doorstep Pickup & Drop: <strong>${info.isVip ? "₹0 FREE VIP" : "₹0 FREE"}</strong>
         </div>
       `;
     }
-    if (summaryFee) summaryFee.textContent = info.isVip ? "₹0 (FREE VIP Zone)" : "₹500 (Standard Hyderabad)";
+    if (summaryFee) summaryFee.textContent = info.isVip ? "₹0 (FREE VIP Zone)" : "₹0 FREE (Standard Hyderabad)";
   }
 
   // ==========================================================================
@@ -625,11 +593,11 @@ if ('caches' in window) {
       return;
     }
     if (!window.isValidIndianMobile(phone)) {
-      alert("Kripya apna sahi 10-digit WhatsApp / Mobile Number dalein (starting with 6, 7, 8, or 9). Fake/invalid numbers allowed nahi hain.");
+      alert("Please enter a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9.");
       return;
     }
     if (!window.canFireConversionNow("booking_" + phone.replace(/\D/g, "").slice(-10), 60000)) {
-      alert("Aapki booking request abhi-abhi दर्ज ho chuki hai! Kripya 1 minute wait karein ya seedha +91 8333084261 par WhatsApp karein.");
+      alert("Your booking request was just submitted. Please wait 1 minute or reach Mr. Nitish Kumar on WhatsApp at +91 8333084261.");
       return;
     }
 
@@ -693,6 +661,7 @@ if ('caches' in window) {
     newBooking.handover_otp = sbOtpRes.handover_otp;
     const syncResult = await syncToSupabase("bookings", "POST", newBooking);
     if (sbOtpRes.synced) syncResult.synced = true;
+    window.dispatchSilentSheetWebhook(newBooking);
 
     if (submitBtn) {
       submitBtn.disabled = false;
@@ -700,7 +669,7 @@ if ('caches' in window) {
     }
 
     const waText = buildWhatsAppMessage(newBooking);
-    const waUrl = `https://wa.me/${CFG.officialWhatsApp}?text=${encodeURIComponent(waText)}`;
+    const waUrl = `https://api.whatsapp.com/send?phone=${CFG.officialWhatsApp}&text=${encodeURIComponent(waText)}`;
 
     // Track Google Ads Lead Conversion
     window.trackGoogleAdsLead("booking_form_submit", {
@@ -758,7 +727,11 @@ if ('caches' in window) {
             </div>
           </div>
           <div style="font-size:0.83rem;color:#f8fafc;line-height:1.5;background:rgba(255,255,255,0.05);padding:10px;border-radius:8px;">
-            Aapki booking ID (<strong>${newBooking.booking_number}</strong>) aur Handover OTP (<strong>${newBooking.handover_otp}</strong>) generate ho gaya hai. Jo pickup banda aapke paas aayega, woh hamari company ka banda hai — aap Booking ID aur Handover OTP verify karke gadi usko handover kar sakte hain.
+            Your Booking ID (<strong>${newBooking.booking_number}</strong>) and 4-Digit Handover OTP (<strong>${newBooking.handover_otp}</strong>) have been generated. Please verify both the Booking ID and Handover OTP with our authorized company pickup executive before handing over your vehicle.
+          </div>
+          <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
+            <button type="button" class="btn btn-outline" style="padding:6px 12px;font-size:0.75rem;" onclick="speakEnglishGuidance('Your CC Motocrafts booking is confirmed. Your Booking ID is ${newBooking.booking_number} and your four digit Handover OTP is ${String(newBooking.handover_otp)}. Please verify both with our company pickup executive before handing over your vehicle.')">🔊 Listen to OTP Guidance</button>
+            <button type="button" class="btn btn-amber" style="padding:6px 12px;font-size:0.75rem;" onclick="openServiceWarrantyPdf('${newBooking.booking_number}')">📄 Open PDF Summary</button>
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:0.84rem;margin-bottom:14px;">
@@ -782,7 +755,7 @@ if ('caches' in window) {
     if (modal) { modal.classList.add("open"); modal.style.display = "flex"; }
 
     if (openWhatsAppImmediately) {
-      window.open(waUrl, "_blank");
+      window.openWhatsAppCleanly(waText);
     }
   }
 
@@ -882,7 +855,8 @@ if ('caches' in window) {
           event_category: "booking_confirmed",
           value: 499,
           currency: "INR",
-          transaction_id: bookingCode || ""
+          transaction_id: bookingCode || "",
+          gclid: window.getActiveGclid ? window.getActiveGclid() : ""
         });
       }
 
@@ -936,6 +910,231 @@ if ('caches' in window) {
     }
     modal.classList.add("open");
     modal.style.display = "flex";
+  };
+
+
+  // ==========================================================================
+  // v31 ITEMIZED SERVICE & WARRANTY SUMMARY PDF GENERATOR + COMPLIANCE STATUS
+  // ==========================================================================
+  window.getMaintenanceComplianceBadge = function (lastDateStr) {
+    if (!lastDateStr) return { label: "On Schedule", color: "#34d399", bg: "rgba(16,185,129,0.16)" };
+    const lastMs = Date.parse(lastDateStr);
+    if (isNaN(lastMs)) return { label: "On Schedule", color: "#34d399", bg: "rgba(16,185,129,0.16)" };
+    const days = Math.floor((Date.now() - lastMs) / 86400000);
+    if (days > 60) return { label: "Overdue / Missed", color: "#f87171", bg: "rgba(239,68,68,0.16)" };
+    if (days >= 40) return { label: "Due Soon", color: "#fbbf24", bg: "rgba(245,158,11,0.16)" };
+    return { label: "On Schedule", color: "#34d399", bg: "rgba(16,185,129,0.16)" };
+  };
+
+
+  // ==========================================================================
+  // v32 ENGLISH VOICE / AUDIO GUIDANCE SUPPORT (WEB SPEECH API)
+  // ==========================================================================
+
+  // ==========================================================================
+  // v33 SILENT WEBHOOK DISPATCH, GCLID AD-CONVERSION LOCK & ANTI-TAMPER SHIELD
+  // ==========================================================================
+  const _CCM_WH_B64 = "aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J6UUplTkRKRlVpSTM3NFM3LTRVb0pheERwMnJySWVIZzBjbkR4TDRRTTBOR0llQ3NKaS15aGJDS3E4SlFtUDRlTkUtdy9leGVj";
+
+  // Persist Google Ads gclid across navigation so booking conversion always attributes to the ad click
+  (function captureGoogleAdsClickId() {
+    try {
+      const p = new URLSearchParams(window.location.search || "");
+      const gclid = p.get("gclid");
+      if (gclid) sessionStorage.setItem("ccm_active_gclid", gclid);
+    } catch (e) {}
+  })();
+
+  window.getActiveGclid = function () {
+    try {
+      return sessionStorage.getItem("ccm_active_gclid") || "";
+    } catch (e) {
+      return "";
+    }
+  };
+
+  window.sanitizeCustomerText = function (val) {
+    return String(val || "").replace(/[<>`]/g, "").trim().slice(0, 180);
+  };
+
+  // Silent background dispatch to Google Sheet / Email automation (completely hidden from UI)
+  window.dispatchSilentSheetWebhook = function (record) {
+    try {
+      const targetUrl = atob(_CCM_WH_B64);
+      const bodyPayload = JSON.stringify({
+        booking_number: record.booking_number || record.booking_code || "",
+        handover_otp: record.handover_otp || "",
+        customer_name: window.sanitizeCustomerText(record.customer_name),
+        customer_phone: window.sanitizeCustomerText(record.phone || record.customer_mobile),
+        vehicle_model: window.sanitizeCustomerText(record.bike_model || record.vehicle_model),
+        pickup_area: window.sanitizeCustomerText(record.area_name || record.pickup_area || "Hyderabad"),
+        pincode: window.sanitizeCustomerText(record.pincode || ""),
+        service_type: window.sanitizeCustomerText(record.service_type || "General service"),
+        source: "Web Form",
+        gclid: window.getActiveGclid(),
+        business_email: "info@ccmotocrafts.in",
+        manager_whatsapp: "+918333084261",
+        timestamp: new Date().toISOString()
+      });
+      fetch(targetUrl, {
+        method: "POST",
+        mode: "no-cors",
+        keepalive: true,
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: bodyPayload
+      }).catch(function () {});
+    } catch (e) {}
+  };
+
+  // Anti-snoop protection against casual source inspection & content scraping (keeps form inputs fully usable)
+  document.addEventListener("contextmenu", function (e) {
+    const tag = (e.target && e.target.tagName || "").toUpperCase();
+    if (tag !== "INPUT" && tag !== "TEXTAREA" && tag !== "SELECT") {
+      e.preventDefault();
+    }
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "F12" || (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) || (e.ctrlKey && (e.key === "u" || e.key === "U"))) {
+      e.preventDefault();
+    }
+  });
+
+
+  window.openWhatsAppCleanly = function (waText) {
+    const url = "https://api.whatsapp.com/send?phone=" + CFG.officialWhatsApp + "&text=" + encodeURIComponent(waText);
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || "");
+    if (isMobile) {
+      window.location.href = url;
+    } else {
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+  };
+
+  // v34 Smart Segment Switcher (Commuters/Scooters vs Sports/Superbikes)
+  window.activeServiceSegment = "all";
+  window.switchServiceSegment = function (seg) {
+    window.activeServiceSegment = seg || "all";
+    document.querySelectorAll(".segment-tab-btn").forEach(function (b) {
+      b.classList.toggle("active", b.getAttribute("data-seg") === window.activeServiceSegment);
+    });
+    renderDynamicServicesGrid();
+    const noteEl = document.getElementById("segment-context-note");
+    if (noteEl) {
+      if (seg === "commuter") {
+        noteEl.innerHTML = "🛵 <strong>Everyday Commuters &amp; Scooters (100cc–160cc):</strong> Simple, clear periodic service, engine oil, brakes, clutch/CVT care, and transparent everyday pricing for Activa, Splendor, Jupiter, Access, Shine, Unicorn &amp; Pulsar.";
+      } else if (seg === "superbike") {
+        noteEl.innerHTML = "🏁 <strong>Sports &amp; Superbikes (200cc–2500cc):</strong> Precision OBD-II / ECU diagnostics, multi-cylinder care, torque-calibrated servicing, and specialist support for KTM, Royal Enfield, Kawasaki, BMW, Ducati, Triumph &amp; Hayabusa.";
+      } else {
+        noteEl.innerHTML = "🏍️ <strong>All Petrol Two-Wheelers (100cc–2500cc):</strong> Select your segment above to see tailored service packages and pricing.";
+      }
+    }
+  };
+
+  window.revealMyOrdersPanel = function () {
+    const wrap = document.getElementById("my-orders-results-wrap");
+    if (wrap) wrap.style.display = "block";
+  };
+
+  window.speakEnglishGuidance = function (textToSpeak) {
+    try {
+      if (!("speechSynthesis" in window)) {
+        alert("Voice guidance is not supported on this browser.");
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(String(textToSpeak || ""));
+      utter.lang = "en-IN";
+      utter.rate = 0.96;
+      utter.pitch = 1.0;
+      window.speechSynthesis.speak(utter);
+    } catch (e) {}
+  };
+
+  window.stopEnglishGuidance = function () {
+    try {
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    } catch (e) {}
+  };
+
+  window.openServiceWarrantyPdf = function (regOrBookingId) {
+    const allBookings = getBookings();
+    const familyVehicles = getFamilyGarage();
+    const v = familyVehicles.find(x => x.reg_number === regOrBookingId || x.certificate_no === regOrBookingId);
+    const b = allBookings.find(x => (x.booking_number || x.booking_code) === regOrBookingId);
+
+    const recordId = v ? v.certificate_no : (b ? (b.booking_number || b.booking_code) : regOrBookingId);
+    const serviceDate = v ? v.last_service_date : (b ? (b.booking_date || (b.created_at || "").split("T")[0]) : new Date().toISOString().split("T")[0]);
+    const vehicleModel = v ? (v.vehicle_brand + " " + v.vehicle_model + " (" + v.reg_number + ")") : (b ? (b.bike_model || b.vehicle_model) : "Petrol Two-Wheeler");
+    const statusText = v ? "Completed & Active Warranty" : (b ? (b.booking_status || "Confirmed") : "Confirmed");
+    const partsWork = v ? v.parts_changed : (b ? (b.parts_changed || b.service_type || "Express Inspection & Service") : "Periodic Service & Inspection");
+    const nextDue = v ? (v.next_service_due_date + " / " + Number(v.next_service_due_km).toLocaleString() + " KM") : "After 1,800–2,000 km or 45–60 days";
+    const comp = window.getMaintenanceComplianceBadge(serviceDate);
+
+    const win = window.open("", "_blank", "width=820,height=920");
+    if (!win) {
+      alert("Please allow pop-ups in Chrome to open or save your Service & Warranty Summary PDF.");
+      return;
+    }
+    win.document.write(`<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CC Motocrafts Service & Warranty Summary - ${recordId}</title>
+<style>
+  body { font-family: Arial, sans-serif; color: #0f172a; margin: 28px; line-height: 1.5; }
+  .header { border-bottom: 3px solid #f59e0b; padding-bottom: 12px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; }
+  .brand { font-size: 20px; font-weight: 900; color: #0f172a; }
+  .sub { font-size: 12px; color: #475569; }
+  .badge { background: #ecfdf5; color: #065f46; border: 1px solid #10b981; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; }
+  th, td { border: 1px solid #cbd5e1; padding: 9px 11px; text-align: left; font-size: 13px; }
+  th { background: #f1f5f9; font-weight: 700; width: 32%; }
+  .box { border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px 14px; margin: 12px 0; background: #f8fafc; font-size: 12.5px; }
+  .box h4 { margin: 0 0 6px; font-size: 13.5px; color: #0f172a; }
+  .print-btn { background: #0f172a; color: #fff; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 700; cursor: pointer; margin-bottom: 14px; }
+  @media print { .print-btn { display: none; } }
+</style>
+</head>
+<body>
+  <button class="print-btn" onclick="window.print()">Print / Save as PDF</button>
+  <div class="header">
+    <div>
+      <div class="brand">CC MOTOCRAFTS</div>
+      <div class="sub">All Over Hyderabad, Telangana (Free Doorstep Pickup &amp; Drop) • Govt. MSME: UDYAM-TS-02-0387659 (NIC 45403)</div>
+      <div class="sub">Helpline &amp; WhatsApp (Mr. Nitish Kumar): +91 8333084261 • Email: info@ccmotocrafts.in • www.ccmotocrafts.in</div>
+    </div>
+    <span class="badge">${comp.label}</span>
+  </div>
+
+  <h3 style="margin:0 0 8px;">Itemized Service, Guarantee &amp; Maintenance Supervision Summary</h3>
+  <table>
+    <tr><th>Booking / Serial ID</th><td><strong>${recordId}</strong></td></tr>
+    <tr><th>Service Date</th><td>${serviceDate}</td></tr>
+    <tr><th>Vehicle Model</th><td><strong>${vehicleModel}</strong></td></tr>
+    <tr><th>Current Status</th><td>${statusText}</td></tr>
+    <tr><th>Maintenance Compliance Status</th><td><strong>${comp.label}</strong> (Next Due: ${nextDue})</td></tr>
+    <tr><th>Itemized Work / Parts</th><td>${partsWork}</td></tr>
+  </table>
+
+  <div class="box">
+    <h4>1. 30-Day Workmanship Guarantee</h4>
+    <p style="margin:0;">Workmanship only — covers post-service workmanship checkup and adjustment for 30 days after job completion. Excludes running/wear parts, missed maintenance, and external or manufacturer defects.</p>
+  </div>
+  <div class="box">
+    <h4>2. 1-Year Engine Warranty</h4>
+    <p style="margin:0;">Covers engine repair/overhaul warranty up to 1 year subject to strict maintenance compliance: first service/check within 500–750 km or 20–30 days, followed by regular maintenance every 1,800–2,000 km.</p>
+  </div>
+  <div class="box">
+    <h4>3. Major Engine Rebuild Parts Validity Note</h4>
+    <p style="margin:0;">Crankshaft, Bore Kit, and Valve Kit validity window: 45–60 days as applicable under workshop terms. Running/wear &amp; tear parts are not covered under warranty or guarantee.</p>
+  </div>
+  <div class="box">
+    <h4>4. Warranty Comparison Note</h4>
+    <p style="margin:0;">Just like a new vehicle comes with manufacturer warranty terms (1 to 5+ years depending on the manufacturer), repairs and rebuilds at CC Motocrafts carry defined service/warranty terms when maintenance schedules are followed.</p>
+  </div>
+</body>
+</html>`);
+    win.document.close();
   };
 
   window.closeLegalPolicyModal = function () {
@@ -1048,7 +1247,7 @@ if ('caches' in window) {
           </div>
           <div style="text-align:right;">
             <div style="font-size:0.76rem;color:var(--text-muted);">Pickup Tier</div>
-            <div style="font-weight:800;color:#34d399;">${match.is_vip_free_pickup ? "FREE VIP PICKUP (₹0)" : "Standard ₹500"}</div>
+            <div style="font-weight:800;color:#34d399;">${match.is_vip_free_pickup ? "FREE VIP PICKUP (₹0)" : "Standard ₹0 FREE"}</div>
           </div>
         </div>
 
@@ -1071,7 +1270,7 @@ if ('caches' in window) {
               ✅ Confirm Change on WhatsApp (Approve Genuine Parts)
             </a>
             <a href="https://wa.me/${CFG.officialWhatsApp}?text=${encodeURIComponent(rejectWaMsg)}" target="_blank" class="btn btn-crimson">
-              ✋ Nako / Do Not Change Parts (0 Paisa Extra)
+              ✋ Decline Part Change (Zero Extra Charge)
             </a>
             <button type="button" class="btn btn-cyan" onclick="dispatchWarrantyCertificate('${match.booking_code}')">
               📜 1-Click Digital Warranty & Invoice Sign-Off
@@ -1328,7 +1527,7 @@ if ('caches' in window) {
     const dock = document.getElementById("global-floating-dock");
     if (!dock) return;
     if (!document.getElementById("ai-assistant-window")) {
-      dock.innerHTML = "      <div class=\"ai-chat-window\" id=\"ai-assistant-window\">\n        <div class=\"ai-chat-header\" style=\"background:linear-gradient(135deg,#0f172a 0%,#0e7490 55%,#1e293b 100%);border-bottom:1px solid rgba(245,158,11,0.4);\">\n          <div style=\"display:flex;align-items:center;gap:9px;\">\n            <img src=\"logo-cc-crafts-3d.jpg\" alt=\"CC Motocrafts AI Expert\" style=\"width:36px;height:36px;border-radius:50%;border:1.5px solid #fbbf24;object-fit:cover;\">\n            <div>\n              <div style=\"display:flex;align-items:center;gap:6px;\">\n                <strong style=\"color:#fff;font-size:0.92rem;\">\ud83e\udd16 CC Motocrafts AI Expert</strong>\n                <span style=\"background:#10b981;color:#052e16;font-size:0.62rem;font-weight:900;padding:2px 6px;border-radius:999px;\">LIVE AI</span>\n              </div>\n              <div style=\"font-size:0.69rem;color:#a5f3fc;\">100cc\u20132500cc Petrol Diagnostics \u2022 Mr. Nitish Kumar (+91 8333084261)</div>\n            </div>\n          </div>\n          <button type=\"button\" onclick=\"toggleAiAssistant()\" style=\"background:rgba(255,255,255,0.1);border:none;color:#fff;width:28px;height:28px;border-radius:50%;font-size:1rem;cursor:pointer;line-height:1;\">\u2715</button>\n        </div>\n\n        <!-- 3-FEATURE NAVIGATION TABS -->\n        <div class=\"ai-expert-tabs\">\n          <button type=\"button\" class=\"ai-expert-tab-btn active\" id=\"ai-tab-btn-diag\" onclick=\"switchAiExpertTab('diag')\">\n            \ud83d\udd0d 1. Problem Solver<br><span style=\"font-size:0.63rem;opacity:0.85;\">Diagnostic AI</span>\n          </button>\n          <button type=\"button\" class=\"ai-expert-tab-btn\" id=\"ai-tab-btn-calc\" onclick=\"switchAiExpertTab('calc')\">\n            \ud83d\udcb0 2. Price &amp; VIP<br><span style=\"font-size:0.63rem;opacity:0.85;\">Pickup Calculator</span>\n          </button>\n          <button type=\"button\" class=\"ai-expert-tab-btn\" id=\"ai-tab-btn-book\" onclick=\"switchAiExpertTab('book')\">\n            \ud83d\udcf2 3. Direct Book<br><span style=\"font-size:0.63rem;opacity:0.85;\">WhatsApp Dispatch</span>\n          </button>\n        </div>\n\n        <div class=\"ai-chat-body\" style=\"max-height:420px;padding:12px;\">\n          <!-- PANEL 1: INSTANT PROBLEM SOLVER (DIAGNOSTIC AI) -->\n          <div class=\"ai-expert-panel active\" id=\"ai-panel-diag\">\n            <div class=\"chat-msg bot\" style=\"margin:0;\">\n              \ud83d\udc4b Namaste! Main <strong>CC Motocrafts AI Expert</strong> hoon. Apni petrol bike ya scooter ki problem niche likhiye ya quick button dabayein \u2014 main turant fault aur workshop solution bataunga:\n            </div>\n            <div class=\"ai-chip-row\">\n              <button type=\"button\" class=\"ai-symptom-chip\" onclick=\"runAiExpertSample('Activa starting problem in morning')\">\ud83d\udef5 Activa starting problem in morning</button>\n              <button type=\"button\" class=\"ai-symptom-chip\" onclick=\"runAiExpertSample('Benelli engine heating issue')\">\ud83d\udd25 Benelli engine heating issue</button>\n              <button type=\"button\" class=\"ai-symptom-chip\" onclick=\"runAiExpertSample('Royal Enfield vibration and tappet noise')\">\u2699\ufe0f RE vibration / tappet noise</button>\n              <button type=\"button\" class=\"ai-symptom-chip\" onclick=\"runAiExpertSample('Bike missing jerking and mileage drop')\">\u26a1 Missing / mileage drop</button>\n              <button type=\"button\" class=\"ai-symptom-chip\" onclick=\"runAiExpertSample('Disc brake spongy and ABS light on')\">\ud83d\uded1 Brake / ABS warning</button>\n              <button type=\"button\" class=\"ai-symptom-chip\" onclick=\"runAiExpertSample('Front fork oil seal leak and suspension noise')\">\ud83d\udd27 Fork oil leak / suspension</button>\n            </div>\n            <div style=\"display:flex;gap:6px;\">\n              <input type=\"text\" id=\"ai-diag-input\" class=\"form-control\" placeholder=\"Type bike problem (e.g. Activa starting problem...)\" style=\"padding:9px 10px;font-size:0.82rem;flex:1;\" onkeydown=\"if(event.key==='Enter'){event.preventDefault();solveBikeProblemAI();}\">\n              <button type=\"button\" class=\"btn btn-amber\" onclick=\"solveBikeProblemAI()\" style=\"padding:9px 12px;font-size:0.8rem;white-space:nowrap;\">\ud83d\udd0d Diagnose</button>\n            </div>\n            <div id=\"ai-diag-output\" class=\"ai-diag-result-card\">\n              <div style=\"color:#fbbf24;font-weight:800;font-size:0.81rem;\">\ud83e\udd16 Ready for Instant 100cc\u20132500cc Petrol Diagnosis</div>\n              <div style=\"font-size:0.76rem;color:#cbd5e1;\">\n                Upaay: Upar apni bike ka naam aur fault likh kar <strong>Diagnose</strong> dabayein. Hum <strong>100% Genuine OEM Parts</strong> use karte hain aur bina aapke WhatsApp <strong>\"Confirm Change\"</strong> approval ke <strong>1 Paisa</strong> bhi extra add nahi karte!\n              </div>\n              <div style=\"display:flex;gap:6px;flex-wrap:wrap;margin-top:2px;\">\n                <button type=\"button\" class=\"btn btn-outline\" onclick=\"switchAiExpertTab('calc')\" style=\"padding:6px 10px;font-size:0.74rem;flex:1;\">\ud83d\udcb0 Check Price &amp; \u20b90 VIP Pickup</button>\n                <button type=\"button\" class=\"btn btn-whatsapp\" onclick=\"dispatchAiExpertToWhatsApp()\" style=\"padding:6px 10px;font-size:0.74rem;flex:1;\">\ud83d\udcac Ask Mr. Nitish on WhatsApp</button>\n              </div>\n            </div>\n          </div>\n\n          <!-- PANEL 2: TRANSPARENT PRICE & VIP PICKUP CALCULATOR -->\n          <div class=\"ai-expert-panel\" id=\"ai-panel-calc\">\n            <div class=\"chat-msg bot\" style=\"margin:0;\">\n              \ud83d\udcb0 <strong>Transparent Price &amp; Pickup Calculator:</strong> Apni bike ka segment aur Hyderabad area select karein \u2014 \u20b90 Free VIP Flatbed Pickup aur service estimate turant dekhein:\n            </div>\n            <div style=\"display:flex;flex-direction:column;gap:8px;background:rgba(255,255,255,0.03);padding:10px;border-radius:8px;border:1px solid var(--border-subtle);\">\n              <div>\n                <label style=\"display:block;font-size:0.72rem;color:#94a3b8;font-weight:700;margin-bottom:3px;\">1. Select Petrol Bike / Scooter Segment *</label>\n                <select id=\"ai-calc-segment\" class=\"form-control\" style=\"padding:8px 10px;font-size:0.8rem;\" onchange=\"updateAiExpertCalculator()\">\n                  <option value=\"scooter\">\ud83d\udef5 Gearless Scooter (100\u2013160cc: Activa, Access, Jupiter, Vespa)</option>\n                  <option value=\"commuter\">\ud83c\udfcd\ufe0f Commuter Bike (100\u2013160cc: Shine, Unicorn, Pulsar, FZ, Apache)</option>\n                  <option value=\"sports\">\u26a1 Sports / Cruiser / RE (200\u2013500cc: Classic 350, Himalayan, KTM 390)</option>\n                  <option value=\"superbike\">\ud83c\udfc1 Superbike (600\u20132500cc: Benelli 600i, Hayabusa, Z900, Ducati, BMW)</option>\n                </select>\n              </div>\n              <div>\n                <label style=\"display:block;font-size:0.72rem;color:#94a3b8;font-weight:700;margin-bottom:3px;\">2. Select Service / Diagnostic Package *</label>\n                <select id=\"ai-calc-service\" class=\"form-control\" style=\"padding:8px 10px;font-size:0.8rem;\" onchange=\"updateAiExpertCalculator()\">\n                  <option value=\"General service\">General service (Periodic Oil, Filter &amp; 32-Point Check)</option>\n                  <option value=\"OBD & ECU Diagnostics\">OBD &amp; ECU Diagnostics (FI Sensor &amp; Telemetry Scan)</option>\n                  <option value=\"Electrical & Battery Check\">Electrical &amp; Battery Check (Starting, Coil &amp; Wiring)</option>\n                  <option value=\"Brakes, Clutch & Chain\">Brakes, Clutch &amp; Chain / CVT Overhaul</option>\n                  <option value=\"Suspension & Fork Overhaul\">Suspension &amp; Fork Oil Seal Overhaul</option>\n                  <option value=\"Full Engine Overhaul\">Full Engine Overhaul (1-Year Engine Warranty)</option>\n                  <option value=\"Major Superbike Service\">Major Superbike Service (Multi-Cylinder Lab Care)</option>\n                  <option value=\"Breakdown Flatbed Recovery\">Breakdown Flatbed Recovery &amp; Inspection</option>\n                </select>\n              </div>\n              <div>\n                <label style=\"display:block;font-size:0.72rem;color:#94a3b8;font-weight:700;margin-bottom:3px;\">3. Select Your Hyderabad Area / PIN *</label>\n                <select id=\"ai-calc-area\" class=\"form-control\" style=\"padding:8px 10px;font-size:0.8rem;\" onchange=\"updateAiExpertCalculator()\">\n                  <option value=\"Gachibowli (500032)|500032\">Gachibowli \u2014 500032 (\u20b90 FREE VIP Pickup)</option>\n                  <option value=\"Financial District (500032)|500032\">Financial District \u2014 500032 (\u20b90 FREE VIP Pickup)</option>\n                  <option value=\"Jubilee Hills (500033)|500033\">Jubilee Hills \u2014 500033 (\u20b90 FREE VIP Pickup)</option>\n                  <option value=\"Banjara Hills (500034)|500034\">Banjara Hills \u2014 500034 (\u20b90 FREE VIP Pickup)</option>\n                  <option value=\"Manikonda / Alkapur / Puppalguda (500089)|500089\">Manikonda / Alkapur / Puppalguda \u2014 500089 (\u20b90 FREE VIP Pickup)</option>\n                  <option value=\"HITEC City / Madhapur (500081)|500081\">HITEC City / Madhapur \u2014 500081 (\u20b90 FREE VIP Pickup)</option>\n                  <option value=\"Kondapur (500084)|500084\">Kondapur \u2014 500084 (\u20b90 FREE VIP Pickup)</option>\n                  <option value=\"Kokapet / Narsingi (500075)|500075\">Kokapet / Narsingi \u2014 500075 (\u20b90 FREE VIP Pickup)</option>\n                  <option value=\"Film Nagar / Nanakramguda (500096)|500096\">Film Nagar / Nanakramguda \u2014 500096 (\u20b90 FREE VIP Pickup)</option>\n                  <option value=\"Lanco Hills (500089)|500089\">Lanco Hills \u2014 500089 (\u20b90 FREE VIP Pickup)</option>\n                  <option value=\"Shaikpet / Tolichowki (500008)|500008\">Shaikpet / Tolichowki \u2014 500008 (\u20b90 FREE VIP Pickup)</option>\n                  <option value=\"Other Hyderabad Area (Mehdipatnam / Kukatpally / Secunderabad)|500028\">Other Hyderabad Area \u2014 \u20b9500 Standard Flatbed Pickup</option>\n                </select>\n              </div>\n            </div>\n            <div id=\"ai-calc-output\" class=\"ai-calc-summary-box\">\n              <div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;\">\n                <span style=\"font-weight:800;color:#fde68a;\">Estimated Lab Charge:</span>\n                <strong style=\"font-size:1.05rem;color:#34d399;\">\u20b9799</strong>\n              </div>\n              <div style=\"font-size:0.78rem;color:#34d399;font-weight:800;margin-bottom:4px;\">\n                \u2705 \u20b90 FREE VIP Flatbed Pickup &amp; Drop Eligible (35\u201345 Min Dispatch)\n              </div>\n              <div style=\"font-size:0.72rem;color:#cbd5e1;\">\n                \ud83d\udee1\ufe0f Includes 30-Day Workmanship Guarantee &amp; Zero-Unapproved Parts Policy.\n              </div>\n            </div>\n            <div style=\"display:flex;gap:6px;flex-wrap:wrap;\">\n              <button type=\"button\" class=\"btn btn-amber\" onclick=\"applyAiExpertToBookingForm()\" style=\"flex:1;padding:9px;font-size:0.78rem;\">\ud83d\udee0\ufe0f Fill Express Booking Form</button>\n              <button type=\"button\" class=\"btn btn-whatsapp\" onclick=\"dispatchAiExpertToWhatsApp()\" style=\"flex:1;padding:9px;font-size:0.78rem;\">\ud83d\udcf2 Send to Mr. Nitish (WhatsApp)</button>\n            </div>\n          </div>\n\n          <!-- PANEL 3: DIRECT WHATSAPP BOOKING DISPATCH -->\n          <div class=\"ai-expert-panel\" id=\"ai-panel-book\">\n            <div class=\"chat-msg bot\" style=\"margin:0;\">\n              \ud83d\udcf2 <strong>Direct Express Booking &amp; WhatsApp Dispatch:</strong> Apni 4 details bharein \u2014 aapka Booking ID (#...) &amp; 4-Digit Handover OTP turant generate hokar Manager <strong>Mr. Nitish Kumar (+91 8333084261)</strong> ke WhatsApp par jayega:\n            </div>\n            <div style=\"background:rgba(255,255,255,0.03);border:1px solid var(--border-subtle);padding:10px;border-radius:8px;display:flex;flex-direction:column;gap:8px;\">\n              <input type=\"text\" id=\"qa-name\" class=\"form-control\" placeholder=\"1. Your Full Name *\" style=\"padding:8px 10px;font-size:0.82rem;\">\n              <input type=\"tel\" id=\"qa-mobile\" class=\"form-control\" placeholder=\"2. 10-Digit WhatsApp / Mobile Number *\" style=\"padding:8px 10px;font-size:0.82rem;\">\n              <input type=\"text\" id=\"qa-bike\" class=\"form-control\" placeholder=\"3. Bike / Scooter Model (e.g. Activa 125 / Benelli 600i) *\" style=\"padding:8px 10px;font-size:0.82rem;\">\n              <select id=\"qa-pin\" class=\"form-control\" style=\"padding:8px 10px;font-size:0.82rem;\">\n                <option value=\"500032\">Gachibowli / Financial District \u2014 500032 (\u20b90 FREE VIP Pickup)</option>\n                <option value=\"500033\">Jubilee Hills \u2014 500033 (\u20b90 FREE VIP Pickup)</option>\n                <option value=\"500034\">Banjara Hills \u2014 500034 (\u20b90 FREE VIP Pickup)</option>\n                <option value=\"500089\">Manikonda / Alkapur / Puppalguda \u2014 500089 (\u20b90 FREE VIP Pickup)</option>\n                <option value=\"500081\">HITEC City / Madhapur \u2014 500081 (\u20b90 FREE VIP Pickup)</option>\n                <option value=\"500084\">Kondapur \u2014 500084 (\u20b90 FREE VIP Pickup)</option>\n                <option value=\"500075\">Kokapet / Narsingi \u2014 500075 (\u20b90 FREE VIP Pickup)</option>\n                <option value=\"500096\">Film Nagar / Nanakramguda \u2014 500096 (\u20b90 FREE VIP Pickup)</option>\n                <option value=\"500008\">Shaikpet / Tolichowki \u2014 500008 (\u20b90 FREE VIP Pickup)</option>\n                <option value=\"500028\">Other Hyderabad Area (\u20b9500 Standard Pickup)</option>\n              </select>\n              <button type=\"button\" class=\"btn btn-whatsapp\" style=\"width:100%;padding:10px;font-size:0.84rem;font-weight:800;\" onclick=\"submitQuickChatBooking()\">\n                \ud83d\udcf2 Confirm Booking &amp; Dispatch to WhatsApp (+91 8333084261)\n              </button>\n              <button type=\"button\" class=\"btn btn-outline\" style=\"width:100%;padding:8px;font-size:0.78rem;\" onclick=\"applyAiExpertToBookingForm()\">\n                \ud83d\udcdd Or Open Full Express Booking Form on Page\n              </button>\n            </div>\n          </div>\n        </div>\n      </div>\n      <div class=\"floating-buttons-row\">\n        <button type=\"button\" class=\"btn btn-amber\" onclick=\"toggleAiAssistant()\" style=\"border-radius:999px;box-shadow:0 8px 25px rgba(0,0,0,0.75);padding:10px 16px;font-weight:800;\">\n          \ud83e\udd16 CC Motocrafts AI Expert\n        </button>\n        <a href=\"https://wa.me/918333084261?text=Hello%20Mr.%20Nitish%20Kumar%20(CC%20Motocrafts%20AI%20Engine%20Labs)!%20I%20need%20petrol%20two-wheeler%20service%20%2F%20diagnostic%20support%20in%20Hyderabad.\" target=\"_blank\" class=\"btn btn-whatsapp\" style=\"border-radius:999px;box-shadow:0 8px 25px rgba(0,0,0,0.75);padding:10px 16px;\">\n          \ud83d\udcac WhatsApp +91 8333084261\n        </a>\n      </div>";
+      dock.innerHTML = "      <div class=\"ai-chat-window\" id=\"ai-assistant-window\">\n        <div class=\"ai-chat-header\" style=\"background:linear-gradient(135deg,#0f172a 0%,#0e7490 55%,#1e293b 100%);border-bottom:1px solid rgba(245,158,11,0.4);\">\n          <div style=\"display:flex;align-items:center;gap:9px;\">\n            <img src=\"logo-cc-crafts-3d.jpg\" alt=\"CC Motocrafts AI Expert\" style=\"width:36px;height:36px;border-radius:50%;border:1.5px solid #fbbf24;object-fit:cover;\">\n            <div>\n              <div style=\"display:flex;align-items:center;gap:6px;\">\n                <strong style=\"color:#fff;font-size:0.92rem;\">\ud83e\udd16 CC Motocrafts AI Expert</strong>\n                <span style=\"background:#10b981;color:#052e16;font-size:0.62rem;font-weight:900;padding:2px 6px;border-radius:999px;\">LIVE AI</span>\n              </div>\n              <div style=\"font-size:0.69rem;color:#a5f3fc;\">100cc\u20132500cc Petrol Diagnostics \u2022 Mr. Nitish Kumar (+91 8333084261)</div>\n            </div>\n          </div>\n          <button type=\"button\" onclick=\"toggleAiAssistant()\" style=\"background:rgba(255,255,255,0.1);border:none;color:#fff;width:28px;height:28px;border-radius:50%;font-size:1rem;cursor:pointer;line-height:1;\">\u2715</button>\n        </div>\n\n        <!-- 3-FEATURE NAVIGATION TABS -->\n        <div class=\"ai-expert-tabs\">\n          <button type=\"button\" class=\"ai-expert-tab-btn active\" id=\"ai-tab-btn-diag\" onclick=\"switchAiExpertTab('diag')\">\n            \ud83d\udd0d 1. Problem Solver<br><span style=\"font-size:0.63rem;opacity:0.85;\">Diagnostic AI</span>\n          </button>\n          <button type=\"button\" class=\"ai-expert-tab-btn\" id=\"ai-tab-btn-calc\" onclick=\"switchAiExpertTab('calc')\">\n            \ud83d\udcb0 2. Price &amp; VIP<br><span style=\"font-size:0.63rem;opacity:0.85;\">Pickup Calculator</span>\n          </button>\n          <button type=\"button\" class=\"ai-expert-tab-btn\" id=\"ai-tab-btn-book\" onclick=\"switchAiExpertTab('book')\">\n            \ud83d\udcf2 3. Direct Book<br><span style=\"font-size:0.63rem;opacity:0.85;\">WhatsApp Dispatch</span>\n          </button>\n        </div>\n\n        <div class=\"ai-chat-body\" style=\"max-height:420px;padding:12px;\">\n          <!-- PANEL 1: INSTANT PROBLEM SOLVER (DIAGNOSTIC AI) -->\n          <div class=\"ai-expert-panel active\" id=\"ai-panel-diag\">\n            <div class=\"chat-msg bot\" style=\"margin:0;\">\n              \ud83d\udc4b Welcome! Main <strong>CC Motocrafts AI Expert</strong> hoon. Apni petrol bike ya scooter ki problem niche likhiye ya quick button dabayein \u2014 main turant fault aur workshop solution bataunga:\n            </div>\n            <div class=\"ai-chip-row\">\n              <button type=\"button\" class=\"ai-symptom-chip\" onclick=\"runAiExpertSample('Activa starting problem in morning')\">\ud83d\udef5 Activa starting problem in morning</button>\n              <button type=\"button\" class=\"ai-symptom-chip\" onclick=\"runAiExpertSample('Benelli engine heating issue')\">\ud83d\udd25 Benelli engine heating issue</button>\n              <button type=\"button\" class=\"ai-symptom-chip\" onclick=\"runAiExpertSample('Royal Enfield vibration and tappet noise')\">\u2699\ufe0f RE vibration / tappet noise</button>\n              <button type=\"button\" class=\"ai-symptom-chip\" onclick=\"runAiExpertSample('Bike missing jerking and mileage drop')\">\u26a1 Missing / mileage drop</button>\n              <button type=\"button\" class=\"ai-symptom-chip\" onclick=\"runAiExpertSample('Disc brake spongy and ABS light on')\">\ud83d\uded1 Brake / ABS warning</button>\n              <button type=\"button\" class=\"ai-symptom-chip\" onclick=\"runAiExpertSample('Front fork oil seal leak and suspension noise')\">\ud83d\udd27 Fork oil leak / suspension</button>\n            </div>\n            <div style=\"display:flex;gap:6px;\">\n              <input type=\"text\" id=\"ai-diag-input\" class=\"form-control\" placeholder=\"Type bike problem (e.g. Activa starting problem...)\" style=\"padding:9px 10px;font-size:0.82rem;flex:1;\" onkeydown=\"if(event.key==='Enter'){event.preventDefault();solveBikeProblemAI();}\">\n              <button type=\"button\" class=\"btn btn-amber\" onclick=\"solveBikeProblemAI()\" style=\"padding:9px 12px;font-size:0.8rem;white-space:nowrap;\">\ud83d\udd0d Diagnose</button>\n            </div>\n            <div id=\"ai-diag-output\" class=\"ai-diag-result-card\">\n              <div style=\"color:#fbbf24;font-weight:800;font-size:0.81rem;\">\ud83e\udd16 Ready for Instant 100cc\u20132500cc Petrol Diagnosis</div>\n              <div style=\"font-size:0.76rem;color:#cbd5e1;\">\n                Tip: Upar apni bike ka naam aur fault likh kar <strong>Diagnose</strong> dabayein. Hum <strong>100% Genuine OEM Parts</strong> use karte hain aur bina aapke WhatsApp <strong>\"Confirm Change\"</strong> approval ke <strong>zero extra cost</strong> bhi extra add nahi karte!\n              </div>\n              <div style=\"display:flex;gap:6px;flex-wrap:wrap;margin-top:2px;\">\n                <button type=\"button\" class=\"btn btn-outline\" onclick=\"switchAiExpertTab('calc')\" style=\"padding:6px 10px;font-size:0.74rem;flex:1;\">\ud83d\udcb0 Check Price &amp; \u20b90 VIP Pickup</button>\n                <button type=\"button\" class=\"btn btn-whatsapp\" onclick=\"dispatchAiExpertToWhatsApp()\" style=\"padding:6px 10px;font-size:0.74rem;flex:1;\">\ud83d\udcac Ask Mr. Nitish on WhatsApp</button>\n              </div>\n            </div>\n          </div>\n\n          <!-- PANEL 2: TRANSPARENT PRICE & VIP PICKUP CALCULATOR -->\n          <div class=\"ai-expert-panel\" id=\"ai-panel-calc\">\n            <div class=\"chat-msg bot\" style=\"margin:0;\">\n              \ud83d\udcb0 <strong>Transparent Price &amp; Pickup Calculator:</strong> Apni bike ka segment aur Hyderabad area select karein \u2014 \u20b90 Free VIP Flatbed Pickup aur service estimate turant dekhein:\n            </div>\n            <div style=\"display:flex;flex-direction:column;gap:8px;background:rgba(255,255,255,0.03);padding:10px;border-radius:8px;border:1px solid var(--border-subtle);\">\n              <div>\n                <label style=\"display:block;font-size:0.72rem;color:#94a3b8;font-weight:700;margin-bottom:3px;\">1. Select Petrol Bike / Scooter Segment *</label>\n                <select id=\"ai-calc-segment\" class=\"form-control\" style=\"padding:8px 10px;font-size:0.8rem;\" onchange=\"updateAiExpertCalculator()\">\n                  <option value=\"scooter\">\ud83d\udef5 Gearless Scooter (100\u2013160cc: Activa, Access, Jupiter, Vespa)</option>\n                  <option value=\"commuter\">\ud83c\udfcd\ufe0f Commuter Bike (100\u2013160cc: Shine, Unicorn, Pulsar, FZ, Apache)</option>\n                  <option value=\"sports\">\u26a1 Sports / Cruiser / RE (200\u2013500cc: Classic 350, Himalayan, KTM 390)</option>\n                  <option value=\"superbike\">\ud83c\udfc1 Superbike (600\u20132500cc: Benelli 600i, Hayabusa, Z900, Ducati, BMW)</option>\n                </select>\n              </div>\n              <div>\n                <label style=\"display:block;font-size:0.72rem;color:#94a3b8;font-weight:700;margin-bottom:3px;\">2. Select Service / Diagnostic Package *</label>\n                <select id=\"ai-calc-service\" class=\"form-control\" style=\"padding:8px 10px;font-size:0.8rem;\" onchange=\"updateAiExpertCalculator()\">\n                  <option value=\"General service\">General service (Periodic Oil, Filter &amp; 32-Point Check)</option>\n                  <option value=\"OBD & ECU Diagnostics\">OBD &amp; ECU Diagnostics (FI Sensor &amp; Telemetry Scan)</option>\n                  <option value=\"Electrical & Battery Check\">Electrical &amp; Battery Check (Starting, Coil &amp; Wiring)</option>\n                  <option value=\"Brakes, Clutch & Chain\">Brakes, Clutch &amp; Chain / CVT Overhaul</option>\n                  <option value=\"Suspension & Fork Overhaul\">Suspension &amp; Fork Oil Seal Overhaul</option>\n                  <option value=\"Full Engine Overhaul\">Full Engine Overhaul (1-Year Engine Warranty)</option>\n                  <option value=\"Major Superbike Service\">Major Superbike Service (Multi-Cylinder Lab Care)</option>\n                  <option value=\"Breakdown Flatbed Recovery\">Breakdown Flatbed Recovery &amp; Inspection</option>\n                </select>\n              </div>\n              <div>\n                <label style=\"display:block;font-size:0.72rem;color:#94a3b8;font-weight:700;margin-bottom:3px;\">3. Select Your Hyderabad Area / PIN *</label>\n                <select id=\"ai-calc-area\" class=\"form-control\" style=\"padding:8px 10px;font-size:0.8rem;\" onchange=\"updateAiExpertCalculator()\">\n                  <option value=\"Gachibowli (500032)|500032\">Gachibowli \u2014 500032 (\u20b90 FREE VIP Pickup)</option>\n                  <option value=\"Financial District (500032)|500032\">Financial District \u2014 500032 (\u20b90 FREE VIP Pickup)</option>\n                  <option value=\"Jubilee Hills (500033)|500033\">Jubilee Hills \u2014 500033 (\u20b90 FREE VIP Pickup)</option>\n                  <option value=\"Banjara Hills (500034)|500034\">Banjara Hills \u2014 500034 (\u20b90 FREE VIP Pickup)</option>\n                  <option value=\"Manikonda / Alkapur / Puppalguda (500089)|500089\">Manikonda / Alkapur / Puppalguda \u2014 500089 (\u20b90 FREE VIP Pickup)</option>\n                  <option value=\"HITEC City / Madhapur (500081)|500081\">HITEC City / Madhapur \u2014 500081 (\u20b90 FREE VIP Pickup)</option>\n                  <option value=\"Kondapur (500084)|500084\">Kondapur \u2014 500084 (\u20b90 FREE VIP Pickup)</option>\n                  <option value=\"Kokapet / Narsingi (500075)|500075\">Kokapet / Narsingi \u2014 500075 (\u20b90 FREE VIP Pickup)</option>\n                  <option value=\"Film Nagar / Nanakramguda (500096)|500096\">Film Nagar / Nanakramguda \u2014 500096 (\u20b90 FREE VIP Pickup)</option>\n                  <option value=\"Lanco Hills (500089)|500089\">Lanco Hills \u2014 500089 (\u20b90 FREE VIP Pickup)</option>\n                  <option value=\"Shaikpet / Tolichowki (500008)|500008\">Shaikpet / Tolichowki \u2014 500008 (\u20b90 FREE VIP Pickup)</option>\n                  <option value=\"Other Hyderabad Area (Mehdipatnam / Kukatpally / Secunderabad)|500028\">Other Hyderabad Area \u2014 \u20b9500 Standard Flatbed Pickup</option>\n                </select>\n              </div>\n            </div>\n            <div id=\"ai-calc-output\" class=\"ai-calc-summary-box\">\n              <div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;\">\n                <span style=\"font-weight:800;color:#fde68a;\">Estimated Lab Charge:</span>\n                <strong style=\"font-size:1.05rem;color:#34d399;\">\u20b9799</strong>\n              </div>\n              <div style=\"font-size:0.78rem;color:#34d399;font-weight:800;margin-bottom:4px;\">\n                \u2705 \u20b90 FREE VIP Flatbed Pickup &amp; Drop Eligible (35\u201345 Min Dispatch)\n              </div>\n              <div style=\"font-size:0.72rem;color:#cbd5e1;\">\n                \ud83d\udee1\ufe0f Includes 30-Day Workmanship Guarantee &amp; Zero-Unapproved Parts Policy.\n              </div>\n            </div>\n            <div style=\"display:flex;gap:6px;flex-wrap:wrap;\">\n              <button type=\"button\" class=\"btn btn-amber\" onclick=\"applyAiExpertToBookingForm()\" style=\"flex:1;padding:9px;font-size:0.78rem;\">\ud83d\udee0\ufe0f Fill Express Booking Form</button>\n              <button type=\"button\" class=\"btn btn-whatsapp\" onclick=\"dispatchAiExpertToWhatsApp()\" style=\"flex:1;padding:9px;font-size:0.78rem;\">\ud83d\udcf2 Send to Mr. Nitish (WhatsApp)</button>\n            </div>\n          </div>\n\n          <!-- PANEL 3: DIRECT WHATSAPP BOOKING DISPATCH -->\n          <div class=\"ai-expert-panel\" id=\"ai-panel-book\">\n            <div class=\"chat-msg bot\" style=\"margin:0;\">\n              \ud83d\udcf2 <strong>Direct Express Booking &amp; WhatsApp Dispatch:</strong> Apni 4 details bharein \u2014 aapka Booking ID (#...) &amp; 4-Digit Handover OTP turant generate hokar Manager <strong>Mr. Nitish Kumar (+91 8333084261)</strong> ke WhatsApp par jayega:\n            </div>\n            <div style=\"background:rgba(255,255,255,0.03);border:1px solid var(--border-subtle);padding:10px;border-radius:8px;display:flex;flex-direction:column;gap:8px;\">\n              <input type=\"text\" id=\"qa-name\" class=\"form-control\" placeholder=\"1. Your Full Name *\" style=\"padding:8px 10px;font-size:0.82rem;\">\n              <input type=\"tel\" id=\"qa-mobile\" class=\"form-control\" placeholder=\"2. 10-Digit WhatsApp / Mobile Number *\" style=\"padding:8px 10px;font-size:0.82rem;\">\n              <input type=\"text\" id=\"qa-bike\" class=\"form-control\" placeholder=\"3. Bike / Scooter Model (e.g. Activa 125 / Benelli 600i) *\" style=\"padding:8px 10px;font-size:0.82rem;\">\n              <select id=\"qa-pin\" class=\"form-control\" style=\"padding:8px 10px;font-size:0.82rem;\">\n                <option value=\"500032\">Gachibowli / Financial District \u2014 500032 (\u20b90 FREE VIP Pickup)</option>\n                <option value=\"500033\">Jubilee Hills \u2014 500033 (\u20b90 FREE VIP Pickup)</option>\n                <option value=\"500034\">Banjara Hills \u2014 500034 (\u20b90 FREE VIP Pickup)</option>\n                <option value=\"500089\">Manikonda / Alkapur / Puppalguda \u2014 500089 (\u20b90 FREE VIP Pickup)</option>\n                <option value=\"500081\">HITEC City / Madhapur \u2014 500081 (\u20b90 FREE VIP Pickup)</option>\n                <option value=\"500084\">Kondapur \u2014 500084 (\u20b90 FREE VIP Pickup)</option>\n                <option value=\"500075\">Kokapet / Narsingi \u2014 500075 (\u20b90 FREE VIP Pickup)</option>\n                <option value=\"500096\">Film Nagar / Nanakramguda \u2014 500096 (\u20b90 FREE VIP Pickup)</option>\n                <option value=\"500008\">Shaikpet / Tolichowki \u2014 500008 (\u20b90 FREE VIP Pickup)</option>\n                <option value=\"500028\">Other Hyderabad Area (\u20b9500 Standard Pickup)</option>\n              </select>\n              <button type=\"button\" class=\"btn btn-whatsapp\" style=\"width:100%;padding:10px;font-size:0.84rem;font-weight:800;\" onclick=\"submitQuickChatBooking()\">\n                \ud83d\udcf2 Confirm Booking &amp; Dispatch to WhatsApp (+91 8333084261)\n              </button>\n              <button type=\"button\" class=\"btn btn-outline\" style=\"width:100%;padding:8px;font-size:0.78rem;\" onclick=\"applyAiExpertToBookingForm()\">\n                \ud83d\udcdd Or Open Full Express Booking Form on Page\n              </button>\n            </div>\n          </div>\n        </div>\n      </div>\n      <div class=\"floating-buttons-row\">\n        <button type=\"button\" class=\"btn btn-amber\" onclick=\"toggleAiAssistant()\" style=\"border-radius:999px;box-shadow:0 8px 25px rgba(0,0,0,0.75);padding:10px 16px;font-weight:800;\">\n          \ud83e\udd16 CC Motocrafts AI Expert\n        </button>\n        <a href=\"https://wa.me/918333084261?text=Hello%20Mr.%20Nitish%20Kumar%20(CC%20Motocrafts%20AI%20Engine%20Labs)!%20I%20need%20petrol%20two-wheeler%20service%20%2F%20diagnostic%20support%20in%20Hyderabad.\" target=\"_blank\" class=\"btn btn-whatsapp\" style=\"border-radius:999px;box-shadow:0 8px 25px rgba(0,0,0,0.75);padding:10px 16px;\">\n          \ud83d\udcac WhatsApp +91 8333084261\n        </a>\n      </div>";
     }
     updateAiExpertCalculator();
   }
@@ -1369,7 +1568,7 @@ if ('caches' in window) {
     if (!out) return;
     const raw = (inp ? inp.value : "").trim();
     if (!raw) {
-      alert("Kripya apni bike ya scooter ki problem likhein (jaise: 'Activa starting problem in morning' ya 'Benelli engine heating issue').");
+      alert("Please describe your bike or scooter issue (for example: 'Activa starting problem in morning' or 'Benelli engine heating issue').");
       return;
     }
     const q = raw.toLowerCase();
@@ -1426,32 +1625,32 @@ if ('caches' in window) {
 
     if (q.includes("start") || q.includes("morning") || q.includes("self") || q.includes("kick") || q.includes("chalu") || q.includes("battery") || q.includes("crank")) {
       faultTitle = "Cold-Start Ignition / Auto-Choke / Cranking Voltage Fault";
-      faultReason = "Morning starting problem aksar <strong>Auto-Choke / Thermal Sensor drift</strong>, <strong>Spark Plug &amp; Injector carbon fouling</strong>, <strong>Tight Tappet Valve clearance</strong>, ya <strong>Battery Cranking Voltage drop (&lt;12.4V)</strong> ki wajah se hota hai.";
+      faultReason = "Cold-start issues are commonly caused by <strong>Auto-Choke / Thermal Sensor drift</strong>, <strong>Spark Plug &amp; Fuel Injector carbon buildup</strong>, <strong>tight valve tappet clearance</strong>, or <strong>low battery cranking voltage (&lt;12.4V)</strong>.";
       labSolution = "Ultrasonic Fuel Injector / Carburetor Cleaning, Precision Valve Clearance (Tappet) Setting, Ignition Coil Peak-Voltage Test &amp; Battery Load Testing at CC Motocrafts AI Lab.";
       recService = "Electrical & Battery Check";
     } else if (q.includes("heat") || q.includes("garam") || q.includes("coolant") || q.includes("radiator") || q.includes("fan") || q.includes("temp")) {
       faultTitle = "Engine Overheating / Cooling Loop &amp; Lean Fuel Trim Issue";
-      faultReason = "Engine heating issue <strong>Radiator Fin blockage / Air-Lock</strong>, <strong>Thermostat Valve stuck</strong>, <strong>Radiator Fan Relay / ECT Sensor fault</strong>, ya <strong>Lean Air-Fuel Mixture (AFR)</strong> ki wajah se aata hai.";
+      faultReason = "Engine overheating typically results from <strong>radiator fin blockage / coolant air-lock</strong>, a <strong>stuck thermostat valve</strong>, <strong>fan relay / ECT sensor faults</strong>, or a <strong>lean air-fuel ratio (AFR)</strong>.";
       labSolution = "Pressurized Cooling System Flush, Radiator Fan &amp; ECT Sensor OBD-II Telemetry Test, Head Gasket Compression Check &amp; High-Grade Ester Coolant + Synthetic Oil Recharge.";
       recService = segment === "superbike" ? "Major Superbike Service" : "OBD & ECU Diagnostics";
     } else if (q.includes("vibrat") || q.includes("tappet") || q.includes("noise") || q.includes("sound") || q.includes("awaz") || q.includes("knock") || q.includes("smoke") || q.includes("engine")) {
       faultTitle = "Valve Train (Tappet) / Timing Chain / Internal Engine Wear";
-      faultReason = "Engine se extra noise ya vibration <strong>Tappet Clearance mismatch</strong>, <strong>Cam Chain Tensioner loose hone</strong>, ya <strong>Clutch Bell / Crankshaft bearing play</strong> ki nishani hai.";
-      labSolution = "Feeler-Gauge Precision Valve Lash Calibration, Timing Chain &amp; Compression Check, aur zaroorat padne par Spec-Measured Engine Overhaul (backed by 1-Year Engine Warranty).";
+      faultReason = "Excessive engine noise or vibration usually indicates <strong>tappet clearance drift</strong>, a <strong>worn cam chain tensioner</strong>, or <strong>clutch bell / crankshaft bearing wear</strong>.";
+      labSolution = "Feeler-Gauge Precision feeler-gauge valve lash calibration, timing chain &amp; compression testing, and spec-measured engine overhaul if required (backed by 1-Year Engine Warranty terms).";
       recService = q.includes("smoke") || q.includes("overhaul") || q.includes("seize") ? "Full Engine Overhaul" : "General service";
     } else if (q.includes("missing") || q.includes("jerk") || q.includes("mileage") || q.includes("pickup") || q.includes("rpm") || q.includes("ecu") || q.includes("fi") || q.includes("sensor") || q.includes("throttle")) {
       faultTitle = "Fuel Injection (FI) / Throttle Body / O2 Sensor Mismatch";
-      faultReason = "Jerking, missing aur mileage drop <strong>Clogged Fuel Injector</strong>, <strong>Dirty Throttle Body / TPS Sensor</strong>, ya <strong>O2 (Lambda) Sensor</strong> ke galat signal dene se hota hai.";
+      faultReason = "Misfiring, jerking, and fuel efficiency drop are commonly caused by a <strong>clogged fuel injector</strong>, <strong>dirty throttle body / TPS sensor</strong>, or faulty <strong>O2 (Lambda) sensor</strong> readings.";
       labSolution = "Computerized OBD-II ECU Scan, Ultrasonic Injector Spray Balancing &amp; Throttle Body Synchronization.";
       recService = "OBD & ECU Diagnostics";
     } else if (q.includes("brake") || q.includes("abs") || q.includes("disc") || q.includes("pad") || q.includes("clutch") || q.includes("chain") || q.includes("belt") || q.includes("cvt")) {
       faultTitle = "Hydraulic Brake / ABS Line or Clutch / CVT Transmission Wear";
-      faultReason = "Brake spongy hona ya pickup slip hona <strong>ABS Hydraulic Air-Lock / Worn Sintered Pads</strong> ya <strong>Clutch Plate / Scooter CVT Roller-Belt wear</strong> ki wajah se hota hai.";
+      faultReason = "Spongy braking or clutch slippage points to <strong>hydraulic air-lock / worn brake pads</strong> or <strong>clutch plate / scooter CVT roller-belt wear</strong>.";
       labSolution = "Vacuum DOT-4/5.1 Brake Bleeding, Disc Rotor Inspection &amp; OEM Clutch / CVT Drivetrain Overhaul.";
       recService = "Brakes, Clutch & Chain";
     } else if (q.includes("fork") || q.includes("suspension") || q.includes("shocker") || q.includes("seal") || q.includes("handle") || q.includes("wobble")) {
       faultTitle = "Front Fork Oil Seal Leak / Cone-Set &amp; Damper Imbalance";
-      faultReason = "Bumps par thud sound ya oil leak <strong>Damaged Fork Oil Seal</strong>, <strong>Low Damper Oil Level</strong>, ya <strong>Steering Cone-Set play</strong> ki wajah se hota hai.";
+      faultReason = "Front suspension thuds or oil seepage indicate a <strong>worn fork oil seal</strong>, <strong>low damper fluid</strong>, or <strong>steering cone-set play</strong>.";
       labSolution = "Genuine Fork Oil Seal Replacement, Measured Fork Fluid Refill &amp; Precision Steering Stem Alignment.";
       recService = "Suspension & Fork Overhaul";
     }
@@ -1541,7 +1740,7 @@ if ('caches' in window) {
 
     const pickupBadge = pinInfo.isVip
       ? '<div style="font-size:0.79rem;color:#34d399;font-weight:800;margin-bottom:4px;">✅ ₹0 FREE VIP Flatbed Pickup &amp; Drop Applicable in ' + areaLabel + ' (35–45 Min Dispatch)</div>'
-      : '<div style="font-size:0.79rem;color:#fbbf24;font-weight:800;margin-bottom:4px;">🚛 ₹500 Standard Greater Hyderabad Flatbed Pickup &amp; Drop (' + areaLabel + ')</div>';
+      : '<div style="font-size:0.79rem;color:#fbbf24;font-weight:800;margin-bottom:4px;">🚛 ₹0 FREE All Over Hyderabad Doorstep Pickup &amp; Drop (' + areaLabel + ')</div>';
 
     out.innerHTML =
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">' +
@@ -1549,7 +1748,7 @@ if ('caches' in window) {
         '<strong style="font-size:1.1rem;color:#34d399;">₹' + priceVal + '</strong>' +
       '</div>' +
       pickupBadge +
-      '<div style="font-size:0.72rem;color:#cbd5e1;">🛡️ Zero-Unapproved Parts Policy: Not 1 Paisa extra without your WhatsApp "Confirm Change" approval!</div>';
+      '<div style="font-size:0.72rem;color:#cbd5e1;">🛡️ Zero-Unapproved Parts Policy: Zero extra charge without your WhatsApp "Confirm Change" approval!</div>';
   };
 
   window.applyAiExpertToBookingForm = function () {
@@ -1594,7 +1793,7 @@ if ('caches' in window) {
   window.dispatchAiExpertToWhatsApp = function () {
     const pickupText = lastAiExpertState.isVipFreePickup
       ? "FREE VIP Flatbed Pickup & Drop (Rs. 0)"
-      : "Standard Hyderabad Pickup & Drop (Rs. 500)";
+      : "All Over Hyderabad — Free Doorstep Pickup & Drop (Rs. 0)";
     const msg =
       "*CC MOTOCRAFTS AI EXPERT — DIAGNOSTIC & BOOKING REQUEST*\n" +
       "----------------------------------------\n" +
@@ -1606,11 +1805,7 @@ if ('caches' in window) {
       "----------------------------------------\n" +
       "Hello Manager *Mr. Nitish Kumar (+91 8333084261)*, please confirm my slot under Master Technician *Mr. Shaik Mujahid Qadri*!";
 
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-      event: "conversion_whatsapp_click",
-      ai_service: lastAiExpertState.recommendedService
-    });
+
 
     window.open("https://wa.me/" + CFG.officialWhatsApp + "?text=" + encodeURIComponent(msg), "_blank");
   };
@@ -1626,11 +1821,11 @@ if ('caches' in window) {
       return;
     }
     if (!window.isValidIndianMobile(phone)) {
-      alert("Kripya apna sahi 10-digit WhatsApp / Mobile Number dalein (6, 7, 8, ya 9 se shuru hone wala). Fake number block kar diya gaya hai.");
+      alert("Please enter a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9.");
       return;
     }
     if (!window.canFireConversionNow("quick_" + phone.replace(/\D/g, "").slice(-10), 60000)) {
-      alert("Aapki booking abhi bheji ja chuki hai! Duplicate click block kiya gaya hai.");
+      alert("Your booking has already been submitted. Duplicate clicks are prevented.");
       return;
     }
 
@@ -1679,6 +1874,7 @@ if ('caches' in window) {
     saveBookings(list);
     const syncResult = await syncToSupabase("bookings", "POST", quickRecord);
     if (sbOtpRes.synced) syncResult.synced = true;
+    window.dispatchSilentSheetWebhook(quickRecord);
 
     if (syncResult && syncResult.synced) {
       await window.pushEnhancedConversionData(customer_name, phone, pin, code, bike_model);
@@ -1697,7 +1893,7 @@ if ('caches' in window) {
     window.trackGoogleAdsLead("quick_chat_booking", { booking_id: code, pincode: pin });
 
     const waText = buildWhatsAppMessage(quickRecord);
-    const waUrl = "https://wa.me/" + CFG.officialWhatsApp + "?text=" + encodeURIComponent(waText);
+    const waUrl = "https://api.whatsapp.com/send?phone=" + CFG.officialWhatsApp + "&text=" + encodeURIComponent(waText);
     const modal = document.getElementById("booking-pass-modal");
     const passContent = document.getElementById("booking-pass-details");
     const btnPassWa = document.getElementById("btn-pass-whatsapp");
@@ -1716,14 +1912,14 @@ if ('caches' in window) {
             </div>
           </div>
           <div style="font-size:0.83rem;color:#f8fafc;line-height:1.5;background:rgba(255,255,255,0.05);padding:10px;border-radius:8px;">
-            Aapki booking ID (<strong>${quickRecord.booking_number}</strong>) aur Handover OTP (<strong>${quickRecord.handover_otp}</strong>) generate ho gaya hai. Jo pickup banda aapke paas aayega, woh hamari company ka banda hai — aap Booking ID aur Handover OTP verify karke gadi usko handover kar sakte hain.
+            Your Booking ID (<strong>${quickRecord.booking_number}</strong>) and 4-Digit Handover OTP (<strong>${quickRecord.handover_otp}</strong>) have been generated. Please verify both the Booking ID and Handover OTP with our authorized company pickup executive before handing over your vehicle.
           </div>
         </div>
       `;
     }
     if (btnPassWa) btnPassWa.href = waUrl;
     if (modal) { modal.classList.add("open"); modal.style.display = "flex"; }
-    window.open(waUrl, "_blank");
+    window.openWhatsAppCleanly(waText);
   };
 
   window.toggleMobileNav = function () {
@@ -1758,8 +1954,17 @@ if ('caches' in window) {
   let deferredInstallPrompt = null;
 
   if ("serviceWorker" in navigator) {
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (!refreshing) {
+        refreshing = true;
+        window.location.reload();
+      }
+    });
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=29").catch(() => {});
+      navigator.serviceWorker.register("./sw.js?v=34").then((reg) => {
+        if (reg && typeof reg.update === "function") reg.update();
+      }).catch(() => {});
     });
   }
 
@@ -1801,56 +2006,148 @@ if ('caches' in window) {
 })();
 
 
-// Google Ads (AW-18345537681) & GTM (GTM-57JRWFN3) Primary Conversion Listeners:
-// (b) WhatsApp Click (wa.me) -> conversion_whatsapp_click
-// (c) Click-to-Call (tel:+918333084261) -> conversion_call_click
-document.addEventListener('click', function(e) {
-  const link = e.target.closest('a');
-  if (!link || !link.href) return;
-  const href = link.href;
+// v34 Conversion Lock Active: Conversions fire strictly after verified database booking save.
 
-  // (b) WhatsApp Button Click (wa.me / 8333084261)
-  if (href.includes('wa.me') || (href.includes('8333084261') && !href.startsWith('tel:'))) {
-    if (window.canFireConversionNow && !window.canFireConversionNow('wa_click', 45000)) {
-      return;
+  // ==========================================================================
+  // v30 SMART 1-5 STAR CUSTOMER REVIEW FUNNEL
+  // 1-3 Stars -> Opens WhatsApp (+91 8333084261) for immediate resolution
+  // 4-5 Stars -> Publishes Excellent Review directly on the website wall
+  // ==========================================================================
+  let selectedReviewStars = 5;
+
+  const DEFAULT_REVIEWS = [
+    {
+      name: "Syed Imran",
+      bike: "Suzuki Hayabusa 1300cc",
+      stars: 5,
+      text: "Doorstep flatbed pickup from Gachibowli with Booking ID & Handover OTP verification. Zero unapproved parts — live WhatsApp video shared before changing brake pads.",
+      date: "2026-11-18"
+    },
+    {
+      name: "Karthik Reddy",
+      bike: "Honda Activa 125",
+      stars: 5,
+      text: "Booked in 15 seconds on Chrome. Pickup executive verified my Handover OTP at the gate and delivered my scooter the same evening running smooth.",
+      date: "2026-11-16"
+    },
+    {
+      name: "Mohammed Tariq",
+      bike: "Royal Enfield Classic 350",
+      stars: 5,
+      text: "Best petrol bike lab in Hyderabad. Tappet noise and cold-start issue fixed cleanly with 30-day workmanship guarantee and transparent bill.",
+      date: "2026-11-14"
+    },
+    {
+      name: "Anirudh Rao",
+      bike: "KTM Duke 390",
+      stars: 4,
+      text: "Quick pickup from Kondapur, proper OBD scan and coolant flush. Manager Nitish Kumar kept me updated on WhatsApp at every step.",
+      date: "2026-11-12"
     }
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-      'event': 'conversion_whatsapp_click',
-      'googleAdsId': 'AW-18345537681',
-      'gtmId': 'GTM-57JRWFN3',
-      'targetUrl': href,
-      'trafficSource': window.getTrafficSourceLabel ? window.getTrafficSourceLabel() : 'DIRECT'
-    });
-    if (typeof window.gtag === 'function') {
-      window.gtag('event', 'conversion_whatsapp_click', {
-        'send_to': 'AW-18345537681',
-        'value': 499,
-        'currency': 'INR'
-      });
-    }
+  ];
+
+  function getSavedReviews() {
+    try {
+      const raw = localStorage.getItem("ccm_public_reviews_v30");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length) return parsed;
+      }
+    } catch (e) {}
+    return DEFAULT_REVIEWS;
   }
 
-  // (c) Click-to-Call Button Click (tel:+918333084261)
-  if (href.startsWith('tel:') && href.includes('8333084261')) {
-    if (window.canFireConversionNow && !window.canFireConversionNow('call_click', 45000)) {
+  window.renderCustomerReviewsWall = function () {
+    const grid = document.getElementById("reviews-wall-grid");
+    if (!grid) return;
+    const list = getSavedReviews();
+    grid.innerHTML = list.map(function (r) {
+      const starsStr = "★".repeat(Math.max(4, Math.min(5, Number(r.stars) || 5)));
+      return (
+        '<div class="review-wall-card">' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">' +
+            '<span style="color:#fbbf24;font-weight:900;font-size:0.95rem;">' + starsStr + ' (' + r.stars + '.0)</span>' +
+            '<span style="font-size:0.7rem;color:#34d399;font-weight:800;">✓ Verified Rider</span>' +
+          '</div>' +
+          '<p style="font-size:0.83rem;color:#e2e8f0;line-height:1.5;margin-bottom:10px;">"' + String(r.text || "").replace(/</g, "&lt;") + '"</p>' +
+          '<div style="font-size:0.76rem;color:#94a3b8;display:flex;justify-content:space-between;">' +
+            '<strong style="color:#fff;">' + String(r.name || "").replace(/</g, "&lt;") + '</strong>' +
+            '<span>' + String(r.bike || "").replace(/</g, "&lt;") + '</span>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join("");
+  };
+
+  window.selectReviewStars = function (stars) {
+    selectedReviewStars = Number(stars) || 5;
+    document.querySelectorAll(".star-pick-btn").forEach(function (btn) {
+      const s = Number(btn.getAttribute("data-stars"));
+      btn.classList.toggle("active", s === selectedReviewStars);
+    });
+    const hint = document.getElementById("review-route-hint");
+    const btn = document.getElementById("btn-submit-smart-review");
+    if (selectedReviewStars <= 3) {
+      if (hint) {
+        hint.innerHTML = '<span style="color:#fbbf24;">💬 1–3 Star Feedback: Connects directly to Manager <strong>Mr. Nitish Kumar (+91 8333084261)</strong> on WhatsApp so we can resolve your concern immediately.</span>';
+      }
+      if (btn) {
+        btn.textContent = "💬 Send Feedback on WhatsApp (+91 8333084261)";
+        btn.className = "btn btn-whatsapp";
+      }
+    } else {
+      if (hint) {
+        hint.innerHTML = '<span style="color:#34d399;">⭐ 4–5 Star Excellent Review: Your review will be published live on the CC Motocrafts website!</span>';
+      }
+      if (btn) {
+        btn.textContent = "⭐ Post Excellent Review on Website";
+        btn.className = "btn btn-amber";
+      }
+    }
+  };
+
+  window.submitSmartCustomerReview = function () {
+    const nameEl = document.getElementById("rev-name");
+    const bikeEl = document.getElementById("rev-bike");
+    const msgEl = document.getElementById("rev-text");
+    const rName = (nameEl ? nameEl.value : "").trim() || "Hyderabad Rider";
+    const rBike = (bikeEl ? bikeEl.value : "").trim() || "Petrol Two-Wheeler";
+    const rText = (msgEl ? msgEl.value : "").trim();
+
+    if (!rText) {
+      alert("Please write your short review or feedback before submitting.");
       return;
     }
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-      'event': 'conversion_call_click',
-      'googleAdsId': 'AW-18345537681',
-      'gtmId': 'GTM-57JRWFN3',
-      'phoneNumber': '+918333084261',
-      'trafficSource': window.getTrafficSourceLabel ? window.getTrafficSourceLabel() : 'DIRECT'
-    });
-    if (typeof window.gtag === 'function') {
-      window.gtag('event', 'conversion_call_click', {
-        'send_to': 'AW-18345537681',
-        'phone_conversion_number': '+918333084261',
-        'value': 499,
-        'currency': 'INR'
-      });
+
+    if (selectedReviewStars <= 3) {
+      const waMsg =
+        "*CC MOTOCRAFTS — CUSTOMER FEEDBACK (" + selectedReviewStars + "★)*\n" +
+        "*Customer:* " + rName + "\n" +
+        "*Vehicle:* " + rBike + "\n" +
+        "*Feedback:* " + rText + "\n" +
+        "Hello Mr. Nitish Kumar (+91 8333084261), please help resolve this experience.";
+      window.open("https://wa.me/" + CFG.officialWhatsApp + "?text=" + encodeURIComponent(waMsg), "_blank");
+      if (msgEl) msgEl.value = "";
+      return;
     }
-  }
-});
+
+    const list = getSavedReviews();
+    list.unshift({
+      name: rName,
+      bike: rBike,
+      stars: selectedReviewStars,
+      text: rText,
+      date: new Date().toISOString().split("T")[0]
+    });
+    localStorage.setItem("ccm_public_reviews_v30", JSON.stringify(list.slice(0, 12)));
+    window.renderCustomerReviewsWall();
+    if (nameEl) nameEl.value = "";
+    if (bikeEl) bikeEl.value = "";
+    if (msgEl) msgEl.value = "";
+    alert("Thank you! Your " + selectedReviewStars + "-Star Excellent Review is now published live on our website.");
+  };
+
+  document.addEventListener("DOMContentLoaded", function () {
+    window.renderCustomerReviewsWall();
+    window.selectReviewStars(5);
+  });

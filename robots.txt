@@ -1,7 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /admin.html
-Disallow: /partner.html
-Disallow: /schema_and_rls.sql
-Disallow: /SUPABASE_FRESH_MIGRATION_AND_CLEANUP.sql
-Sitemap: https://ccmotocrafts.in/sitemap.xml
+Disallow: /partner-proof.html
+Sitemap: https://www.ccmotocrafts.in/sitemap.xml

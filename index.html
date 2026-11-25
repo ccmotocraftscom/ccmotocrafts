@@ -55,7 +55,7 @@
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; overflow-x: hidden; background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
-body { overflow-x: hidden; line-height: 1.5; background: var(--bg); color: var(--text); }
+body { overflow-x: hidden; line-height: 1.5; background: var(--bg); color: var(--text); width: 100%; }
 img { max-width: 100%; height: auto; display: block; }
 a { color: var(--cyan); text-decoration: none; }
 a:hover { text-decoration: underline; }
@@ -64,57 +64,52 @@ a:hover { text-decoration: underline; }
 html[data-mode="2w"] .only-4w { display: none !important; }
 html[data-mode="4w"] .only-2w { display: none !important; }
 
-.container { width: 100%; max-width: 1180px; margin: 0 auto; padding: 0 16px; }
+.container { width: 100%; max-width: 1180px; margin: 0 auto; padding: 0 14px; }
 
-/* STICKY HEADER */
+/* SINGLE CLEAN STICKY HEADER WITH ONE UNCLIPPED MODE TOGGLE */
 .topbar {
   position: sticky; top: 0; z-index: 100;
-  background: rgba(9,13,22,0.96); backdrop-filter: blur(10px);
+  background: rgba(9,13,22,0.97); backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border);
 }
 .topbar-inner {
   display: flex; align-items: center; justify-content: space-between;
-  gap: 10px; padding: 10px 0; flex-wrap: wrap;
+  gap: 10px; padding: 9px 0; flex-wrap: wrap;
 }
-.brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
-.brand img { width: 44px; height: 44px; border-radius: 10px; border: 1px solid rgba(0,229,255,0.35); object-fit: cover; flex-shrink: 0; }
-.brand-title { font-size: 15px; font-weight: 800; color: #fff; line-height: 1.2; }
-.brand-sub { font-size: 11.5px; color: var(--cyan); font-weight: 600; }
+.brand { display: flex; align-items: center; gap: 9px; min-width: 0; flex: 1 1 auto; }
+.brand img { width: 40px; height: 40px; border-radius: 10px; border: 1px solid rgba(0,229,255,0.35); object-fit: cover; flex-shrink: 0; }
+.brand-text { min-width: 0; }
+.brand-title { font-size: 14.5px; font-weight: 800; color: #fff; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brand-sub { font-size: 11px; color: var(--cyan); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+.topbar-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .mode-switch {
-  display: inline-flex; background: #0D1424; border: 1px solid rgba(0,229,255,0.35);
-  border-radius: 999px; padding: 4px; gap: 4px;
+  display: grid; grid-template-columns: 1fr 1fr;
+  background: #0D1424; border: 1.5px solid rgba(0,229,255,0.4);
+  border-radius: 999px; padding: 3px; gap: 3px; max-width: 100%;
 }
 .mode-btn {
   border: 0; background: transparent; color: var(--muted);
-  font-size: 13.5px; font-weight: 700; padding: 8px 15px; border-radius: 999px;
-  cursor: pointer; white-space: nowrap;
+  font-size: 13px; font-weight: 800; padding: 7px 14px; border-radius: 999px;
+  cursor: pointer; white-space: nowrap; text-align: center;
 }
 html[data-mode="2w"] .mode-btn[data-set-mode="2w"],
 html[data-mode="4w"] .mode-btn[data-set-mode="4w"] {
   background: linear-gradient(135deg, var(--cyan), #00B8D4);
-  color: #06101B; box-shadow: 0 0 14px rgba(0,229,255,0.35);
+  color: #06101B; box-shadow: 0 0 12px rgba(0,229,255,0.35);
 }
-.nav-links { display: flex; align-items: center; gap: 14px; font-size: 13px; font-weight: 600; }
+.nav-links { display: flex; align-items: center; gap: 13px; font-size: 13px; font-weight: 600; }
 .nav-links a { color: var(--text); opacity: 0.9; }
 .nav-links a:hover { color: var(--cyan); text-decoration: none; }
 .call-pill {
   background: rgba(34,197,94,0.16); color: #86EFAC; border: 1px solid rgba(34,197,94,0.4);
-  padding: 7px 12px; border-radius: 999px; font-size: 12.5px; font-weight: 700; white-space: nowrap;
+  padding: 7px 11px; border-radius: 999px; font-size: 12px; font-weight: 700; white-space: nowrap;
 }
 
-/* HERO — BOOKING FIRST ABOVE THE FOLD */
-.hero { padding: 18px 0 26px; background: radial-gradient(circle at top right, rgba(0,229,255,0.10), transparent 45%); }
-.hero-toggle-bar {
-  display: flex; align-items: center; justify-content: center; flex-direction: column;
-  gap: 6px; margin-bottom: 16px; text-align: center;
-}
-.hero-toggle-bar .mode-switch { padding: 5px; border-width: 1.5px; }
-.hero-toggle-bar .mode-btn { font-size: 14.5px; padding: 10px 20px; }
-.mode-hint { font-size: 12px; color: var(--muted); }
-
-.hero-grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: 20px; align-items: start; }
-.hero-copy h1 { font-size: clamp(23px, 3vw, 36px); line-height: 1.15; font-weight: 900; margin-bottom: 10px; }
+/* HERO — BOOKING FORM ABOVE THE FOLD ON MOBILE & DESKTOP */
+.hero { padding: 16px 0 24px; background: radial-gradient(circle at top right, rgba(0,229,255,0.10), transparent 45%); }
+.hero-grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: 18px; align-items: start; }
+.hero-copy h1 { font-size: clamp(22px, 3vw, 35px); line-height: 1.15; font-weight: 900; margin-bottom: 9px; }
 .hero-copy h1 span { color: var(--cyan); }
 .hero-lead { color: var(--muted); font-size: 14.5px; margin-bottom: 12px; }
 .pill-row { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 12px; }
@@ -134,18 +129,18 @@ html[data-mode="4w"] .mode-btn[data-set-mode="4w"] {
 
 .card {
   background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 18px;
+  border-radius: var(--radius); padding: 16px;
 }
-.booking-card { border-color: rgba(0,229,255,0.38); box-shadow: 0 12px 32px rgba(0,0,0,0.35); }
+.booking-card { border-color: rgba(0,229,255,0.4); box-shadow: 0 12px 32px rgba(0,0,0,0.35); }
 .booking-card h2 { font-size: 18px; font-weight: 800; margin-bottom: 3px; color: #fff; }
 .booking-sub { font-size: 12.5px; color: var(--muted); margin-bottom: 10px; }
 
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
-.form-group { display: flex; flex-direction: column; gap: 4px; }
+.form-group { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .form-group.full { grid-column: 1 / -1; }
 label { font-size: 12px; font-weight: 700; color: #CBD5E1; }
 input, select, textarea {
-  width: 100%; background: #0A101D; color: #fff; border: 1px solid rgba(255,255,255,0.16);
+  width: 100%; max-width: 100%; background: #0A101D; color: #fff; border: 1px solid rgba(255,255,255,0.16);
   border-radius: 9px; padding: 9.5px 11px; font-size: 14px; font-family: inherit;
 }
 input:focus, select:focus, textarea:focus { outline: none; border-color: var(--cyan); }
@@ -166,9 +161,9 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--c
 .btn-outline { background: transparent; border: 1px solid var(--border); color: #fff; }
 .status-msg { font-size: 12.5px; margin-top: 7px; min-height: 18px; color: var(--cyan); font-weight: 600; }
 
-section { padding: 26px 0; border-top: 1px solid rgba(255,255,255,0.06); }
+section { padding: 24px 0; border-top: 1px solid rgba(255,255,255,0.06); }
 .sec-head { margin-bottom: 14px; }
-.sec-head h2 { font-size: clamp(20px, 2.3vw, 27px); font-weight: 900; margin-bottom: 4px; }
+.sec-head h2 { font-size: clamp(19px, 2.3vw, 27px); font-weight: 900; margin-bottom: 4px; }
 .sec-head p { color: var(--muted); font-size: 14px; }
 
 .rate-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
@@ -184,8 +179,8 @@ section { padding: 26px 0; border-top: 1px solid rgba(255,255,255,0.06); }
 .rate-card ul li::before { content: "✓ "; color: var(--green); font-weight: 800; }
 
 .table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); }
-table { width: 100%; border-collapse: collapse; min-width: 520px; font-size: 13.5px; }
-th, td { padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; min-width: 480px; font-size: 13.5px; }
+th, td { padding: 11px 13px; text-align: left; border-bottom: 1px solid var(--border); }
 th { background: var(--surface-2); color: var(--cyan); font-size: 12px; text-transform: uppercase; }
 tr:last-child td { border-bottom: 0; }
 
@@ -227,6 +222,22 @@ tr:last-child td { border-bottom: 0; }
 .review-meta { display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; color: var(--muted); margin-bottom: 4px; flex-wrap: wrap; }
 .review-stars { color: var(--gold); letter-spacing: 1px; font-weight: 800; }
 
+
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 999; background: rgba(4,8,18,0.86);
+  display: none; align-items: center; justify-content: center; padding: 16px;
+}
+.modal-backdrop.show { display: flex; }
+.modal-card {
+  width: 100%; max-width: 480px; background: #111827; border: 1.5px solid #00E5FF;
+  border-radius: 16px; padding: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); text-align: center;
+}
+.modal-otp {
+  display: inline-block; margin: 10px 0 12px; padding: 8px 18px; border-radius: 10px;
+  background: rgba(255,179,0,0.14); border: 1.5px solid #FFB300; color: #FFD54F;
+  font-size: 22px; font-weight: 900; letter-spacing: 3px;
+}
+
 footer { background: #060910; border-top: 1px solid var(--border); padding: 26px 0 34px; font-size: 13px; color: var(--muted); }
 .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 20px; margin-bottom: 16px; }
 .footer-grid h4 { color: #fff; font-size: 14px; margin-bottom: 8px; }
@@ -234,14 +245,18 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 26px
 
 @media (max-width: 960px) {
   .hero-grid, .reviews-layout, .footer-grid { grid-template-columns: 1fr; }
+  .booking-card { order: -1; }
   .rate-grid, .trust-grid { grid-template-columns: repeat(2, 1fr); }
   .gallery-grid { grid-template-columns: repeat(2, 1fr); }
   .nav-links { display: none; }
+  .topbar-controls { width: 100%; justify-content: space-between; }
+  .mode-switch { flex: 1 1 auto; }
 }
 @media (max-width: 600px) {
   .form-grid, .rate-grid, .trust-grid, .gallery-grid { grid-template-columns: 1fr; }
   .photo-grid { grid-template-columns: repeat(2, 1fr); }
-  .hero-toggle-bar .mode-btn { padding: 9px 14px; font-size: 13.5px; }
+  .mode-btn { padding: 7px 10px; font-size: 12.5px; }
+  .call-pill { font-size: 11.5px; padding: 6px 10px; }
 }
 </style>
 </head>
@@ -251,12 +266,12 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 26px
 <header class="topbar">
   <div class="container topbar-inner">
     <a href="#top" class="brand" aria-label="CC Motocrafts AI Engine Labs Service">
-      <img src="logo-2w.webp" alt="CC Motocrafts Bike Service Logo" width="44" height="44" class="only-2w">
-      <img src="logo-4w.webp" alt="CC Motocrafts Car Service Logo" width="44" height="44" class="only-4w">
-      <div>
+      <img src="logo-2w.webp" alt="CC Motocrafts Bike Service Logo" width="40" height="40" class="only-2w">
+      <img src="logo-4w.webp" alt="CC Motocrafts Car Service Logo" width="40" height="40" class="only-4w">
+      <div class="brand-text">
         <div class="brand-title">CC Motocrafts AI Engine Labs Service</div>
-        <div class="brand-sub only-2w">Bike Service • 100cc – 2500cc Petrol</div>
-        <div class="brand-sub only-4w">Car Service • 800cc – 5000cc+ Petrol, Diesel, CNG &amp; Hybrid</div>
+        <div class="brand-sub only-2w">Bike Service • 100cc–2500cc Petrol</div>
+        <div class="brand-sub only-4w">Car Service • 800cc–5000cc+ Petrol/Diesel/CNG/Hybrid</div>
       </div>
     </a>
 
@@ -268,7 +283,7 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 26px
       <a href="#reviews">Reviews</a>
     </nav>
 
-    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+    <div class="topbar-controls">
       <div class="mode-switch" role="tablist" aria-label="Select Vehicle Mode">
         <button type="button" class="mode-btn" data-set-mode="2w" role="tab">🏍️ Bike Service</button>
         <button type="button" class="mode-btn" data-set-mode="4w" role="tab">🚗 Car Service</button>
@@ -282,24 +297,15 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 26px
   <!-- HERO + ABOVE-THE-FOLD BOOKING FORM -->
   <section class="hero" id="book">
     <div class="container">
-      <div class="hero-toggle-bar">
-        <div class="mode-switch" role="tablist" aria-label="Switch Bike Service or Car Service">
-          <button type="button" class="mode-btn" data-set-mode="2w" role="tab">🏍️ Bike Service (100cc–2500cc)</button>
-          <button type="button" class="mode-btn" data-set-mode="4w" role="tab">🚗 Car Service (800cc–5000cc+)</button>
-        </div>
-        <div class="mode-hint only-2w">Instant 0s switch — showing <strong>Bike Service</strong> only. Need Car Service too? Tap above anytime.</div>
-        <div class="mode-hint only-4w">Instant 0s switch — showing <strong>Car Service</strong> only. Need Bike Service too? Tap above anytime.</div>
-      </div>
-
       <div class="hero-grid">
         <div class="hero-copy">
           <div class="only-2w">
-            <h1 id="heroTitle2w">Hyderabad's Multi-Brand <span>Bike Service</span> &amp; Engine Care</h1>
-            <p class="hero-lead" id="heroLead2w"><strong>₹0 FREE Doorstep Pickup &amp; Drop</strong> in 12 VIP Hyderabad PINs (₹99 others) for <strong>100cc–2500cc Petrol Bikes &amp; Scooters</strong> at verified partner workshops.</p>
+            <h1>Hyderabad's Multi-Brand <span>Bike Service</span> &amp; Engine Care</h1>
+            <p class="hero-lead"><strong>₹0 FREE Doorstep Pickup &amp; Drop</strong> in 12 VIP Hyderabad PINs (₹99 others) for <strong>100cc–2500cc Petrol Bikes &amp; Scooters</strong> at verified partner workshops.</p>
           </div>
           <div class="only-4w">
-            <h1 id="heroTitle4w">Hyderabad's Multi-Brand <span>Car Service</span>, Engine &amp; 24/7 Towing</h1>
-            <p class="hero-lead" id="heroLead4w"><strong>₹0 FREE Driver Pickup</strong> in 12 VIP PINs (₹199 others, FREE on ₹3,999+ bills) &amp; <strong>₹1,199 Hydraulic / ₹2,199 Flatbed Towing</strong> for <strong>800cc–5000cc+ Petrol, Diesel, CNG &amp; Hybrid Cars</strong>.</p>
+            <h1>Hyderabad's Multi-Brand <span>Car Service</span>, Engine &amp; 24/7 Towing</h1>
+            <p class="hero-lead"><strong>₹0 FREE Driver Pickup</strong> in 12 VIP PINs (₹199 others, FREE on ₹3,999+ bills) &amp; <strong>₹1,199 Hydraulic / ₹2,199 Flatbed Towing</strong> for <strong>800cc–5000cc+ Petrol, Diesel, CNG &amp; Hybrid Cars</strong>.</p>
           </div>
 
           <div class="pill-row">
@@ -317,7 +323,7 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 26px
           </div>
         </div>
 
-        <!-- 15-SECOND SMART BOOKING FORM WITH AUTOCOMPLETE & DATALIST SUGGESTIONS -->
+        <!-- 15-SECOND SMART BOOKING FORM (ABOVE THE FOLD ON MOBILE & DESKTOP) -->
         <div class="card booking-card">
           <h2 class="only-2w">Book Bike Service in 15 Seconds</h2>
           <h2 class="only-4w">Book Car Service in 15 Seconds</h2>
@@ -338,8 +344,8 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 26px
                 <input id="custEmail" name="email" type="email" required placeholder="you@example.com" autocomplete="email">
               </div>
               <div class="form-group">
-                <label for="vehModel">Vehicle Make &amp; Model *</label>
-                <input id="vehModel" name="vehicle_model" type="text" list="bikeModelsList" required placeholder="Type or select model">
+                <label for="vehModel" id="vehModelLabel">Bike / Scooter Model *</label>
+                <input id="vehModel" name="vehicle_model" type="text" list="bikeModelsList" required placeholder="e.g. Royal Enfield Classic 350 / Yamaha Aerox">
               </div>
               <div class="form-group">
                 <label for="vehCc">Engine CC Category *</label>
@@ -366,7 +372,7 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 26px
               </div>
               <div class="form-group full">
                 <label for="problemNotes">Issue / Notes (Optional)</label>
-                <input id="problemNotes" name="problem_notes" type="text" placeholder="Engine noise, brake check, AC cooling, periodic service...">
+                <input id="problemNotes" name="problem_notes" type="text" placeholder="Engine noise, brake check, periodic service...">
               </div>
               <div class="form-group full">
                 <label class="check-row">
@@ -383,6 +389,7 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 26px
 
           <datalist id="bikeModelsList">
             <option value="Honda Activa 6G"></option>
+            <option value="Yamaha Aerox 155"></option>
             <option value="TVS Jupiter 125"></option>
             <option value="Suzuki Access 125"></option>
             <option value="Hero Splendor Plus"></option>
@@ -683,7 +690,7 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 26px
         <form id="orderLookupForm" class="form-grid" novalidate>
           <div class="form-group">
             <label for="lookupId">Booking ID *</label>
-            <input id="lookupId" type="text" required placeholder="e.g. 2W-4821 or 4W-5261">
+            <input id="lookupId" type="text" required placeholder="e.g. 2W-4821">
           </div>
           <div class="form-group">
             <label for="lookupVerify">10-Digit Mobile Number OR 4-Digit OTP *</label>
@@ -722,7 +729,8 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 26px
   <section id="reviews">
     <div class="container">
       <div class="sec-head">
-        <h2>Rate &amp; Review Your Service</h2>
+        <h2 class="only-2w">Rate &amp; Review Your Bike Service</h2>
+        <h2 class="only-4w">Rate &amp; Review Your Car Service</h2>
         <p>Select 4★–5★ to publish your review directly below, or 1★–3★ to escalate immediately to CC Motocrafts Service Desk on WhatsApp (+91 8333084261) for priority resolution.</p>
       </div>
       <div class="reviews-layout">
@@ -746,8 +754,8 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 26px
               <input id="revName" type="text" required placeholder="Customer name">
             </div>
             <div class="form-group">
-              <label for="revModel">Bike / Car Model *</label>
-              <input id="revModel" type="text" required placeholder="e.g. Honda City / RE Hunter 350">
+              <label for="revModel" id="revModelLabel">Bike / Scooter Model *</label>
+              <input id="revModel" type="text" required placeholder="e.g. Royal Enfield Classic 350 / Yamaha Aerox">
             </div>
             <div class="form-group">
               <label for="revArea">Area / PIN Code</label>
@@ -775,6 +783,22 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 26px
     </div>
   </section>
 </main>
+
+
+<div id="confirmModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
+  <div class="modal-card">
+    <div style="font-size:34px;margin-bottom:4px;">✅</div>
+    <h3 id="confirmModalTitle" style="font-size:19px;font-weight:900;color:#00E5FF;margin-bottom:6px;">Booking Confirmed!</h3>
+    <p style="font-size:14px;color:#E2E8F0;margin-bottom:10px;"><strong>Thank you for choosing CC Motocrafts AI Engine Labs Service! Our dispatch team will reach you within 35 to 45 minutes for your vehicle pickup.</strong></p>
+    <div style="font-size:13px;color:#9AA8BE;">Booking ID: <strong id="mBookingId" style="color:#fff;"></strong></div>
+    <div class="modal-otp">OTP: <span id="mBookingOtp">----</span></div>
+    <div id="mBookingMeta" style="font-size:12.5px;color:#CBD5E1;margin-bottom:14px;"></div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <a id="mSlipBtn" href="thank-you.html" class="btn btn-primary">📄 View 1-Page Digital Pickup Slip</a>
+      <a id="mWaBtn" href="https://wa.me/918333084261" target="_blank" rel="noopener" class="btn btn-gold" style="width:100%;">💬 Confirm on WhatsApp (+91 8333084261)</a>
+    </div>
+  </div>
+</div>
 
 <footer>
   <div class="container">
@@ -812,9 +836,16 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 26px
 (function () {
   'use strict';
 
-  var SB_URL = 'https://xrrlbqxbgxmetrwgiwvk.supabase.co';
-  var SB_FALLBACK = 'https://mnwrebfyappibbnrkjct.supabase.co';
-  var SB_KEY = 'sb_publishable__tSqrIUKNrSttvdG0PLk3g_4CnXeKw0';
+  var SB_PROJECTS = [
+    { url: 'https://xrrlbqxbgxmetrwgiwvk.supabase.co', key: 'sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I' },
+    { url: 'https://mnwrebfyappibbnrkjct.supabase.co', key: 'sb_publishable__tSqrIUKNrSttvdG0PLk3g_4CnXeKw0' }
+  ];
+  var LAST_SB_ERR = '';
+  function buildSbHeaders(key, extra) {
+    var h = { 'apikey': key, 'Content-Type': 'application/json' };
+    if (String(key).indexOf('eyJ') === 0) h['Authorization'] = 'Bearer ' + key;
+    return Object.assign(h, extra || {});
+  }
   var SHEET_HOOK = atob('aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J6UUplTkRKRlVpSTM3NFM3LTRVb0pheERwMnJySWVIZzBjbkR4TDRRTTBOR0llQ3NKaS15aGJDS3E4SlFtUDRlTkUtdy9leGVj');
   var WA_NUMBER = '918333084261';
 
@@ -839,7 +870,10 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 26px
       table: '2W_Bookings',
       prefix: '2W',
       modelList: 'bikeModelsList',
-      modelPlaceholder: 'e.g. Royal Enfield Classic 350 / Honda Activa 6G',
+      modelLabel: 'Bike / Scooter Model *',
+      modelPlaceholder: 'e.g. Royal Enfield Classic 350 / Yamaha Aerox',
+      bookingPlaceholder: 'e.g. 2W-4821',
+      notesPlaceholder: 'Engine noise, brake check, chain/clutch, periodic service...',
       ccOptions: [
         '100cc - 125cc (Commuter Bikes & Scooters) — ₹499',
         '150cc - 250cc (Street, Sports & Tourers) — ₹799',
@@ -860,7 +894,10 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 26px
       table: '4W_Bookings',
       prefix: '4W',
       modelList: 'carModelsList',
-      modelPlaceholder: 'e.g. Hyundai Creta / Honda City / BMW 3 Series',
+      modelLabel: 'Car Make & Model *',
+      modelPlaceholder: 'e.g. Hyundai Creta / Honda City',
+      bookingPlaceholder: 'e.g. 4W-5261',
+      notesPlaceholder: 'AC cooling, brake noise, clutch/gearbox, towing, periodic service...',
       ccOptions: [
         '800cc - 1199cc (Hatchbacks & Compact Cars) — ₹1,499',
         '1200cc - 1599cc (Sedans & Compact SUVs) — ₹1,999',
@@ -937,11 +974,28 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 26px
     document.documentElement.dataset.mode = m;
     try { localStorage.setItem('cc_active_mode', m); } catch (e) {}
     var cfg = MODE_CONFIG[m];
+
     var vehModel = document.getElementById('vehModel');
     if (vehModel) {
       vehModel.placeholder = cfg.modelPlaceholder;
       vehModel.setAttribute('list', cfg.modelList);
     }
+    var vehModelLabel = document.getElementById('vehModelLabel');
+    if (vehModelLabel) vehModelLabel.textContent = cfg.modelLabel;
+
+    var notesEl = document.getElementById('problemNotes');
+    if (notesEl) notesEl.placeholder = cfg.notesPlaceholder;
+
+    var lookupId = document.getElementById('lookupId');
+    if (lookupId) lookupId.placeholder = cfg.bookingPlaceholder;
+
+    var revModelLabel = document.getElementById('revModelLabel');
+    if (revModelLabel) revModelLabel.textContent = cfg.modelLabel;
+    var revModel = document.getElementById('revModel');
+    if (revModel) revModel.placeholder = cfg.modelPlaceholder;
+    var revBid = document.getElementById('revBookingId');
+    if (revBid) revBid.placeholder = cfg.bookingPlaceholder;
+
     populateSelect(document.getElementById('vehCc'), cfg.ccOptions);
     populateSelect(document.getElementById('fuelType'), cfg.fuelOptions);
     populateSelect(document.getElementById('serviceType'), cfg.serviceOptions);
@@ -988,21 +1042,81 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 26px
     pinEl.addEventListener('input', updatePinBadge);
   }
 
-  async function sbFetch(path, options, useFallback) {
-    var base = useFallback ? SB_FALLBACK : SB_URL;
-    var headers = Object.assign({
-      'apikey': SB_KEY,
-      'Authorization': 'Bearer ' + SB_KEY,
-      'Content-Type': 'application/json'
-    }, (options && options.headers) || {});
-    var res = await fetch(base + path, Object.assign({}, options, { headers: headers }));
-    if (!res.ok && !useFallback) {
-      return sbFetch(path, options, true);
+  async function sbFetch(path, options) {
+    var lastRes = null;
+    for (var i = 0; i < SB_PROJECTS.length; i++) {
+      var proj = SB_PROJECTS[i];
+      try {
+        var res = await fetch(proj.url + path, Object.assign({}, options, {
+          headers: buildSbHeaders(proj.key, options && options.headers)
+        }));
+        if (res.ok) return res;
+        var errTxt = '';
+        try { errTxt = await res.text(); } catch (e) {}
+        LAST_SB_ERR = 'HTTP ' + res.status + (errTxt ? ': ' + errTxt.slice(0, 140) : '');
+        console.error('[CC Motocrafts Booking Sync]', proj.url + path, LAST_SB_ERR);
+        lastRes = res;
+      } catch (netErr) {
+        LAST_SB_ERR = String(netErr && netErr.message ? netErr.message : netErr);
+        console.error('[CC Motocrafts Network]', proj.url + path, LAST_SB_ERR);
+      }
     }
-    return res;
+    return lastRes || { ok: false, status: 0, json: async function () { return null; } };
   }
 
-  // STRICT ZERO-WASTE BOOKING SUBMISSION: CONVERSION TOKEN ONLY ISSUED AFTER SUPABASE CONFIRMS BOOKING ID
+  // 3-TIER BULLETPROOF SUPABASE SAVE WATERFALL (FIXES 'Could not reach booking server')
+  async function saveBookingToSupabase(table, payload) {
+    // Tier 1: Secure SECURITY DEFINER RPC (works with strict customer-only RLS)
+    try {
+      var r1 = await sbFetch('/rest/v1/rpc/create_verified_booking', {
+        method: 'POST',
+        body: JSON.stringify({ p_payload: payload })
+      });
+      if (r1.ok) {
+        var d1 = await r1.json();
+        if (d1 && d1.ok && d1.booking_number) return String(d1.booking_number);
+      }
+    } catch (e1) {}
+
+    // Tier 2: Direct Table Insert with Prefer: return=minimal (succeeds even when SELECT RLS is locked!)
+    try {
+      var r2 = await sbFetch('/rest/v1/' + encodeURIComponent(table), {
+        method: 'POST',
+        headers: { 'Prefer': 'return=minimal' },
+        body: JSON.stringify(payload)
+      });
+      if (r2.ok) return payload.booking_number;
+    } catch (e2) {}
+
+    // Tier 3: Legacy-column fallback (in case customer_email / pickup_charge_summary SQL hasn't been run yet)
+    try {
+      var legacyPayload = {
+        booking_number: payload.booking_number,
+        handover_otp: payload.handover_otp,
+        vehicle_mode: payload.vehicle_mode,
+        customer_name: payload.customer_name,
+        customer_phone: payload.customer_phone,
+        vehicle_model: payload.vehicle_model,
+        vehicle_cc: payload.vehicle_cc,
+        fuel_type: payload.fuel_type,
+        pickup_area: payload.pickup_area,
+        pincode: payload.pincode,
+        service_selected: payload.service_selected,
+        problem_notes: [payload.problem_notes, 'Email: ' + payload.customer_email, payload.pickup_charge_summary].filter(Boolean).join(' | '),
+        status: payload.status,
+        partner_dispatch_link: payload.partner_dispatch_link
+      };
+      var r3 = await sbFetch('/rest/v1/' + encodeURIComponent(table), {
+        method: 'POST',
+        headers: { 'Prefer': 'return=minimal' },
+        body: JSON.stringify(legacyPayload)
+      });
+      if (r3.ok) return payload.booking_number;
+    } catch (e3) {}
+
+    return null;
+  }
+
   var form = document.getElementById('bookingForm');
   if (form) {
     form.addEventListener('submit', async function (e) {
@@ -1032,7 +1146,7 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 26px
 
       submitBtn.disabled = true;
       statusEl.style.color = '#00E5FF';
-      statusEl.textContent = 'Saving confirmed booking to Cloud & generating 4-Digit Handover OTP...';
+      statusEl.textContent = 'Saving confirmed booking & generating 4-Digit Handover OTP...';
 
       var bookingId = cfg.prefix + '-' + Math.floor(1000 + Math.random() * 9000);
       var otp = String(Math.floor(1000 + Math.random() * 9000));
@@ -1058,36 +1172,21 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 26px
         partner_dispatch_link: partnerLink
       };
 
-      // 1. MUST confirm Supabase save & valid Booking ID BEFORE issuing conversion token
-      var sbConfirmedId = null;
-      try {
-        var sbRes = await sbFetch('/rest/v1/' + encodeURIComponent(cfg.table), {
-          method: 'POST',
-          headers: { 'Prefer': 'return=representation' },
-          body: JSON.stringify(payload)
-        });
-        if (sbRes.ok) {
-          var rows = await sbRes.json();
-          if (Array.isArray(rows) && rows[0] && rows[0].booking_number) {
-            sbConfirmedId = String(rows[0].booking_number);
-          } else {
-            sbConfirmedId = bookingId;
-          }
-        }
-      } catch (err) {}
-
+      // 1. Confirmed Supabase save (3-tier waterfall)
+      var sbConfirmedId = await saveBookingToSupabase(cfg.table, payload);
       if (!sbConfirmedId) {
         statusEl.style.color = '#FCA5A5';
-        statusEl.textContent = 'Could not reach booking server. Please retry or WhatsApp +91 8333084261.';
+        statusEl.textContent = 'Booking server error (' + (LAST_SB_ERR || 'Network blocked') + '). Please retry or WhatsApp +91 8333084261.';
         submitBtn.disabled = false;
         return;
       }
 
-      // 2. Log to Google Sheet + Customer-Only Confirmation Email (Zero Admin Spam)
+      // 2. Non-blocking Sheet + Customer Email dispatch (never blocks booking confirmation)
       try {
         fetch(SHEET_HOOK, {
           method: 'POST',
           mode: 'no-cors',
+          keepalive: true,
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify(Object.assign({ action: 'booking' }, payload))
         }).catch(function () {});
@@ -1104,8 +1203,27 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 26px
         sessionStorage.setItem('cc_verified_booking_token', verifyToken);
       } catch (err) {}
 
-      // 3. Redirect to thank-you.html with verified booking token
-      location.href = 'thank-you.html?id=' + encodeURIComponent(sbConfirmedId) + '&mode=' + encodeURIComponent(m) + '&vt=' + encodeURIComponent(verifyToken);
+      // 3. Show instant confirmation popup with 35-45 min dispatch message + 1-tap Pickup Slip & WhatsApp
+      var slipUrl = 'thank-you.html?id=' + encodeURIComponent(sbConfirmedId) + '&mode=' + encodeURIComponent(m) + '&vt=' + encodeURIComponent(verifyToken);
+      var waMsg = [
+        'Hello CC Motocrafts Service Desk (+91 8333084261),',
+        'Booking Confirmed: ' + sbConfirmedId,
+        '4-Digit Handover OTP: ' + otp,
+        'Mode: ' + cfg.label,
+        'Customer: ' + name + ' (' + phone + ')',
+        'Vehicle: ' + model + ' (' + cc + ', ' + fuel + ')',
+        'Area/PIN: ' + area + ' - ' + pin,
+        'Service: ' + svc
+      ].join(String.fromCharCode(10));
+      document.getElementById('mBookingId').textContent = sbConfirmedId;
+      document.getElementById('mBookingOtp').textContent = otp;
+      document.getElementById('mBookingMeta').textContent = model + ' • ' + area + ' (' + pin + ') • ' + svc;
+      document.getElementById('mSlipBtn').href = slipUrl;
+      document.getElementById('mWaBtn').href = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(waMsg);
+      document.getElementById('confirmModal').classList.add('show');
+      statusEl.style.color = '#86EFAC';
+      statusEl.textContent = '✓ Confirmed! Booking ID ' + sbConfirmedId + ' | OTP ' + otp;
+      submitBtn.disabled = false;
     });
   }
 
@@ -1141,7 +1259,7 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 26px
 
       if (!bid || ver.length < 4) {
         msg.style.color = '#FCA5A5';
-        msg.textContent = 'Enter your exact Booking ID (e.g. 2W-4821) AND your 10-digit Mobile Number or 4-Digit OTP.';
+        msg.textContent = 'Enter your exact Booking ID AND your 10-digit Mobile Number or 4-Digit OTP.';
         resBox.classList.remove('show');
         return;
       }
@@ -1197,7 +1315,7 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 26px
     });
   }
 
-  // SMART STAR ROUTING: 4-5 STARS -> PUBLIC WEBSITE REVIEWS | 1-3 STARS -> DIRECT WHATSAPP PRIORITY ESCALATION
+  // SMART STAR ROUTING: 4-5 STARS -> PUBLIC WEBSITE REVIEWS | 1-3 STARS -> DIRECT WHATSAPP ESCALATION
   var starBtns = document.querySelectorAll('.star-btn');
   var revRatingInput = document.getElementById('revRating');
   var starHint = document.getElementById('starHint');
@@ -1274,7 +1392,6 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 26px
         return;
       }
 
-      // 1-3 Stars -> Direct WhatsApp escalation (never push to public reviews)
       if (rating <= 3) {
         var waText =
           'Priority Escalation — CC Motocrafts Service Desk (+91 8333084261)\n' +
@@ -1290,7 +1407,6 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 26px
         return;
       }
 
-      // 4-5 Stars -> Save to Supabase & display publicly
       msg.style.color = '#00E5FF';
       msg.textContent = 'Publishing your review...';
       try {

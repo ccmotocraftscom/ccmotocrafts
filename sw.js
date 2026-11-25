@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cc-motocrafts-unified-v44b';
+const CACHE_NAME = 'cc-motocrafts-unified-v44d';
 const CORE = [
   './',
   './index.html',

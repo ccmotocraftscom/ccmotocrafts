@@ -1,4 +1,4 @@
-// CC Motocrafts AI Engine Labs Service — Strict Zero-Waste Google Ads Conversion Config (v44)
+// CC Motocrafts AI Engine Labs Service — Strict Zero-Waste Google Ads Conversion Config (v44.2)
 // Account: 344-054-3047 | Base Tag: AW-18345537681
 // INSTRUCTIONS: Replace PASTE_YOUR_CONVERSION_LABEL_HERE on Line 8 with your Google Ads Conversion Label.
 window.CC_ADS_CONFIG = {
@@ -11,7 +11,6 @@ window.CC_ADS_CONFIG = {
       if (!bookingId || !urlToken || typeof window.gtag !== 'function') return false;
       var label = String(this.CONVERSION_LABEL || '').trim();
       if (!label || label.indexOf('PASTE_') === 0) return false;
-      // Strict double verification: must match Supabase-confirmed Booking ID + one-time session token
       var verifiedId = sessionStorage.getItem('cc_verified_booking_id');
       var verifiedToken = sessionStorage.getItem('cc_verified_booking_token');
       if (verifiedId !== bookingId || !verifiedToken || verifiedToken !== urlToken) return false;

@@ -71,8 +71,16 @@ input[type="text"], input[type="tel"] { width: 100%; background: #0A101D; color:
 <script>
 (function () {
   'use strict';
-  var SB_URL = 'https://xrrlbqxbgxmetrwgiwvk.supabase.co';
-  var SB_KEY = 'sb_publishable__tSqrIUKNrSttvdG0PLk3g_4CnXeKw0';
+  var SB_PROJECTS = [
+    { url: 'https://xrrlbqxbgxmetrwgiwvk.supabase.co', key: 'sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I' },
+    { url: 'https://mnwrebfyappibbnrkjct.supabase.co', key: 'sb_publishable__tSqrIUKNrSttvdG0PLk3g_4CnXeKw0' }
+  ];
+  var ACTIVE_PROJ = SB_PROJECTS[0];
+  function sbHdrs(key, extra) {
+    var h = { 'apikey': key };
+    if (String(key).indexOf('eyJ') === 0) h['Authorization'] = 'Bearer ' + key;
+    return Object.assign(h, extra || {});
+  }
   var SHEET_HOOK = atob('aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J6UUplTkRKRlVpSTM3NFM3LTRVb0pheERwMnJySWVIZzBjbkR4TDRRTTBOR0llQ3NKaS15aGJDS3E4SlFtUDRlTkUtdy9leGVj');
   var activeBooking = null;
   var pickupBlobs = [null, null, null, null];
@@ -144,18 +152,13 @@ input[type="text"], input[type="tel"] { width: 100%; background: #0A101D; color:
 
   async function uploadPhoto(bookingId, stage, idx, blob) {
     var path = bookingId + '/' + stage + '_' + (idx + 1) + '_' + Date.now() + '.jpg';
-    var res = await fetch(SB_URL + '/storage/v1/object/booking-proofs/' + path, {
+    var res = await fetch(ACTIVE_PROJ.url + '/storage/v1/object/booking-proofs/' + path, {
       method: 'POST',
-      headers: {
-        'apikey': SB_KEY,
-        'Authorization': 'Bearer ' + SB_KEY,
-        'Content-Type': 'image/jpeg',
-        'x-upsert': 'true'
-      },
+      headers: sbHdrs(ACTIVE_PROJ.key, { 'Content-Type': 'image/jpeg', 'x-upsert': 'true' }),
       body: blob
     });
-    if (!res.ok) throw new Error('Storage upload failed');
-    return SB_URL + '/storage/v1/object/public/booking-proofs/' + path;
+    if (!res.ok) throw new Error('Storage upload failed (' + res.status + ')');
+    return ACTIVE_PROJ.url + '/storage/v1/object/public/booking-proofs/' + path;
   }
 
   async function verifyBooking() {
@@ -170,12 +173,21 @@ input[type="text"], input[type="tel"] { width: 100%; background: #0A101D; color:
     st.style.color = '#00E5FF';
     st.textContent = 'Verifying OTP...';
     try {
-      var res = await fetch(SB_URL + '/rest/v1/rpc/get_verified_booking', {
-        method: 'POST',
-        headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ p_booking_number: bid, p_verify_value: otp })
-      });
-      var rows = res.ok ? await res.json() : [];
+      var rows = [];
+      for (var pi = 0; pi < SB_PROJECTS.length; pi++) {
+        var pr = SB_PROJECTS[pi];
+        try {
+          var res = await fetch(pr.url + '/rest/v1/rpc/get_verified_booking', {
+            method: 'POST',
+            headers: sbHdrs(pr.key, { 'Content-Type': 'application/json' }),
+            body: JSON.stringify({ p_booking_number: bid, p_verify_value: otp })
+          });
+          if (res.ok) {
+            var cand = await res.json();
+            if (Array.isArray(cand) && cand.length) { ACTIVE_PROJ = pr; rows = cand; break; }
+          }
+        } catch (pe) {}
+      }
       if (!Array.isArray(rows) || !rows.length || String(rows[0].handover_otp) !== otp) {
         st.style.color = '#FCA5A5';
         st.textContent = 'Invalid Booking ID or 4-Digit OTP.';
@@ -211,9 +223,9 @@ input[type="text"], input[type="tel"] { width: 100%; background: #0A101D; color:
         urls.push(await uploadPhoto(activeBooking.booking_number, stage, i, blobs[i]));
       }
       var newStatus = stage === 'pickup' ? 'Picked Up (4 Photos Verified)' : 'Delivered (4 Photos Verified)';
-      var rpc = await fetch(SB_URL + '/rest/v1/rpc/update_partner_proof', {
+      var rpc = await fetch(ACTIVE_PROJ.url + '/rest/v1/rpc/update_partner_proof', {
         method: 'POST',
-        headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' },
+        headers: sbHdrs(ACTIVE_PROJ.key, { 'Content-Type': 'application/json' }),
         body: JSON.stringify({
           p_booking_number: activeBooking.booking_number,
           p_otp: activeBooking.handover_otp,
@@ -225,7 +237,6 @@ input[type="text"], input[type="tel"] { width: 100%; background: #0A101D; color:
       var out = rpc.ok ? await rpc.json() : { ok: false };
       if (!out.ok) throw new Error('Update failed');
 
-      // Trigger customer-only proof email + Sheet status update (Zero Admin Spam)
       try {
         fetch(SHEET_HOOK, {
           method: 'POST',

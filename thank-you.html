@@ -67,7 +67,7 @@ body { background: #090D16; color: #F3F6FB; font-family: system-ui, -apple-syste
       </div>
     </div>
 
-    <div class="thank-banner">Thank you for choosing CC Motocrafts AI Engine Labs Service! Your booking &amp; confirmation email have been processed.</div>
+    <div class="thank-banner">Thank you for choosing CC Motocrafts AI Engine Labs Service! Our dispatch team will reach you within 35 to 45 minutes for your vehicle pickup.</div>
 
     <div class="grid">
       <div class="cell"><small>Booking ID</small><strong id="slipId">—</strong></div>
@@ -136,7 +136,6 @@ body { background: #090D16; color: #F3F6FB; font-family: system-ui, -apple-syste
       'Note: DigiLocker/mParivahan copies ready. Requesting 4 pickup photos at handover.';
     document.getElementById('waBtn').href = 'https://wa.me/918333084261?text=' + encodeURIComponent(waText);
 
-    // STRICT ZERO-WASTE CONVERSION: Fires ONCE only if Supabase confirmed Booking ID + one-time token matches
     window.addEventListener('load', function () {
       if (vt && window.CC_ADS_CONFIG && typeof window.CC_ADS_CONFIG.fireVerifiedConversion === 'function') {
         window.CC_ADS_CONFIG.fireVerifiedConversion(b.booking_number, is4w ? '4w' : '2w', is4w ? 1499 : 499, vt);

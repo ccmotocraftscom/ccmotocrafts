@@ -56,7 +56,7 @@ body { background: #090D16; color: #F3F6FB; font-family: system-ui, -apple-syste
       <div class="brand-row">
         <img id="slipLogo" src="logo-2w.webp" alt="CC Motocrafts Logo">
         <div>
-          <strong style="font-size:16px;">CC Motocrafts AI Engine Labs Service</strong>
+          <strong id="slipBrandTitle" style="font-size:16px;">CC Motocrafts Ai Engine Labs Service</strong>
           <div style="font-size:12px;color:#00E5FF;">Digital Pickup Authorization Slip</div>
           <div style="font-size:11.5px;color:#9AA8BE;">Service Desk: +91 8333084261 | info@ccmotocrafts.in | MSME: UDYAM-TS-02-0387659</div>
         </div>
@@ -67,7 +67,7 @@ body { background: #090D16; color: #F3F6FB; font-family: system-ui, -apple-syste
       </div>
     </div>
 
-    <div class="thank-banner">Thank you for choosing CC Motocrafts AI Engine Labs Service! Our dispatch team will reach you within 35 to 45 minutes for your vehicle pickup.</div>
+    <div id="slipThankBanner" class="thank-banner">Thank you for choosing CC Motocrafts Ai Engine Labs Service! Your booking is confirmed. Please hold on — within 30 to 45 minutes our team is dispatching to your location for vehicle pickup.</div>
 
     <div class="grid">
       <div class="cell"><small>Booking ID</small><strong id="slipId">—</strong></div>
@@ -113,7 +113,10 @@ body { background: #090D16; color: #F3F6FB; font-family: system-ui, -apple-syste
   }
 
   var is4w = qmode === '4w' || (b && String(b.booking_number || '').indexOf('4W-') === 0) || qid.indexOf('4W-') === 0;
+  var lockedBrand = is4w ? 'CarS CareS Motocrafts Ai Engine Labs Service' : 'CC Motocrafts Ai Engine Labs Service';
   document.getElementById('slipLogo').src = is4w ? 'logo-4w.webp' : 'logo-2w.webp';
+  document.getElementById('slipBrandTitle').textContent = lockedBrand;
+  document.getElementById('slipThankBanner').textContent = 'Thank you for choosing ' + lockedBrand + '! Your booking is confirmed. Please hold on — within 30 to 45 minutes our team is dispatching to your location for vehicle pickup.';
 
   if (b) {
     document.getElementById('slipId').textContent = b.booking_number || qid || '—';

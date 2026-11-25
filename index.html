@@ -1343,7 +1343,12 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 26px
         sessionStorage.setItem('cc_verified_booking_token', verifyToken);
       } catch (err) {}
 
-      // 3. Show instant confirmation popup with 35-45 min dispatch message + 1-tap Pickup Slip & WhatsApp
+      // Fire verified Google Ads conversion ONCE right after Supabase confirms Booking ID + 4-Digit OTP
+      if (window.CC_ADS_CONFIG && typeof window.CC_ADS_CONFIG.fireVerifiedConversion === 'function') {
+        window.CC_ADS_CONFIG.fireVerifiedConversion(sbConfirmedId, m, m === '4w' ? 1499 : 499, verifyToken);
+      }
+
+      // 3. Show instant confirmation popup with 30-45 min dispatch message + 1-tap Pickup Slip & WhatsApp
       var slipUrl = 'thank-you.html?id=' + encodeURIComponent(sbConfirmedId) + '&mode=' + encodeURIComponent(m) + '&vt=' + encodeURIComponent(verifyToken);
       var trackUrl = 'https://www.ccmotocrafts.in/?track=' + encodeURIComponent(sbConfirmedId) + '&otp=' + encodeURIComponent(otp) + '#orders';
       var waMsg = [

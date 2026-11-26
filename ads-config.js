@@ -1,11 +1,11 @@
 // CC Motocrafts Ai Engine Labs Service (2W) & CarS CareS Motocrafts Ai Engine Labs Service (4W)
 // Google Ads Account: 344-054-3047 | Base Tag: AW-18345537681 | GTM: GTM-57JRWFN3
-// INSTRUCTIONS: Replace PASTE_YOUR_CONVERSION_LABEL_HERE on Line 8 with your Google Ads Conversion Label.
+// LIVE CONVERSION TARGET: AW-18345537681/5Aa6CO-tyr8dEJHh6qtE (Book appointment)
 window.CC_ADS_CONFIG = {
   ADS_ID: 'AW-18345537681',
   GTM_ID: 'GTM-57JRWFN3',
   // Paste ONLY the label after 'AW-18345537681/' below:
-  CONVERSION_LABEL: 'PASTE_YOUR_CONVERSION_LABEL_HERE',
+  CONVERSION_LABEL: '5Aa6CO-tyr8dEJHh6qtE',
   // Keep false so gtag fires conversion ONCE cleanly (avoids GTM + gtag double-firing):
   USE_GTM_ONLY: false,
   fireVerifiedConversion: function (bookingId, mode, valueInr, urlToken) {

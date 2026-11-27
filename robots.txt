@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 Disallow: /partner-proof.html
+Disallow: /manager.html
 Sitemap: https://www.ccmotocrafts.in/sitemap.xml

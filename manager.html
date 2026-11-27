@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Manager &amp; Supervisor Fast Lookup Desk | CC Motocrafts</title>
+<link rel="icon" href="icon-192.png" type="image/png">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #090D16; color: #F3F6FB; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; padding: 16px 12px 44px; line-height: 1.45; }
+.wrap { max-width: 1180px; margin: 0 auto; }
+.card { background: #111827; border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; padding: 15px; margin-bottom: 14px; }
+h1 { font-size: 19px; font-weight: 900; color: #00E5FF; margin-bottom: 4px; }
+h2 { font-size: 15.5px; font-weight: 800; color: #FFB300; margin-bottom: 8px; }
+input { background: #0A101D; color: #fff; border: 1px solid rgba(255,255,255,0.18); border-radius: 9px; padding: 10px; font-size: 14px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 0; border-radius: 9px; padding: 10px 14px; font-size: 13px; font-weight: 800; cursor: pointer; text-decoration: none; }
+.btn-cyan { background: #00E5FF; color: #04101B; }
+.btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 5px 9px; font-size: 11.5px; }
+.tabs { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+.tab { border: 1px solid rgba(0,229,255,0.35); background: #0A101D; color: #CBD5E1; border-radius: 9px; padding: 8px 14px; font-weight: 800; font-size: 13px; cursor: pointer; }
+.tab.active { background: #00E5FF; color: #04101B; }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; min-width: 820px; font-size: 12.5px; }
+th, td { padding: 9px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: left; vertical-align: top; }
+th { background: #172033; color: #00E5FF; font-size: 11px; text-transform: uppercase; }
+.pill { display: inline-block; padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 800; background: rgba(0,229,255,0.14); color: #00E5FF; }
+.thumbs { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
+.thumbs img { width: 40px; height: 30px; object-fit: cover; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2); }
+.hidden { display: none; }
+.status { font-size: 12.5px; font-weight: 700; color: #00E5FF; margin-top: 7px; min-height: 18px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <h1>CC Motocrafts — Manager &amp; Supervisor Fast Lookup Desk</h1>
+    <p style="font-size:12.5px;color:#9AA8BE;">Instant search across 2W &amp; 4W bookings by Booking ID, Customer Name, Phone, Vehicle Model, or Vehicle Number — with privacy phone masking (+91 XXXXXX1234) and 4+4 proof photo viewer.</p>
+  </div>
+
+  <div class="card" id="pinCard">
+    <h2>Manager / Supervisor PIN</h2>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <input id="mgrPin" type="password" inputmode="numeric" maxlength="6" placeholder="Enter PIN (default 8333)" style="flex:1;min-width:200px;">
+      <button type="button" id="unlockBtn" class="btn btn-cyan">🔓 Open Desk</button>
+    </div>
+    <div id="pinStatus" class="status"></div>
+  </div>
+
+  <div id="desk" class="hidden">
+    <div class="card">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+        <input id="searchBox" type="text" placeholder="Search Booking ID, Name, Phone, Vehicle Model or Reg No..." style="flex:1;min-width:240px;">
+        <button type="button" id="searchBtn" class="btn btn-cyan">🔍 Search</button>
+      </div>
+      <div class="tabs">
+        <button type="button" class="tab active" data-t="all">All Bookings (<span id="cAll">0</span>)</button>
+        <button type="button" class="tab" data-t="2w">🏍️ 2W Bike (<span id="c2w">0</span>)</button>
+        <button type="button" class="tab" data-t="4w">🚗 4W Car (<span id="c4w">0</span>)</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Booking ID / OTP</th><th>Customer (Masked)</th><th>Vehicle &amp; Reg No</th><th>Area / PIN</th><th>Service / Status</th><th>Total (₹)</th><th>4+4 Photos</th></tr></thead>
+          <tbody id="rowsBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var SB_PROJECTS = [
+    { url: 'https://mnwrebfyappibbnrkjct.supabase.co', key: 'sb_publishable__tSqrIUKNrSttvdG0PLk3g_4CnXeKw0' },
+    { url: 'https://xrrlbqxbgxmetrwgiwvk.supabase.co', key: 'sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I' }
+  ];
+  var activePin = '', activeTab = 'all', data2w = [], data4w = [];
+
+  function sbHdrs(key) {
+    var h = { 'apikey': key, 'Content-Type': 'application/json' };
+    if (String(key).indexOf('eyJ') === 0) h['Authorization'] = 'Bearer ' + key;
+    return h;
+  }
+  function esc(s) { return String(s || '').replace(/[&<>"']/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]; }); }
+  function maskPhone(p) {
+    var d = String(p || '').replace(/[^0-9]/g, '').slice(-10);
+    return d.length === 10 ? ('+91 XXXXXX' + d.slice(-4)) : '+91 XXXXXXXX';
+  }
+
+  async function runSearch() {
+    var st = document.getElementById('pinStatus');
+    var q = (document.getElementById('searchBox') && document.getElementById('searchBox').value.trim()) || '';
+    st.textContent = 'Fetching live 2W & 4W records...';
+    var res = null;
+    for (var i = 0; i < SB_PROJECTS.length; i++) {
+      try {
+        var r = await fetch(SB_PROJECTS[i].url + '/rest/v1/rpc/manager_search_bookings', {
+          method: 'POST', headers: sbHdrs(SB_PROJECTS[i].key), body: JSON.stringify({ p_pin: activePin, p_query: q })
+        });
+        if (r.ok) { res = await r.json(); if (res && res.ok) break; }
+      } catch (e) {}
+    }
+    if (!res || !res.ok) { st.style.color = '#FCA5A5'; st.textContent = (res && res.error) ? res.error : 'Invalid PIN or SQL RPC not run yet.'; return; }
+    document.getElementById('pinCard').classList.add('hidden');
+    document.getElementById('desk').classList.remove('hidden');
+    data2w = Array.isArray(res.bookings_2w) ? res.bookings_2w : [];
+    data4w = Array.isArray(res.bookings_4w) ? res.bookings_4w : [];
+    document.getElementById('c2w').textContent = data2w.length;
+    document.getElementById('c4w').textContent = data4w.length;
+    document.getElementById('cAll').textContent = data2w.length + data4w.length;
+    renderRows();
+  }
+
+  function renderRows() {
+    var list = activeTab === '2w' ? data2w : (activeTab === '4w' ? data4w : data2w.concat(data4w));
+    list.sort(function (a, b) { return String(b.created_at || '').localeCompare(String(a.created_at || '')); });
+    var tb = document.getElementById('rowsBody');
+    tb.innerHTML = list.length ? '' : '<tr><td colspan="7" style="color:#9AA8BE;">No matching bookings found.</td></tr>';
+    list.forEach(function (b) {
+      var pu = Array.isArray(b.pickup_photos) ? b.pickup_photos : [];
+      var dl = Array.isArray(b.delivery_photos) ? b.delivery_photos : [];
+      var photosHtml = '<div style="font-size:11px;color:#9AA8BE;">PU:' + pu.length + '/4 • DL:' + dl.length + '/4</div><div class="thumbs">' +
+        pu.concat(dl).slice(0, 8).map(function (u) { return '<a href="' + esc(u) + '" target="_blank" rel="noopener"><img src="' + esc(u) + '" loading="lazy"></a>'; }).join('') + '</div>';
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td><strong>' + esc(b.booking_number) + '</strong><br><span style="color:#FFB300;font-weight:800;">OTP: ' + esc(b.handover_otp) + '</span></td>' +
+        '<td><strong>' + esc(b.customer_name) + '</strong><br><span class="ph-mask" data-full="' + esc(b.customer_phone) + '">' + maskPhone(b.customer_phone) + '</span> <button type="button" class="btn btn-outline rev-btn">Show</button></td>' +
+        '<td>' + esc(b.vehicle_model) + '<br><small style="color:#9AA8BE;">' + esc(b.vehicle_reg || 'No Reg') + ' • ' + esc(b.vehicle_mode) + '</small></td>' +
+        '<td>' + esc(b.pickup_area || '') + '<br><small style="color:#9AA8BE;">' + esc(b.pincode || '') + '</small></td>' +
+        '<td>' + esc(b.service_selected || '') + '<br><span class="pill">' + esc(b.status || 'Confirmed') + '</span></td>' +
+        '<td><strong style="color:#86EFAC;">' + (b.total_amount ? ('₹' + b.total_amount) : '—') + '</strong></td>' +
+        '<td>' + photosHtml + '</td>';
+      tb.appendChild(tr);
+    });
+    tb.querySelectorAll('.rev-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var sp = btn.previousElementSibling;
+        sp.textContent = sp.dataset.full;
+        btn.remove();
+      });
+    });
+  }
+
+  document.getElementById('unlockBtn').addEventListener('click', function () { activePin = document.getElementById('mgrPin').value.trim(); runSearch(); });
+  document.getElementById('searchBtn').addEventListener('click', runSearch);
+  document.getElementById('searchBox').addEventListener('keydown', function (e) { if (e.key === 'Enter') runSearch(); });
+  document.querySelectorAll('.tab').forEach(function (t) {
+    t.addEventListener('click', function () {
+      activeTab = t.dataset.t;
+      document.querySelectorAll('.tab').forEach(function (x) { x.classList.toggle('active', x.dataset.t === activeTab); });
+      renderRows();
+    });
+  });
+})();
+</script>
+</body>
+</html>

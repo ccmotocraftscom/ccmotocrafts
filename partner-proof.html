@@ -100,8 +100,8 @@ input { width: 100%; background: #0A101D; color: #fff; border: 1px solid rgba(25
 (function () {
   'use strict';
   var SB_PROJECTS = [
-    { url: 'https://xrrlbqxbgxmetrwgiwvk.supabase.co', key: 'sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I' },
-    { url: 'https://mnwrebfyappibbnrkjct.supabase.co', key: 'sb_publishable__tSqrIUKNrSttvdG0PLk3g_4CnXeKw0' }
+    { url: 'https://mnwrebfyappibbnrkjct.supabase.co', key: 'sb_publishable__tSqrIUKNrSttvdG0PLk3g_4CnXeKw0' },
+    { url: 'https://xrrlbqxbgxmetrwgiwvk.supabase.co', key: 'sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I' }
   ];
   var ACTIVE_PROJ = SB_PROJECTS[0];
   var SHEET_HOOK = atob('aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J6UUplTkRKRlVpSTM3NFM3LTRVb0pheERwMnJySWVIZzBjbkR4TDRRTTBOR0llQ3NKaS15aGJDS3E4SlFtUDRlTkUtdy9leGVj');
@@ -244,30 +244,103 @@ input { width: 100%; background: #0A101D; color: #fff; border: 1px solid rgba(25
     return ACTIVE_PROJ.url + '/storage/v1/object/public/booking-proofs/' + path;
   }
 
-  document.getElementById('verifyBtn').addEventListener('click', async function () {
-    var bid = document.getElementById('pId').value.trim().toUpperCase();
-    var otp = document.getElementById('pOtp').value.replace(/[^0-9]/g, '').slice(0, 4);
-    var st = document.getElementById('verifyStatus');
-    if (!bid || otp.length !== 4) { st.style.color = '#FCA5A5'; st.textContent = 'Enter valid Booking ID & 4-Digit Handover OTP.'; return; }
-    st.style.color = '#00E5FF'; st.textContent = 'Verifying OTP...';
-    var rows = [];
-    for (var pi = 0; pi < SB_PROJECTS.length; pi++) {
-      try {
-        var r = await fetch(SB_PROJECTS[pi].url + '/rest/v1/rpc/get_verified_booking', {
-          method: 'POST', headers: sbHdrs(SB_PROJECTS[pi].key, { 'Content-Type': 'application/json' }),
-          body: JSON.stringify({ p_booking_number: bid, p_verify_value: otp })
-        });
-        if (r.ok) { var c = await r.json(); if (Array.isArray(c) && c.length) { ACTIVE_PROJ = SB_PROJECTS[pi]; rows = c; break; } }
-      } catch (e) {}
-    }
-    if (!rows.length || String(rows[0].handover_otp) !== otp) { st.style.color = '#FCA5A5'; st.textContent = 'Invalid Booking ID or 4-Digit OTP.'; return; }
-    activeBooking = rows[0];
+  function persistUnlockedSession(job, projUrl, pickupDone) {
+    try {
+      var rec = { job: job, projUrl: projUrl, pickupDone: Boolean(pickupDone), savedAt: Date.now() };
+      localStorage.setItem('cc_partner_job_' + job.booking_number, JSON.stringify(rec));
+      localStorage.setItem('cc_partner_active_job', JSON.stringify(rec));
+    } catch (e) {}
+  }
+
+  function clearUnlockedSession(bookingNum) {
+    try {
+      if (bookingNum) localStorage.removeItem('cc_partner_job_' + bookingNum);
+      localStorage.removeItem('cc_partner_active_job');
+    } catch (e) {}
+  }
+
+  function unlockProofUI(job, pickupAlreadyDone) {
+    activeBooking = job;
     populateDispatchCard(activeBooking);
-    st.style.color = '#86EFAC'; st.textContent = '✓ OTP Verified! Capture all 4 Pickup Photos.';
+    document.getElementById('otpGateCard').classList.add('hidden');
+    document.getElementById('openPickupBtn').textContent = '✓ OTP Verified — Session Unlocked Until Delivery';
     document.getElementById('proofSections').classList.remove('hidden');
     buildCamSlots('pickupCamGrid', pickupBlobs, 'savePickupBtn', 'pu');
     buildCamSlots('deliveryCamGrid', deliveryBlobs, 'saveDeliveryBtn', 'dl');
-    document.getElementById('pickupCard').scrollIntoView({ behavior: 'smooth' });
+    var hasPickup = pickupAlreadyDone || (Array.isArray(job.pickup_photos) && job.pickup_photos.length >= 4) || String(job.status || '').toLowerCase().indexOf('picked up') !== -1;
+    if (hasPickup) {
+      document.getElementById('pickupStatus').style.color = '#86EFAC';
+      document.getElementById('pickupStatus').textContent = '✓ Pickup Complete (4 Photos Locked). Proceed directly to Delivery Proof below — no OTP needed again!';
+      document.getElementById('deliveryCard').scrollIntoView({ behavior: 'smooth' });
+    } else {
+      document.getElementById('pickupCard').scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  // AUTO-RESTORE UNLOCKED SESSION SO PARTNER NEVER HAS TO RE-ENTER OTP BEFORE DELIVERY!
+  (function restoreSessionIfUnlocked() {
+    try {
+      var qId = (new URLSearchParams(location.search).get('id') || '').trim().toUpperCase();
+      var raw = qId ? localStorage.getItem('cc_partner_job_' + qId) : localStorage.getItem('cc_partner_active_job');
+      if (!raw) return;
+      var saved = JSON.parse(raw);
+      if (saved && saved.job && saved.job.booking_number) {
+        if (qId && saved.job.booking_number.toUpperCase() !== qId) return;
+        for (var i = 0; i < SB_PROJECTS.length; i++) {
+          if (SB_PROJECTS[i].url === saved.projUrl) { ACTIVE_PROJ = SB_PROJECTS[i]; break; }
+        }
+        unlockProofUI(saved.job, saved.pickupDone);
+      }
+    } catch (e) {}
+  })();
+
+  document.getElementById('verifyBtn').addEventListener('click', async function () {
+    var bid = document.getElementById('pId').value.trim().toUpperCase().replace(/\s+/g, '');
+    var otp = document.getElementById('pOtp').value.replace(/[^0-9]/g, '').slice(0, 4);
+    var st = document.getElementById('verifyStatus');
+    if (!bid || otp.length !== 4) { st.style.color = '#FCA5A5'; st.textContent = 'Enter valid Booking ID & 4-Digit Handover OTP.'; return; }
+    st.style.color = '#00E5FF'; st.textContent = 'Verifying Booking ID & 4-Digit OTP...';
+    var found = null;
+    var tbl = bid.indexOf('4W-') === 0 ? '4W_Bookings' : '2W_Bookings';
+
+    for (var pi = 0; pi < SB_PROJECTS.length; pi++) {
+      var pr = SB_PROJECTS[pi];
+      // Tier 1: Secure RPC get_verified_booking
+      try {
+        var r = await fetch(pr.url + '/rest/v1/rpc/get_verified_booking', {
+          method: 'POST', headers: sbHdrs(pr.key, { 'Content-Type': 'application/json' }),
+          body: JSON.stringify({ p_booking_number: bid, p_verify_value: otp })
+        });
+        if (r.ok) {
+          var c = await r.json();
+          if (Array.isArray(c) && c.length && String(c[0].handover_otp).trim() === otp) {
+            ACTIVE_PROJ = pr; found = c[0]; break;
+          }
+        }
+      } catch (e) {}
+      // Tier 2: Direct REST table check fallback (in case RPC wasn't run on that project)
+      try {
+        var r2 = await fetch(pr.url + '/rest/v1/' + encodeURIComponent(tbl) + '?booking_number=eq.' + encodeURIComponent(bid) + '&handover_otp=eq.' + encodeURIComponent(otp) + '&limit=1', {
+          method: 'GET', headers: sbHdrs(pr.key)
+        });
+        if (r2.ok) {
+          var c2 = await r2.json();
+          if (Array.isArray(c2) && c2.length && String(c2[0].handover_otp).trim() === otp) {
+            ACTIVE_PROJ = pr; found = c2[0]; break;
+          }
+        }
+      } catch (e2) {}
+    }
+
+    if (!found) {
+      st.style.color = '#FCA5A5';
+      st.textContent = 'Invalid Booking ID or 4-Digit OTP (check Booking ID ' + bid + ' & OTP in Supabase ' + tbl + ').';
+      return;
+    }
+    persistUnlockedSession(found, ACTIVE_PROJ.url, false);
+    st.style.color = '#86EFAC';
+    st.textContent = '✓ OTP Verified! Session stays unlocked on your phone until delivery is complete.';
+    unlockProofUI(found, false);
   });
 
   async function saveStage(stage, blobs, statusId, btnId, waBtnId) {
@@ -295,10 +368,19 @@ input { width: 100%; background: #0A101D; color: #fff; border: 1px solid rgba(25
       var nl = String.fromCharCode(10);
       var numbered = urls.map(function (u, idx) { return (idx + 1) + '. ' + u; }).join(nl);
       var msg = stage === 'pickup'
-        ? ['Hello ' + activeBooking.customer_name + ', hamari ' + exactBrand + ' team ne aapki gadi (' + activeBooking.vehicle_model + ') collect kar li hai. Yeh 4 images hain — is condition mein aapki gadi pickup hui hai:', numbered].join(nl)
+        ? ['Hello ' + activeBooking.customer_name + ', hamari ' + exactBrand + ' team ne aapki gadi (' + activeBooking.vehicle_model + ') collect kar li hai (Booking ID: ' + activeBooking.booking_number + '). Yeh 4 images hain — is condition mein aapki gadi pickup hui hai:', numbered].join(nl)
         : ['Hello ' + activeBooking.customer_name + ', aapki gadi (' + activeBooking.vehicle_model + ') ki service complete ho gayi hai! Total Amount: ₹' + totalAmt + '. Yeh 4 delivery condition images hain:', numbered, 'Hamari service aur hamare technician ka kaam kaisa laga, uske hisaab se apna review zaroor dein: https://www.ccmotocrafts.in/#reviews'].join(nl);
+      if (stage === 'pickup') {
+        activeBooking.pickup_photos = urls;
+        activeBooking.status = newStatus;
+        persistUnlockedSession(activeBooking, ACTIVE_PROJ.url, true);
+      } else {
+        clearUnlockedSession(activeBooking.booking_number);
+      }
       st.style.color = '#86EFAC';
-      st.textContent = stage === 'pickup' ? '✓ 4 Pickup Photos locked & synced!' : '✓ Delivery complete (₹' + totalAmt + ') & 60-day reminder scheduled!';
+      st.textContent = stage === 'pickup'
+        ? '✓ 4 Pickup Photos locked! Session stays unlocked — open this link anytime at delivery (no OTP needed again).'
+        : '✓ Delivery complete (₹' + totalAmt + ')! Session closed cleanly & 60-day reminder scheduled.';
       var waBtn = document.getElementById(waBtnId);
       if (custWa) { waBtn.href = 'https://wa.me/' + custWa + '?text=' + encodeURIComponent(msg); waBtn.classList.remove('hidden'); }
     } catch (err) {

@@ -208,7 +208,7 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 20px
       <a href="#proof">Proof &amp; Reviews</a>
       <a href="#contact">VIP PINs &amp; Contact</a>
     </nav>
-    <div class="topbar-right">
+    <div class="topbar-right"><select id="langSel" aria-label="Language" style="width:auto;padding:5px 7px;font-size:11.5px;border-radius:999px;background:#0D1424;color:#CBD5E1;border:1px solid rgba(255,255,255,0.18);"><option value="en">EN</option><option value="hi">हिन्दी</option><option value="te">తెలుగు</option><option value="ur">اردو</option><option value="ar">العربية</option></select>
       <div class="mode-switch" role="tablist">
         <button type="button" class="mode-btn" data-set-mode="2w" role="tab">🏍️ 2W Bike</button>
         <button type="button" class="mode-btn" data-set-mode="4w" role="tab">🚗 4W Car</button>
@@ -274,6 +274,7 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 20px
               <div><label for="custName">Customer Name *</label><input id="custName" name="name" type="text" required placeholder="Full name" autocomplete="name"></div>
               <div><label for="custPhone">Mobile Number *</label><input id="custPhone" name="tel" type="tel" inputmode="numeric" maxlength="10" required placeholder="10-digit WhatsApp" autocomplete="tel-national"></div>
               <div><label for="vehModel" id="vehModelLabel">Bike / Scooter Model *</label><input id="vehModel" type="text" list="bikeModelsList" required placeholder="e.g. Royal Enfield / Activa"></div>
+              <div><label for="vehReg">Vehicle Number (Optional)</label><input id="vehReg" type="text" placeholder="e.g. TS09AB1234"></div>
               <div><label for="serviceType">Service / Problem *</label><select id="serviceType" required></select></div>
               <div><label for="pickupArea">Area / Locality *</label><input id="pickupArea" type="text" required placeholder="e.g. Manikonda, Gachibowli"></div>
               <div><label for="pincode">PIN Code *</label><input id="pincode" type="text" inputmode="numeric" maxlength="6" list="vipPinsList" required placeholder="e.g. 500089"></div>
@@ -391,7 +392,7 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 20px
             <div><label for="revArea">Area / PIN</label><input id="revArea" type="text" placeholder="e.g. Manikonda 500089"></div>
             <div><label for="revBookingId">Booking ID (Optional)</label><input id="revBookingId" type="text" placeholder="Optional"></div>
             <div class="full"><textarea id="revText" rows="2" required placeholder="Share your experience..."></textarea></div>
-            <div class="full"><button type="submit" id="revSubmitBtn" class="btn btn-cyan">Publish 5★ Review</button><div id="revMsg" class="status-msg"></div></div>
+            <div class="full"><button type="submit" id="revSubmitBtn" class="btn btn-cyan">Submit Review</button><div id="revMsg" class="status-msg"></div></div>
           </form>
           <div style="display:flex;gap:6px;margin-bottom:8px;">
             <button type="button" class="wa-mode-opt active" data-rev-tab="2w" style="flex:1;">🏍️ 2W Reviews</button>
@@ -503,8 +504,8 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 20px
 (function () {
   'use strict';
   var SB_PROJECTS = [
-    { url: 'https://xrrlbqxbgxmetrwgiwvk.supabase.co', key: 'sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I' },
-    { url: 'https://mnwrebfyappibbnrkjct.supabase.co', key: 'sb_publishable__tSqrIUKNrSttvdG0PLk3g_4CnXeKw0' }
+    { url: 'https://mnwrebfyappibbnrkjct.supabase.co', key: 'sb_publishable__tSqrIUKNrSttvdG0PLk3g_4CnXeKw0' },
+    { url: 'https://xrrlbqxbgxmetrwgiwvk.supabase.co', key: 'sb_publishable_4s_UdA1rJTrF5aeCh__wCg_XZCyh1_I' }
   ];
   var SHEET_HOOK = atob('aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J6UUplTkRKRlVpSTM3NFM3LTRVb0pheERwMnJySWVIZzBjbkR4TDRRTTBOR0llQ3NKaS15aGJDS3E4SlFtUDRlTkUtdy9leGVj');
   var WA_NUMBER = '918333084261';
@@ -588,7 +589,7 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 20px
     var payload = {
       booking_number: bid, handover_otp: otp, vehicle_mode: c.label,
       customer_name: name, customer_phone: phone, customer_email: email || '',
-      vehicle_model: model, vehicle_cc: m === '4w' ? '800cc-5000cc+' : '100cc-2500cc',
+      vehicle_model: model, vehicle_reg: (document.getElementById('vehReg') && document.getElementById('vehReg').value.trim().toUpperCase()) || '', vehicle_cc: m === '4w' ? '800cc-5000cc+' : '100cc-2500cc',
       fuel_type: 'Petrol', pickup_area: area, pincode: pin || '',
       service_selected: svc, pickup_charge_summary: charge,
       status: 'Booking Confirmed', partner_dispatch_link: partnerLink
@@ -740,7 +741,7 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 20px
     b.addEventListener('click', function () {
       var v = Number(b.dataset.star); revRatingInput.value = v;
       starBtns.forEach(function (s) { s.classList.toggle('active', Number(s.dataset.star) <= v); });
-      document.getElementById('revSubmitBtn').textContent = v >= 4 ? ('Publish ' + v + '★ Review') : 'Send Priority Feedback to WhatsApp';
+      document.getElementById('revSubmitBtn').textContent = v >= 4 ? ('Submit ' + v + '★ Review') : 'Send Priority Feedback to WhatsApp';
     });
   });
   function setReviewTab(m) {
@@ -780,6 +781,22 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 20px
     }
     var r = await sbFetch('/rest/v1/rpc/submit_verified_review', { method: 'POST', body: JSON.stringify({ p_vehicle_mode: cat, p_rating: rating, p_customer_name: name, p_vehicle_model: model, p_area_pincode: document.getElementById('revArea').value.trim() || 'Hyderabad', p_booking_number: document.getElementById('revBookingId').value.trim().toUpperCase(), p_review_text: text }) });
     if (r.ok) { msg.style.color = '#86EFAC'; msg.textContent = '✓ Review published!'; document.getElementById('reviewForm').reset(); setReviewTab(cat === 'Car Service' ? '4w' : '2w'); }
+  });
+
+
+  var LANG_LABELS = {
+    en: { book: 'Confirm Booking & Generate 4-Digit OTP', rev: 'Submit Review' },
+    hi: { book: 'बुकिंग कन्फर्म करें और 4-अंक OTP पाएं', rev: 'रिव्यू सबमिट करें' },
+    te: { book: 'బుకింగ్ నిర్ధారించి 4-అంకెల OTP పొందండి', rev: 'రివ్యూ సబ్మిట్ చేయండి' },
+    ur: { book: 'بکنگ کنفرم کریں اور 4 ہندسوں کا OTP حاصل کریں', rev: 'ریویو سبمٹ کریں' },
+    ar: { book: 'تأكيد الحجز والحصول على رمز OTP من 4 أرقام', rev: 'إرسال التقييم' }
+  };
+  var langEl = document.getElementById('langSel');
+  if (langEl) langEl.addEventListener('change', function () {
+    var l = LANG_LABELS[langEl.value] || LANG_LABELS.en;
+    document.getElementById('submitBtn').textContent = l.book;
+    document.getElementById('revSubmitBtn').textContent = l.rev;
+    document.documentElement.dir = (langEl.value === 'ur' || langEl.value === 'ar') ? 'rtl' : 'ltr';
   });
 
   applyMode(getMode(), false);

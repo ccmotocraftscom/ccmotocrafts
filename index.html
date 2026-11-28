@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CC Motocrafts AI Engine Labs (2W) & CarS CareS (4W) | Multi-Brand Bike & Car Service Hyderabad</title>
-<meta name="description" content="CC Motocrafts AI Engine Labs (2W) & CarS CareS (4W) — Multi-Brand Petrol/Hybrid Bike & Car Service across Hyderabad VIP zones & scaling pan-India. 1-Yr Engine Warranty, 30-Day Workmanship Guarantee, Floor Manager Quality Checked, Prior WhatsApp Estimate Approval. Call +91 8333084261.">
-<meta property="og:title" content="CC Motocrafts AI Engine Labs (2W) & CarS CareS (4W) | Multi-Brand Bike & Car Service Hyderabad">
-<meta property="og:description" content="15-Second Doorstep Bike & Car Service Booking across Hyderabad VIP zones & scaling pan-India. 8-Photo OTP Proof & 1-Yr Engine Warranty.">
+<title>CC Motocrafts AI Engine Labs &amp; CarS CareS | Multi-Brand Bike Service &amp; Car Service in Hyderabad</title>
+<meta name="description" content="Multi-Brand Bike Service &amp; Car Service in Hyderabad (Mehdipatnam, Manikonda, Gachibowli, Madhapur, Kondapur, Kokapet, Jubilee Hills, Banjara Hills). Doorstep pickup, OTP &amp; photo verification, OBD diagnostics, 1-Yr engine warranty. Call/WhatsApp +91 8333084261.">
+<meta name="keywords" content="bike service hyderabad, car service hyderabad, bike repair near me, car repair near me, multi brand bike service center hyderabad, multi brand car workshop hyderabad, doorstep bike pickup hyderabad, doorstep car service gachibowli, manikonda bike service, mehdipatnam car service, superbike service hyderabad, car ac repair hyderabad, engine overhaul hyderabad">
+<meta property="og:title" content="CC Motocrafts AI Engine Labs &amp; CarS CareS | Multi-Brand Bike Service &amp; Car Service in Hyderabad">
+<meta property="og:description" content="Multi-Brand Bike Service (Two-Wheeler) &amp; Car Service (Four-Wheeler) across Hyderabad. 15-second online booking, 8-photo OTP proof &amp; 1-Yr Engine Warranty.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.ccmotocrafts.in/">
 <meta property="og:image" content="https://www.ccmotocrafts.in/icon-512.png">
@@ -14,12 +15,13 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png" type="image/png">
 <link rel="preload" as="image" href="https://www.ccmotocrafts.in/logo-2w.webp">
+<link rel="preload" as="image" href="https://www.ccmotocrafts.in/logo-4w.webp">
 <meta name="theme-color" content="#090D16">
 <script>
 (function(){
   try {
     var p = new URLSearchParams(location.search);
-    var qm = (p.get('mode') || '').toLowerCase();
+    var qm = (p.get('mode') || p.get('service') || '').toLowerCase();
     var m = (qm === '4w' || qm === 'car') ? '4w' : (qm === '2w' || qm === 'bike') ? '2w' : (localStorage.getItem('cc_active_mode') === '4w' ? '4w' : '2w');
     document.documentElement.dataset.mode = m;
     localStorage.setItem('cc_active_mode', m);
@@ -37,26 +39,32 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "MotorcycleRepair",
-      "name": "CC Motocrafts AI Engine Labs Service",
-      "url": "https://www.ccmotocrafts.in/?mode=2w",
-      "telephone": "+91-8333084261",
-      "email": "info@ccmotocrafts.in",
-      "address": {"@type": "PostalAddress", "streetAddress": "Manikonda, Puppalaguda, Alkapur Township", "addressLocality": "Hyderabad", "addressRegion": "Telangana", "postalCode": "500089", "addressCountry": "IN"},
-      "areaServed": ["500089", "500075", "500032", "500081", "500084", "500033", "500034", "500008", "500019", "500049", "500072", "Hyderabad", "India"]
-    },
-    {
-      "@type": "AutoRepair",
-      "name": "CarS CareS Motocrafts AI Engine Labs Service",
-      "url": "https://www.ccmotocrafts.in/?mode=4w",
-      "telephone": "+91-8333084261",
-      "email": "info@ccmotocrafts.in",
-      "address": {"@type": "PostalAddress", "streetAddress": "Manikonda, Puppalaguda, Alkapur Township", "addressLocality": "Hyderabad", "addressRegion": "Telangana", "postalCode": "500089", "addressCountry": "IN"},
-      "areaServed": ["500089", "500075", "500032", "500081", "500084", "500033", "500034", "500008", "500019", "500049", "500072", "Hyderabad", "India"]
-    }
-  ]
+  "@type": ["AutoRepair", "MotorcycleRepair"],
+  "name": "CC Motocrafts AI Engine Labs & CarS CareS — Multi-Brand Bike & Car Service Center",
+  "url": "https://www.ccmotocrafts.in/",
+  "logo": "https://www.ccmotocrafts.in/icon-512.png",
+  "image": ["https://www.ccmotocrafts.in/bay-2w-1.webp", "https://www.ccmotocrafts.in/bay-4w-1.webp"],
+  "telephone": "+91-8333084261",
+  "email": "info@ccmotocrafts.in",
+  "priceRange": "₹499 - ₹4499",
+  "description": "Multi-Brand Bike Service (Two-Wheeler Petrol Bikes & Scooters 100cc-2500cc) and Car Service (Four-Wheeler Petrol, Diesel, CNG & Hybrid Cars) in Hyderabad with doorstep pickup, 8-photo OTP proof, OBD diagnostics, and 1-Year Engine Warranty. Electric Vehicles (EVs) Not Serviced.",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "2nd Floor, Shama Manzil, Opposite Asif Nagar Police Station, Mehdipatnam",
+    "addressLocality": "Hyderabad",
+    "addressRegion": "Telangana",
+    "postalCode": "500028",
+    "addressCountry": "IN"
+  },
+  "areaServed": ["500028", "500089", "500075", "500032", "500081", "500084", "500033", "500034", "500008", "500048", "500052", "500019", "500049", "500072", "Hyderabad", "Telangana", "India"],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Multi-Brand Bike Service & Car Service Packages",
+    "itemListElement": [
+      {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Bike Service (Two-Wheeler) — Periodic Service, Engine Overhaul & OBD-II Diagnostics (100cc-2500cc Petrol)"}},
+      {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Car Service (Four-Wheeler) — Periodic Car Service, Engine Rebuild, AC Gas & Cooling, OBD Scan & Denting/Painting (Petrol, Diesel, CNG & Hybrid)"}}
+    ]
+  }
 }
 </script>
 <style>
@@ -70,8 +78,8 @@ html { scroll-behavior: smooth; overflow-x: hidden; background: var(--bg); color
 body { overflow-x: hidden; line-height: 1.45; background: var(--bg); color: var(--text); width: 100%; }
 img { max-width: 100%; height: auto; display: block; }
 a { color: var(--cyan); text-decoration: none; }
-html[data-mode="2w"] .only-4w { display: none !important; }
-html[data-mode="4w"] .only-2w { display: none !important; }
+html[data-mode="2w"] .div-card-2w { border-color: rgba(0,229,255,0.65); box-shadow: 0 0 0 1px rgba(0,229,255,0.25); }
+html[data-mode="4w"] .div-card-4w { border-color: rgba(255,179,0,0.65); box-shadow: 0 0 0 1px rgba(255,179,0,0.25); }
 
 .container { width: 100%; max-width: 1140px; margin: 0 auto; padding: 0 14px; }
 
@@ -178,19 +186,17 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 20px
 <header class="topbar">
   <div class="container topbar-inner">
     <a href="#top" class="brand">
-      <img src="https://www.ccmotocrafts.in/logo-2w.webp" alt="CC Motocrafts 2W Logo" width="38" height="38" class="only-2w">
-      <img src="https://www.ccmotocrafts.in/logo-4w.webp" alt="CarS CareS 4W Logo" width="38" height="38" class="only-4w">
+      <img src="https://www.ccmotocrafts.in/logo-2w.webp" alt="CC Motocrafts Bike Service Logo" width="38" height="38">
+      <img src="https://www.ccmotocrafts.in/logo-4w.webp" alt="CarS CareS Car Service Logo" width="38" height="38">
       <div class="brand-text">
-        <div class="brand-title only-2w">CC Motocrafts AI Engine Labs Service</div>
-        <div class="brand-title only-4w">CarS CareS Motocrafts AI Engine Labs Service</div>
-        <div class="brand-sub only-2w">2W Petrol Bike &amp; Scooter Service • Hyderabad</div>
-        <div class="brand-sub only-4w">4W Petrol &amp; Hybrid Car Service • Hyderabad</div>
+        <div class="brand-title">CC Motocrafts AI Engine Labs &amp; CarS CareS</div>
+        <div class="brand-sub">Multi-Brand Bike Service &amp; Car Service Center • Hyderabad</div>
       </div>
     </a>
     <div class="topbar-right">
       <div class="mode-switch" role="tablist">
-        <button type="button" class="mode-btn" data-set-mode="2w" role="tab">🏍️ 2W Bike</button>
-        <button type="button" class="mode-btn" data-set-mode="4w" role="tab">🚗 4W Car</button>
+        <button type="button" class="mode-btn" data-set-mode="2w" role="tab">🏍️ Bike Service</button>
+        <button type="button" class="mode-btn" data-set-mode="4w" role="tab">🚗 Car Service</button>
       </div>
       <button type="button" id="installAppBtn" class="hdr-cta" style="background:rgba(0,229,255,0.14);color:#00E5FF;border:1px solid rgba(0,229,255,0.4);">📲 Install App</button>
       <select id="langSel" aria-label="Language" style="width:auto;padding:5px 7px;font-size:11.5px;border-radius:999px;background:#0D1424;color:#CBD5E1;border:1px solid rgba(255,255,255,0.18);">
@@ -202,29 +208,23 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 20px
 </header>
 
 <main id="top">
-  <!-- 1. ULTRA-SHORT 15-SECOND 5-FIELD BOOKING HERO -->
+  <!-- 1. UNIFIED HERO & 15-SECOND 5-FIELD BOOKING -->
   <section class="hero" id="book">
     <div class="container">
       <div class="hero-grid">
         <div>
-          <div class="only-2w">
-            <h1><span>CC Motocrafts AI Engine Labs Service</span> — 2W Doorstep Bike Care</h1>
-            <p class="hero-lead">Multi-Brand Automotive Aggregator &amp; Smart Dispatch Platform for <strong>2W Petrol Bikes &amp; Scooters (100cc–2500cc)</strong>, rare parts sourcing, and specialist garage matching across Hyderabad VIP zones &amp; scaling pan-India.</p>
-          </div>
-          <div class="only-4w">
-            <h1><span>CarS CareS Motocrafts AI Engine Labs Service</span> — 4W Doorstep Car Care</h1>
-            <p class="hero-lead">Multi-Brand Automotive Aggregator &amp; Smart Dispatch Platform for <strong>4W Petrol &amp; Hybrid Cars (800cc–5000cc+)</strong>, rare parts sourcing, and specialist garage matching across Hyderabad VIP zones &amp; scaling pan-India.</p>
-          </div>
+          <h1><span>CC Motocrafts AI Engine Labs &amp; CarS CareS</span> — Multi-Brand Bike Service &amp; Car Service Center in Hyderabad</h1>
+          <p class="hero-lead">Complete doorstep pickup &amp; specialist workshop care for both <strong>Bike Service (Two-Wheeler — 100cc–2500cc Petrol Bikes &amp; Scooters)</strong> and <strong>Car Service (Four-Wheeler — Petrol, Diesel, CNG &amp; Hybrid Cars)</strong> across Hyderabad &amp; scaling pan-India.</p>
 
           <div class="trust-strip">
-            1-Yr Engine Warranty • 30-Day Workmanship Guarantee • Floor Manager Quality Checked • Prior WhatsApp Estimate Approval
+            Digital Transparency Guarantee: 15-Sec Booking • 4-Digit OTP Handover • 4 Pickup + 4 Delivery Photos on WhatsApp • Prior Parts Approval (Not 1 Paisa Extra Without Confirmation) • 30-Day Workmanship Guarantee • 1-Yr Engine Warranty
           </div>
 
           <div class="pill-row">
-            <span class="pill">📸 8-Photo OTP Handover Proof</span>
-            <span class="pill">⚙️ Rare Parts Sourcing</span>
-            <span class="pill">🚚 35–45 Min VIP Dispatch</span>
-            <span class="pill no-ev">⛽ Strictly No Electric Vehicles (EVs)</span>
+            <span class="pill">🏍️ Bike Service (Two-Wheeler)</span>
+            <span class="pill">🚗 Car Service (Four-Wheeler)</span>
+            <span class="pill">🚚 35–45 Min Hyderabad Dispatch</span>
+            <span class="pill no-ev">⛽ Petrol, Diesel, CNG &amp; Hybrid Only — Electric Vehicles (EVs) Not Serviced</span>
           </div>
 
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
@@ -233,17 +233,16 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 20px
           </div>
         </div>
 
-        <!-- SINGLE CLEAN 5-FIELD 15-SECOND MOBILE BOOKING FORM (NO DUPLICATE POPUPS) -->
+        <!-- SINGLE CLEAN 5-FIELD 15-SECOND MOBILE BOOKING FORM -->
         <div class="card booking-card">
-          <h2 class="only-2w" data-i18n="bookH2_2w">15-Second Bike Service Booking</h2>
-          <h2 class="only-4w" data-i18n="bookH2_4w">15-Second Car Service Booking</h2>
+          <h2 data-i18n="bookH2">15-Second Bike &amp; Car Service Booking</h2>
           <p style="font-size:12px;color:var(--muted);margin-bottom:10px;">Instant Booking ID &amp; 4-Digit Verification OTP • 35–45 Min Hyderabad Dispatch.</p>
           <form id="bookingForm" class="form-stack" autocomplete="on" novalidate>
             <div>
               <label for="vehCat" data-i18n="lblCat">1. Vehicle Category *</label>
               <select id="vehCat" required>
-                <option value="2w">2W Petrol Bike / Scooter (CC Motocrafts)</option>
-                <option value="4w">4W Petrol / Hybrid Car (CarS CareS)</option>
+                <option value="2w">Bike Service (Two-Wheeler) — Petrol Bikes &amp; Scooters (CC Motocrafts)</option>
+                <option value="4w">Car Service (Four-Wheeler) — Petrol, Diesel, CNG &amp; Hybrid Cars (CarS CareS)</option>
               </select>
             </div>
             <div>
@@ -261,14 +260,17 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 20px
             <div>
               <label for="areaPinSelect" data-i18n="lblAreaPin">5. Hyderabad Area &amp; PIN Code *</label>
               <select id="areaPinSelect" required>
-                <option value="500089|Manikonda / Alkapur">500089 — Manikonda / Alkapur</option>
-                <option value="500075|Kokapet">500075 — Kokapet</option>
+                <option value="500028|Mehdipatnam / Asif Nagar">500028 — Mehdipatnam &amp; Asif Nagar (Head Office)</option>
+                <option value="500089|Manikonda / Alkapur Township">500089 — Manikonda &amp; Alkapur Township</option>
+                <option value="500075|Kokapet / Narsingi">500075 — Kokapet &amp; Narsingi</option>
                 <option value="500032|Gachibowli">500032 — Gachibowli</option>
-                <option value="500081|Madhapur">500081 — Madhapur</option>
+                <option value="500081|Madhapur / HITEC City">500081 — Madhapur &amp; HITEC City</option>
                 <option value="500084|Kondapur">500084 — Kondapur</option>
                 <option value="500033|Jubilee Hills">500033 — Jubilee Hills</option>
                 <option value="500034|Banjara Hills">500034 — Banjara Hills</option>
-                <option value="500008|Tolichowki">500008 — Tolichowki</option>
+                <option value="500008|Shaikpet / Tolichowki">500008 — Shaikpet &amp; Tolichowki</option>
+                <option value="500048|Attapur">500048 — Attapur</option>
+                <option value="500052|Aramghar">500052 — Aramghar</option>
                 <option value="500019|Lingampally">500019 — Lingampally</option>
                 <option value="500049|Miyapur">500049 — Miyapur</option>
                 <option value="500072|Kukatpally">500072 — Kukatpally</option>
@@ -284,51 +286,57 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 20px
     </div>
   </section>
 
-  <!-- 2. DOORSTEP SERVICE RATES -->
+  <!-- 2. BOTH BIKE SERVICE & CAR SERVICE FULLY VISIBLE IN STATIC HTML -->
   <section id="services">
     <div class="container">
       <div class="sec-head">
-        <h2 class="only-2w" data-i18n="svcH2_2w">2W Bike Doorstep Service &amp; Diagnostics (100cc–2500cc Petrol)</h2>
-        <h2 class="only-4w" data-i18n="svcH2_4w">4W Car Doorstep Service &amp; Diagnostics (800cc–5000cc+ Petrol &amp; Hybrid)</h2>
-        <p>Parts replaced strictly after your WhatsApp photo/video &amp; price approval. 2W VIP Pickup FREE (₹0) | 4W Pickup from ₹199 (waived on major bills).</p>
+        <h2>Bike Service (Two-Wheeler) — CC Motocrafts AI Engine Labs</h2>
+        <p><strong>100cc to 2500cc Petrol Bikes &amp; Gearless Scooters</strong> — Honda, Hero, TVS, Bajaj, Yamaha, Suzuki, Royal Enfield, KTM, Kawasaki, Benelli, Triumph, Ducati &amp; Harley-Davidson. General periodic service, full engine overhaul, computerized OBD-II/ECU fault scanning, DOHC shim tuning, clutch/brake/suspension work, and accident restoration. VIP Pickup FREE (₹0).</p>
       </div>
-      <div class="grid-4 only-2w">
-        <div class="rate-card"><div><div class="cc">100cc–125cc</div><h3>Scooters &amp; Commuters</h3><div class="price">₹499</div><p>Periodic service, filter, brake &amp; chain tune.</p></div><a href="#book" class="btn btn-outline quick-fill-btn" data-txt="Activa / Splendor - Periodic Service">Book ₹499</a></div>
-        <div class="rate-card"><div><div class="cc">150cc–250cc</div><h3>Street &amp; Sports</h3><div class="price">₹799</div><p>FI throttle check, disc caliper &amp; clutch tune.</p></div><a href="#book" class="btn btn-outline quick-fill-btn" data-txt="Pulsar / R15 - Periodic Service">Book ₹799</a></div>
-        <div class="rate-card"><div><div class="cc">300cc–650cc</div><h3>Performance &amp; Twins</h3><div class="price">₹1,499</div><p>ECU/OBD scan, twin sync &amp; specialist bay.</p></div><a href="#book" class="btn btn-outline quick-fill-btn" data-txt="Classic 350 / Duke 390 - Performance Service">Book ₹1,499</a></div>
-        <div class="rate-card"><div><div class="cc">650cc–2500cc</div><h3>Superbikes &amp; Rare Parts</h3><div class="price">₹2,999</div><p>Master diagnostic, rare parts sourcing &amp; engine lab.</p></div><a href="#book" class="btn btn-outline quick-fill-btn" data-txt="Superbike 650cc+ - Master Diagnostic">Book ₹2,999</a></div>
+      <div class="grid-4 div-card-2w" style="margin-bottom:22px;">
+        <div class="rate-card"><div><div class="cc">100cc–125cc Bike Service</div><h3>Scooters &amp; Commuters</h3><div class="price">₹499</div><p>Periodic service, filter, brake &amp; chain tune.</p></div><a href="#book" class="btn btn-outline quick-fill-btn" data-mode-pick="2w" data-txt="Activa / Splendor - Periodic Bike Service">Book ₹499</a></div>
+        <div class="rate-card"><div><div class="cc">150cc–250cc Bike Service</div><h3>Street &amp; Sports</h3><div class="price">₹799</div><p>FI throttle check, disc caliper &amp; clutch tune.</p></div><a href="#book" class="btn btn-outline quick-fill-btn" data-mode-pick="2w" data-txt="Pulsar / R15 - Periodic Bike Service">Book ₹799</a></div>
+        <div class="rate-card"><div><div class="cc">300cc–650cc Bike Service</div><h3>Performance &amp; Twins</h3><div class="price">₹1,499</div><p>ECU/OBD scan, DOHC shim tuning &amp; twin sync.</p></div><a href="#book" class="btn btn-outline quick-fill-btn" data-mode-pick="2w" data-txt="Classic 350 / Duke 390 - Performance Bike Service">Book ₹1,499</a></div>
+        <div class="rate-card"><div><div class="cc">650cc–2500cc Bike Service</div><h3>Superbikes &amp; Rare Parts</h3><div class="price">₹2,999</div><p>Master diagnostic, rare parts sourcing &amp; engine overhaul.</p></div><a href="#book" class="btn btn-outline quick-fill-btn" data-mode-pick="2w" data-txt="Superbike 650cc+ - Master Diagnostic">Book ₹2,999</a></div>
       </div>
-      <div class="grid-4 only-4w">
-        <div class="rate-card"><div><div class="cc">800cc–1199cc</div><h3>Hatchbacks</h3><div class="price">₹1,499</div><p>40-point check, OBD-II scan, pickup ₹199 (waived on major bills).</p></div><a href="#book" class="btn btn-outline quick-fill-btn" data-txt="Swift / i20 - Periodic Car Service">Book ₹1,499</a></div>
-        <div class="rate-card"><div><div class="cc">1200cc–1599cc</div><h3>Sedans &amp; Compact SUVs</h3><div class="price">₹1,999</div><p>Full ECU scan, AC/brake audit, pickup ₹299 (waived on major bills).</p></div><a href="#book" class="btn btn-outline quick-fill-btn" data-txt="Honda City / Creta - Periodic Car Service">Book ₹1,999</a></div>
-        <div class="rate-card"><div><div class="cc">1600cc–2499cc</div><h3>Mid &amp; Full-Size SUVs</h3><div class="price">₹2,799</div><p>Turbo, EGR, clutch/gearbox &amp; suspension specialist bays.</p></div><a href="#book" class="btn btn-outline quick-fill-btn" data-txt="Innova / XUV700 - SUV Service">Book ₹2,799</a></div>
-        <div class="rate-card"><div><div class="cc">2500cc–5000cc+</div><h3>Luxury &amp; Rare Parts</h3><div class="price">₹4,499</div><p>German/Luxury diagnostics &amp; rare parts sourcing.</p></div><a href="#book" class="btn btn-outline quick-fill-btn" data-txt="BMW / Mercedes - Luxury Car Service">Book ₹4,499</a></div>
+
+      <div class="sec-head">
+        <h2>Car Service (Four-Wheeler) — CarS CareS Motocrafts AI Engine Labs</h2>
+        <p><strong>All Petrol, Diesel, CNG &amp; Hybrid Cars</strong> — Maruti Suzuki, Hyundai, Tata, Mahindra, Honda, Toyota, Kia, Volkswagen, Skoda, Renault, MG, BMW, Mercedes-Benz &amp; Audi. Periodic car service, complete engine repair &amp; overhaul, AC gas &amp; cooling repair, brake/clutch/suspension overhaul, computerized OBD scanning, and denting &amp; painting. Pickup from ₹199 (waived on major bills).</p>
+      </div>
+      <div class="grid-4 div-card-4w">
+        <div class="rate-card"><div><div class="cc">800cc–1199cc Car Service</div><h3>Hatchbacks</h3><div class="price">₹1,499</div><p>40-point check, OBD-II scan, pickup ₹199 (waived on major bills).</p></div><a href="#book" class="btn btn-outline quick-fill-btn" data-mode-pick="4w" data-txt="Swift / i20 - Periodic Car Service">Book ₹1,499</a></div>
+        <div class="rate-card"><div><div class="cc">1200cc–1599cc Car Service</div><h3>Sedans &amp; Compact SUVs</h3><div class="price">₹1,999</div><p>Full ECU scan, AC gas &amp; cooling check, pickup ₹299 (waived on major bills).</p></div><a href="#book" class="btn btn-outline quick-fill-btn" data-mode-pick="4w" data-txt="Honda City / Creta - Periodic Car Service">Book ₹1,999</a></div>
+        <div class="rate-card"><div><div class="cc">1600cc–2499cc Car Service</div><h3>Mid &amp; Full-Size SUVs</h3><div class="price">₹2,799</div><p>Turbo, EGR, clutch/gearbox &amp; suspension overhaul bays.</p></div><a href="#book" class="btn btn-outline quick-fill-btn" data-mode-pick="4w" data-txt="Innova / XUV700 - SUV Car Service">Book ₹2,799</a></div>
+        <div class="rate-card"><div><div class="cc">2500cc–5000cc+ Car Service</div><h3>Luxury &amp; Rare Parts</h3><div class="price">₹4,499</div><p>German/Luxury OBD diagnostics, denting/painting &amp; rare parts.</p></div><a href="#book" class="btn btn-outline quick-fill-btn" data-mode-pick="4w" data-txt="BMW / Mercedes - Luxury Car Service">Book ₹4,499</a></div>
       </div>
     </div>
   </section>
 
-  <!-- 3. PROOF, 8-PHOTO OTP TRACKING & 5-STAR REVIEWS -->
+  <!-- 3. BOTH BIKE & CAR WORKSHOP GALLERIES, 8-PHOTO OTP TRACKING & REVIEWS -->
   <section id="proof">
     <div class="container">
       <div class="sec-head">
-        <h2 data-i18n="proofH2">Verified Partner Bays, 8-Photo OTP Proof &amp; Customer Reviews</h2>
+        <h2 data-i18n="proofH2">Bike Service &amp; Car Service Workshop Bays, 8-Photo OTP Proof &amp; Reviews</h2>
         <p>1-Yr Engine Warranty • 30-Day Workmanship Guarantee • Floor Manager Quality Checked • Prior WhatsApp Estimate Approval.</p>
       </div>
-      <div class="bay-grid only-2w">
-        <div class="bay-card"><img src="https://www.ccmotocrafts.in/bay-2w-1.webp" alt="2W ECU Bay" width="400" height="300" loading="lazy"><div class="bay-cap">ECU Diagnostic</div></div>
-        <div class="bay-card"><img src="https://www.ccmotocrafts.in/bay-2w-2.webp" alt="2W Lift Bay" width="400" height="300" loading="lazy"><div class="bay-cap">Hydraulic Lift</div></div>
-        <div class="bay-card"><img src="https://www.ccmotocrafts.in/bay-2w-3.webp" alt="2W Engine Bench" width="400" height="300" loading="lazy"><div class="bay-cap">Engine Overhaul</div></div>
-        <div class="bay-card"><img src="https://www.ccmotocrafts.in/bay-2w-4.webp" alt="2W Superbike Bay" width="400" height="300" loading="lazy"><div class="bay-cap">Superbike Care</div></div>
-        <div class="bay-card"><img src="https://www.ccmotocrafts.in/bay-2w-5.webp" alt="2W Brake Check" width="400" height="300" loading="lazy"><div class="bay-cap">Brake &amp; Fork</div></div>
-        <div class="bay-card"><img src="https://www.ccmotocrafts.in/bay-2w-6.webp" alt="2W QC Delivery" width="400" height="300" loading="lazy"><div class="bay-cap">8-Photo QC</div></div>
+      <div style="font-size:12.5px;font-weight:800;color:var(--cyan);margin-bottom:6px;">🏍️ Bike Service Bays (Two-Wheeler)</div>
+      <div class="bay-grid">
+        <div class="bay-card"><img src="https://www.ccmotocrafts.in/bay-2w-1.webp" alt="Bike Service ECU Diagnostic Bay" width="400" height="300" loading="lazy"><div class="bay-cap">ECU Diagnostic</div></div>
+        <div class="bay-card"><img src="https://www.ccmotocrafts.in/bay-2w-2.webp" alt="Bike Service Hydraulic Lift Bay" width="400" height="300" loading="lazy"><div class="bay-cap">Hydraulic Lift</div></div>
+        <div class="bay-card"><img src="https://www.ccmotocrafts.in/bay-2w-3.webp" alt="Bike Engine Overhaul Bench" width="400" height="300" loading="lazy"><div class="bay-cap">Engine Overhaul</div></div>
+        <div class="bay-card"><img src="https://www.ccmotocrafts.in/bay-2w-4.webp" alt="Superbike Service Bay" width="400" height="300" loading="lazy"><div class="bay-cap">Superbike Care</div></div>
+        <div class="bay-card"><img src="https://www.ccmotocrafts.in/bay-2w-5.webp" alt="Bike Brake &amp; Suspension Bay" width="400" height="300" loading="lazy"><div class="bay-cap">Brake &amp; Fork</div></div>
+        <div class="bay-card"><img src="https://www.ccmotocrafts.in/bay-2w-6.webp" alt="Bike 8-Photo QC Delivery" width="400" height="300" loading="lazy"><div class="bay-cap">8-Photo QC</div></div>
       </div>
-      <div class="bay-grid only-4w">
-        <div class="bay-card"><img src="https://www.ccmotocrafts.in/bay-4w-1.webp" alt="4W Car Lift" width="400" height="300" loading="lazy"><div class="bay-cap">2-Post Lift Bay</div></div>
-        <div class="bay-card"><img src="https://www.ccmotocrafts.in/bay-4w-2.webp" alt="4W OBD Scan" width="400" height="300" loading="lazy"><div class="bay-cap">OBD-II Scan</div></div>
-        <div class="bay-card"><img src="https://www.ccmotocrafts.in/bay-4w-3.webp" alt="4W Engine Lab" width="400" height="300" loading="lazy"><div class="bay-cap">Engine Rebuild</div></div>
-        <div class="bay-card"><img src="https://www.ccmotocrafts.in/bay-4w-4.webp" alt="4W AC Service" width="400" height="300" loading="lazy"><div class="bay-cap">AC &amp; Gearbox</div></div>
-        <div class="bay-card"><img src="https://www.ccmotocrafts.in/bay-4w-5.webp" alt="4W Suspension" width="400" height="300" loading="lazy"><div class="bay-cap">Suspension Bay</div></div>
-        <div class="bay-card"><img src="https://www.ccmotocrafts.in/bay-4w-6.webp" alt="4W Road Test" width="400" height="300" loading="lazy"><div class="bay-cap">8-Photo QC</div></div>
+      <div style="font-size:12.5px;font-weight:800;color:var(--gold);margin-bottom:6px;">🚗 Car Service Bays (Four-Wheeler)</div>
+      <div class="bay-grid">
+        <div class="bay-card"><img src="https://www.ccmotocrafts.in/bay-4w-1.webp" alt="Car Service 2-Post Lift Bay" width="400" height="300" loading="lazy"><div class="bay-cap">2-Post Lift Bay</div></div>
+        <div class="bay-card"><img src="https://www.ccmotocrafts.in/bay-4w-2.webp" alt="Car Service OBD-II Diagnostic Scan" width="400" height="300" loading="lazy"><div class="bay-cap">OBD-II Scan</div></div>
+        <div class="bay-card"><img src="https://www.ccmotocrafts.in/bay-4w-3.webp" alt="Car Engine Rebuild Lab" width="400" height="300" loading="lazy"><div class="bay-cap">Engine Rebuild</div></div>
+        <div class="bay-card"><img src="https://www.ccmotocrafts.in/bay-4w-4.webp" alt="Car AC Gas &amp; Gearbox Service" width="400" height="300" loading="lazy"><div class="bay-cap">AC &amp; Gearbox</div></div>
+        <div class="bay-card"><img src="https://www.ccmotocrafts.in/bay-4w-5.webp" alt="Car Suspension &amp; Denting Bay" width="400" height="300" loading="lazy"><div class="bay-cap">Suspension Bay</div></div>
+        <div class="bay-card"><img src="https://www.ccmotocrafts.in/bay-4w-6.webp" alt="Car 8-Photo QC Delivery" width="400" height="300" loading="lazy"><div class="bay-cap">8-Photo QC</div></div>
       </div>
 
       <div class="grid-2">
@@ -357,7 +365,7 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 20px
           <form id="reviewForm" class="form-grid" novalidate style="margin-bottom:10px;">
             <div>
               <label for="revCategory">Category *</label>
-              <select id="revCategory"><option value="Bike Service">Bike Service (2W)</option><option value="Car Service">Car Service (4W)</option></select>
+              <select id="revCategory"><option value="Bike Service">Bike Service (Two-Wheeler)</option><option value="Car Service">Car Service (Four-Wheeler)</option></select>
             </div>
             <div>
               <label>Star Rating *</label>
@@ -378,8 +386,8 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 20px
             <div class="full"><button type="submit" id="revSubmitBtn" class="btn btn-cyan">Submit Review</button><div id="revMsg" class="status-msg"></div></div>
           </form>
           <div style="display:flex;gap:6px;margin-bottom:8px;">
-            <button type="button" class="wa-mode-opt active" data-rev-tab="2w" style="flex:1;">🏍️ 2W Reviews</button>
-            <button type="button" class="wa-mode-opt" data-rev-tab="4w" style="flex:1;">🚗 4W Reviews</button>
+            <button type="button" class="wa-mode-opt active" data-rev-tab="2w" style="flex:1;">🏍️ Bike Service Reviews</button>
+            <button type="button" class="wa-mode-opt" data-rev-tab="4w" style="flex:1;">🚗 Car Service Reviews</button>
           </div>
           <div class="review-list" id="reviewsList"></div>
         </div>
@@ -387,18 +395,20 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 20px
     </div>
   </section>
 
-  <!-- 4. CONTACT & COVERAGE -->
+  <!-- 4. HEAD OFFICE, WORKSHOP HUBS & FULL HYDERABAD PIN COVERAGE -->
   <section id="contact">
     <div class="container">
       <div class="grid-2">
         <div class="card">
-          <h3 style="font-size:16px;color:var(--gold);margin-bottom:6px;">Command Structure &amp; Coverage</h3>
-          <p style="font-size:13px;color:var(--muted);margin-bottom:8px;">Operating with <strong>5 Managers, 15 Garage Partners, 30 Technicians / Senior Technicians, and 80 Helpers</strong> under <strong>Technical Head Shaik Mujahid Qadri</strong> across Hyderabad VIP zones &amp; scaling pan-India.</p>
-          <p style="font-size:12.5px;color:#CBD5E1;"><strong>Priority PINs:</strong> 500089, 500075, 500032, 500081, 500084, 500033, 500034, 500008, 500019, 500049, 500072.</p>
+          <h3 style="font-size:16px;color:var(--gold);margin-bottom:6px;">Head Office, Workshop Hubs &amp; Hyderabad PIN Coverage</h3>
+          <p style="font-size:13px;color:#E2E8F0;margin-bottom:6px;"><strong>Head Office:</strong> 2nd Floor, Shama Manzil, Opposite Asif Nagar Police Station, Mehdipatnam, Hyderabad, Telangana – 500028</p>
+          <p style="font-size:12.5px;color:#CBD5E1;margin-bottom:6px;"><strong>Workshop Hubs:</strong> Manikonda (Near Water Tank, 500089) | Alkapur Township / Puppalaguda (500089) | Diamond Hills, Shaikpet (500008)</p>
+          <p style="font-size:12.5px;color:var(--muted);margin-bottom:6px;"><strong>Network:</strong> 5 Managers, 16 Partner Workshops (4 Four-Wheeler Car Service Centers &amp; 12 Two-Wheeler Bike Service Centers), 30 Technicians / Senior Technicians, and 80 Helpers across Hyderabad &amp; scaling pan-India.</p>
+          <p style="font-size:12px;color:#CBD5E1;"><strong>Hyderabad VIP &amp; Residential PINs:</strong> Mehdipatnam &amp; Asif Nagar (500028), Manikonda &amp; Alkapur Township (500089), Kokapet (500075), Gachibowli (500032), Madhapur &amp; HITEC City (500081), Kondapur (500084), Jubilee Hills (500033), Banjara Hills (500034), Shaikpet &amp; Tolichowki (500008), Attapur &amp; Aramghar (500048 / 500052), Lingampally (500019), Miyapur (500049), Kukatpally (500072), Narsingi (500075).</p>
         </div>
         <div class="card">
           <h3 style="font-size:16px;color:var(--cyan);margin-bottom:6px;">Direct Service Desk &amp; Legal</h3>
-          <p style="font-size:13px;color:#CBD5E1;margin-bottom:8px;"><strong>Call / WhatsApp:</strong> <a href="tel:+918333084261">+91 8333084261</a> • <strong>Email:</strong> <a href="mailto:info@ccmotocrafts.in">info@ccmotocrafts.in</a><br><strong>MSME Registration:</strong> UDYAM-TS-02-0387659 • Independent Multi-Brand Aggregator (Not an OEM Authorized Center; No EVs).</p>
+          <p style="font-size:13px;color:#CBD5E1;margin-bottom:8px;"><strong>CC Motocrafts AI Engine Labs &amp; CarS CareS — Multi-Brand Bike &amp; Car Service Center</strong><br><strong>Call / WhatsApp:</strong> <a href="tel:+918333084261">+91 8333084261</a> • <strong>Email:</strong> <a href="mailto:info@ccmotocrafts.in">info@ccmotocrafts.in</a><br><strong>MSME Registration:</strong> UDYAM-TS-02-0387659 • Petrol, Diesel, CNG &amp; Hybrid Vehicles Only — Electric Vehicles (EVs) Not Serviced.</p>
           <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;">
             <a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="refund.html">Warranty &amp; Refund</a><a href="contact.html">Contact</a>
           </div>
@@ -425,7 +435,7 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 20px
 </div>
 
 <footer>
-  <div class="container">© 2026 CC Motocrafts AI Engine Labs (2W) &amp; CarS CareS (4W) • Technical Head: Shaik Mujahid Qadri • +91 8333084261 • info@ccmotocrafts.in • MSME: UDYAM-TS-02-0387659.</div>
+  <div class="container">© 2026 CC Motocrafts AI Engine Labs &amp; CarS CareS — Multi-Brand Bike &amp; Car Service Center • Head Office: 2nd Floor, Shama Manzil, Opp. Asif Nagar PS, Mehdipatnam, Hyderabad – 500028 • +91 8333084261 • info@ccmotocrafts.in • MSME: UDYAM-TS-02-0387659.</div>
 </footer>
 
 <div class="mobile-dock" aria-label="Quick Actions">
@@ -462,7 +472,7 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 20px
     return { ok: false, json: async function () { return null; } };
   }
 
-  var VALID_VIP_PINS = ['500089','500075','500032','500081','500084','500033','500034','500008','500019','500049','500072'];
+  var VALID_VIP_PINS = ['500028','500089','500075','500032','500081','500084','500033','500034','500008','500048','500052','500019','500049','500072'];
   function isValidIndianMobile(m) {
     if (!/^[6-9]\d{9}$/.test(m)) return false;
     if (/^(\d)\1{9}$/.test(m)) return false;
@@ -509,8 +519,8 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 20px
     document.getElementById('revCategory').value = m === '4w' ? 'Car Service' : 'Bike Service';
 
     var waTxt = m === '4w'
-      ? 'Hello CarS CareS (4W) Service Desk (+91 8333084261), I need 4W Car Service / Booking details.'
-      : 'Hello CC Motocrafts (2W) Service Desk (+91 8333084261), I need 2W Bike Service / Booking details.';
+      ? 'Hello CarS CareS Service Desk (+91 8333084261), I need Car Service (Four-Wheeler) / Booking details.'
+      : 'Hello CC Motocrafts Service Desk (+91 8333084261), I need Bike Service (Two-Wheeler) / Booking details.';
     var waHref = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(waTxt);
     document.getElementById('waHeroBtn').href = waHref;
     document.getElementById('waDockBtn').href = waHref;
@@ -529,6 +539,7 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 20px
   });
   document.querySelectorAll('.quick-fill-btn').forEach(function (b) {
     b.addEventListener('click', function () {
+      if (b.dataset.modePick) applyMode(b.dataset.modePick, true);
       document.getElementById('vehModelProblem').value = b.dataset.txt || '';
     });
   });

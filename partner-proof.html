@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>Partner Dispatch &amp; OTP Proof | CC Motocrafts</title>
+<title>Partner Dispatch & OTP Proof | CC Motocrafts</title>
 <link rel="icon" href="icon-192.png" type="image/png">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: #090D16; color: #F3F6FB; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; padding: 14px 12px 44px; line-height: 1.45; }
-.wrap { max-width: 640px; margin: 0 auto; }
+.wrap { max-width: 660px; margin: 0 auto; }
 .card { background: #111827; border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; padding: 15px; margin-bottom: 12px; }
 h1 { font-size: 18px; font-weight: 900; color: #00E5FF; margin-bottom: 3px; }
 h2 { font-size: 15px; font-weight: 800; color: #FFB300; margin-bottom: 9px; }
@@ -30,68 +30,67 @@ input { width: 100%; background: #0A101D; color: #fff; border: 1px solid rgba(25
 .cam-slot { background: #0A101D; border: 1px dashed rgba(0,229,255,0.4); border-radius: 10px; padding: 9px; text-align: center; }
 .cam-slot img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 7px; margin-bottom: 6px; display: none; }
 .cam-slot input[type="file"] { display: none; }
-.cam-label { display: inline-block; background: #1E293B; color: #E2E8F0; padding: 7px 9px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; width: 100%; }
+.slot-btns { display: flex; flex-direction: column; gap: 5px; }
+.cam-label { display: inline-block; background: #1E293B; color: #E2E8F0; padding: 6px 8px; border-radius: 7px; font-size: 11.5px; font-weight: 700; cursor: pointer; width: 100%; }
+.cam-label.gal { background: #0F172A; border: 1px solid rgba(0,229,255,0.35); color: #00E5FF; }
 .status { font-size: 12.5px; font-weight: 700; margin-top: 8px; color: #00E5FF; min-height: 18px; }
 .hidden { display: none; }
-@media (max-width: 500px) { .info-grid, .row { grid-template-columns: 1fr; } }
+@media (max-width: 500px) { .info-grid, .row, .cam-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="card">
-    <h1>CC Motocrafts — Partner Dispatch</h1>
-    <p style="font-size:12px;color:#9AA8BE;">Call customer, meet face-to-face, verify Booking ID + 4-Digit Handover OTP to unlock camera proof.</p>
+    <h1>CC Motocrafts — Partner Dispatch Portal</h1>
+    <p style="font-size:12px;color:#9AA8BE;">Stage 1: Verify Pickup OTP &amp; upload 4 Pickup Photos (Camera or Gallery). Link stays open until Stage 2 Delivery is closed.</p>
   </div>
 
-  <!-- STEP 1: POPULATED DISPATCH JOB SUMMARY + CALL & WHATSAPP + OPEN & PICKUP -->
-  <div class="card" id="dispatchPreviewCard">
-    <h2>Dispatch Job Summary <span id="dBidBadge" style="font-size:12px;color:#00E5FF;margin-left:6px;"></span></h2>
+  <div class="card">
+    <h2>Job Details <span id="dBidBadge" style="font-size:12.5px;color:#00E5FF;"></span></h2>
     <div class="info-grid">
-      <div class="info-cell"><small>Customer Name</small><strong id="dName">Loading...</strong></div>
-      <div class="info-cell"><small>Mobile Number</small><strong id="dPhone">—</strong></div>
+      <div class="info-cell"><small>Booking ID</small><strong id="dBid">—</strong></div>
+      <div class="info-cell"><small>Customer Name</small><strong id="dName">—</strong></div>
+      <div class="info-cell"><small>Phone (Click-to-Call)</small><strong id="dPhone">—</strong></div>
       <div class="info-cell"><small>Vehicle Model</small><strong id="dModel">—</strong></div>
-      <div class="info-cell"><small>Pickup Reason / Service</small><strong id="dService">—</strong></div>
-      <div class="info-cell" style="grid-column:1/-1;"><small>Pickup Area &amp; PIN</small><strong id="dArea">—</strong></div>
+      <div class="info-cell"><small>Problem / Service</small><strong id="dService">—</strong></div>
+      <div class="info-cell"><small>Area / PIN Code</small><strong id="dArea">—</strong></div>
     </div>
-    <div id="contactActions" class="row hidden" style="margin-bottom:9px;">
+    <div id="contactActions" class="row hidden">
       <a id="callCustBtn" href="#" class="btn btn-outline">📞 Call Customer</a>
-      <a id="waCustDirectBtn" href="#" target="_blank" rel="noopener" class="btn btn-green">💬 WhatsApp Customer</a>
+      <a id="waAskLocBtn" href="#" target="_blank" rel="noopener" class="btn btn-green">📍 Ask Location on WhatsApp</a>
     </div>
-    <button type="button" id="openPickupBtn" class="btn btn-cyan">🔓 Open &amp; Pickup (Enter OTP)</button>
     <div id="previewStatus" class="status"></div>
   </div>
 
-  <!-- STEP 2: OTP VERIFICATION GATE -->
-  <div class="card hidden" id="otpGateCard">
-    <h2>Verify Booking ID &amp; 4-Digit Handover OTP</h2>
+  <div class="card" id="otpGateCard">
+    <h2>Stage 1 — Enter Customer's 4-Digit Pickup OTP</h2>
     <div class="row" style="margin-bottom:10px;">
-      <div><label for="pId">Booking ID (2W-XXXX / 4W-XXXX)</label><input id="pId" type="text" placeholder="e.g. 2W-4821" autocomplete="off"></div>
-      <div><label for="pOtp">4-Digit Handover OTP (Ask Customer)</label><input id="pOtp" type="tel" inputmode="numeric" maxlength="4" placeholder="4-digit OTP" autocomplete="off"></div>
+      <div><label for="pId">Booking ID</label><input id="pId" type="text" placeholder="CCM-2W-XXXX / CCS-4W-XXXX"></div>
+      <div><label for="pOtp">4-Digit Pickup OTP *</label><input id="pOtp" type="tel" inputmode="numeric" maxlength="4" placeholder="4-digit OTP" autocomplete="off"></div>
     </div>
-    <button type="button" id="verifyBtn" class="btn btn-gold">Verify OTP &amp; Unlock 4 Pickup Photos</button>
+    <button type="button" id="verifyBtn" class="btn btn-gold">Verify OTP &amp; Unlock Stage 1 Pickup Photos</button>
     <div id="verifyStatus" class="status"></div>
   </div>
 
-  <!-- STEP 3: 4 PICKUP PHOTOS & 4 DELIVERY PHOTOS -->
   <div id="proofSections" class="hidden">
     <div class="card" id="pickupCard">
-      <h2>1. Pickup Condition Proof (All 4 Photos Required)</h2>
+      <h2>Stage 1 — 4 Mandatory Pickup Photos (Camera or Gallery)</h2>
       <div class="cam-grid" id="pickupCamGrid"></div>
-      <button type="button" id="savePickupBtn" class="btn btn-gold" disabled>Upload &amp; Lock 4 Pickup Photos</button>
+      <button type="button" id="savePickupBtn" class="btn btn-gold" disabled>Submit Pickup &amp; Open Customer WhatsApp</button>
       <div id="pickupStatus" class="status"></div>
-      <a id="waPickupNotify" href="#" target="_blank" rel="noopener" class="btn btn-green hidden" style="margin-top:9px;">📲 Send 4 Pickup Photos to Customer on WhatsApp</a>
+      <a id="waPickupNotify" href="#" target="_blank" rel="noopener" class="btn btn-green hidden" style="margin-top:9px;">📲 Send 4 Pickup Photos to Customer WhatsApp</a>
     </div>
 
     <div class="card" id="deliveryCard">
-      <h2>2. Delivery Proof (Total Amount + 4 Photos Required)</h2>
-      <div style="margin-bottom:10px;">
-        <label for="deliveryAmount">Total Service Amount (₹) *</label>
-        <input id="deliveryAmount" type="tel" inputmode="numeric" placeholder="e.g. 2499" autocomplete="off">
+      <h2>Stage 2 — 4 Delivery Photos, Bill Amount &amp; Delivery OTP</h2>
+      <div class="row" style="margin-bottom:10px;">
+        <div><label for="deliveryAmount">Total Approved Bill Amount (₹) *</label><input id="deliveryAmount" type="tel" inputmode="numeric" placeholder="e.g. 2499"></div>
+        <div><label for="deliveryOtp">4-Digit Delivery OTP *</label><input id="deliveryOtp" type="tel" inputmode="numeric" maxlength="4" placeholder="Confirm customer OTP"></div>
       </div>
       <div class="cam-grid" id="deliveryCamGrid"></div>
-      <button type="button" id="saveDeliveryBtn" class="btn btn-cyan" disabled>Upload &amp; Lock Delivery (Amount + 4 Photos)</button>
+      <button type="button" id="saveDeliveryBtn" class="btn btn-cyan" disabled>Submit Delivery &amp; Open Customer WhatsApp</button>
       <div id="deliveryStatus" class="status"></div>
-      <a id="waDeliveryNotify" href="#" target="_blank" rel="noopener" class="btn btn-green hidden" style="margin-top:9px;">📲 Send Delivery Proof + Review Link to Customer</a>
+      <a id="waDeliveryNotify" href="#" target="_blank" rel="noopener" class="btn btn-green hidden" style="margin-top:9px;">📲 Send Delivery Bill, 4 Photos &amp; Review Link</a>
     </div>
   </div>
 </div>
@@ -108,7 +107,7 @@ input { width: 100%; background: #0A101D; color: #fff; border: 1px solid rgba(25
   var activeBooking = null;
   var pickupBlobs = [null, null, null, null];
   var deliveryBlobs = [null, null, null, null];
-  var LABELS = ['1. Front & Plate', '2. Left Profile', '3. Right Profile', '4. Rear & Odometer'];
+  var LABELS = ['1. Front', '2. Back', '3. Left', '4. Right / Odometer'];
 
   function sbHdrs(key, extra) {
     var h = { 'apikey': key };
@@ -116,19 +115,21 @@ input { width: 100%; background: #0A101D; color: #fff; border: 1px solid rgba(25
     return Object.assign(h, extra || {});
   }
 
-  function populateDispatchCard(info) {
+  function populateHeader(info) {
     if (!info) return;
     if (info.booking_number) {
+      document.getElementById('dBid').textContent = info.booking_number;
       document.getElementById('dBidBadge').textContent = '(' + info.booking_number + ')';
       if (!document.getElementById('pId').value) document.getElementById('pId').value = info.booking_number;
     }
-    if (info.customer_name && info.customer_name !== 'Customer') document.getElementById('dName').textContent = info.customer_name;
+    if (info.customer_name) document.getElementById('dName').textContent = info.customer_name;
     if (info.customer_phone) {
       document.getElementById('dPhone').textContent = info.customer_phone;
-      var digits = String(info.customer_phone).replace(/[^0-9]/g, '');
+      var digits = String(info.customer_phone).replace(/[^0-9]/g, '').slice(-10);
       var waNum = digits.length === 10 ? ('91' + digits) : digits;
-      document.getElementById('callCustBtn').href = 'tel:' + info.customer_phone;
-      document.getElementById('waCustDirectBtn').href = 'https://wa.me/' + waNum + '?text=' + encodeURIComponent('Hello ' + (info.customer_name || '') + ', CC Motocrafts pickup executive here for your ' + (info.vehicle_model || 'vehicle') + '. Sharing my arrival update.');
+      document.getElementById('callCustBtn').href = 'tel:+91' + digits;
+      var askMsg = 'Hello ' + (info.customer_name || '') + ', CC Motocrafts pickup executive here for Booking ' + (info.booking_number || '') + ' (' + (info.vehicle_model || 'Vehicle') + '). Please share your live pickup location.';
+      document.getElementById('waAskLocBtn').href = 'https://wa.me/' + waNum + '?text=' + encodeURIComponent(askMsg);
       document.getElementById('contactActions').classList.remove('hidden');
     }
     if (info.vehicle_model) document.getElementById('dModel').textContent = info.vehicle_model;
@@ -137,63 +138,69 @@ input { width: 100%; background: #0A101D; color: #fff; border: 1px solid rgba(25
     if (areaStr) document.getElementById('dArea').textContent = areaStr;
   }
 
-  // VIDEO 1 FIX: Load from URL params AND auto-hydrate from Supabase get_dispatch_preview(id) so fields are NEVER blank!
-  (async function hydrateDispatch() {
+  (async function initDispatch() {
     var q = new URLSearchParams(location.search);
     var qId = (q.get('id') || '').trim().toUpperCase();
-    var initInfo = {
+    var info = {
       booking_number: qId,
       customer_name: (q.get('name') || '').trim(),
       customer_phone: (q.get('phone') || '').replace(/[^0-9+]/g, ''),
       vehicle_model: (q.get('model') || '').trim(),
-      service_selected: (q.get('service') || '').trim(),
+      service_selected: (q.get('problem') || q.get('service') || '').trim(),
       pickup_area: (q.get('area') || '').trim()
     };
-    populateDispatchCard(initInfo);
+    populateHeader(info);
 
-    if (qId && (!initInfo.customer_phone || !initInfo.vehicle_model || !initInfo.customer_name || initInfo.customer_name === 'Customer')) {
-      document.getElementById('previewStatus').textContent = 'Loading verified booking details...';
+    if (qId && (!info.customer_phone || !info.vehicle_model || !info.customer_name)) {
       for (var i = 0; i < SB_PROJECTS.length; i++) {
         try {
           var r = await fetch(SB_PROJECTS[i].url + '/rest/v1/rpc/get_dispatch_preview', {
             method: 'POST', headers: sbHdrs(SB_PROJECTS[i].key, { 'Content-Type': 'application/json' }),
             body: JSON.stringify({ p_booking_number: qId })
           });
-          if (r.ok) {
-            var d = await r.json();
-            if (d && d.ok) {
-              ACTIVE_PROJ = SB_PROJECTS[i];
-              populateDispatchCard(d);
-              document.getElementById('previewStatus').textContent = '';
-              return;
-            }
-          }
+          if (r.ok) { var d = await r.json(); if (d && d.ok) { ACTIVE_PROJ = SB_PROJECTS[i]; populateHeader(d); break; } }
         } catch (e) {}
       }
     }
-    if (document.getElementById('dName').textContent === 'Loading...') {
-      document.getElementById('dName').textContent = 'Enter Booking ID + OTP below';
-    }
-    document.getElementById('previewStatus').textContent = '';
+
+    try {
+      var raw = qId ? localStorage.getItem('cc_partner_job_' + qId) : localStorage.getItem('cc_partner_active_job');
+      if (raw) {
+        var saved = JSON.parse(raw);
+        if (saved && saved.job && (!qId || saved.job.booking_number.toUpperCase() === qId)) {
+          for (var k = 0; k < SB_PROJECTS.length; k++) if (SB_PROJECTS[k].url === saved.projUrl) ACTIVE_PROJ = SB_PROJECTS[k];
+          unlockStageUI(saved.job, saved.pickupDone);
+        }
+      }
+    } catch (e) {}
   })();
 
-  document.getElementById('openPickupBtn').addEventListener('click', function () {
-    var gate = document.getElementById('otpGateCard');
-    gate.classList.remove('hidden');
-    gate.scrollIntoView({ behavior: 'smooth' });
-    (document.getElementById('pId').value ? document.getElementById('pOtp') : document.getElementById('pId')).focus();
-  });
-
-  function updateStageBtnState(submitBtnId, storeArr) {
-    var ready = storeArr.every(Boolean);
-    if (submitBtnId === 'saveDeliveryBtn') {
-      var amt = Number((document.getElementById('deliveryAmount').value || '').replace(/[^0-9.]/g, ''));
-      document.getElementById(submitBtnId).disabled = !(ready && amt > 0);
-    } else {
-      document.getElementById(submitBtnId).disabled = !ready;
+  function unlockStageUI(job, pickupDone) {
+    activeBooking = job;
+    populateHeader(activeBooking);
+    document.getElementById('otpGateCard').classList.add('hidden');
+    document.getElementById('proofSections').classList.remove('hidden');
+    buildCamSlots('pickupCamGrid', pickupBlobs, 'savePickupBtn', 'pu');
+    buildCamSlots('deliveryCamGrid', deliveryBlobs, 'saveDeliveryBtn', 'dl');
+    if (pickupDone || String(job.status || '').toLowerCase().indexOf('picked up') !== -1) {
+      document.getElementById('pickupStatus').style.color = '#86EFAC';
+      document.getElementById('pickupStatus').textContent = '✓ Stage 1 Picked Up complete. Proceed to Stage 2 Delivery below.';
+      document.getElementById('deliveryCard').scrollIntoView({ behavior: 'smooth' });
     }
   }
-  document.getElementById('deliveryAmount').addEventListener('input', function () { updateStageBtnState('saveDeliveryBtn', deliveryBlobs); });
+
+  function updateBtnState(btnId, arr) {
+    var photosOk = arr.every(Boolean);
+    if (btnId === 'saveDeliveryBtn') {
+      var amt = Number((document.getElementById('deliveryAmount').value || '').replace(/[^0-9.]/g, ''));
+      var dOtp = (document.getElementById('deliveryOtp').value || '').replace(/[^0-9]/g, '');
+      document.getElementById(btnId).disabled = !(photosOk && amt > 0 && dOtp.length === 4);
+    } else {
+      document.getElementById(btnId).disabled = !photosOk;
+    }
+  }
+  document.getElementById('deliveryAmount').addEventListener('input', function () { updateBtnState('saveDeliveryBtn', deliveryBlobs); });
+  document.getElementById('deliveryOtp').addEventListener('input', function () { updateBtnState('saveDeliveryBtn', deliveryBlobs); });
 
   async function compressImage(file) {
     return new Promise(function (resolve, reject) {
@@ -214,24 +221,36 @@ input { width: 100%; background: #0A101D; color: #fff; border: 1px solid rgba(25
     });
   }
 
-  function buildCamSlots(containerId, storeArr, submitBtnId, prefix) {
+  function buildCamSlots(containerId, storeArr, btnId, prefix) {
     var box = document.getElementById(containerId); box.innerHTML = '';
     LABELS.forEach(function (lbl, idx) {
       var slot = document.createElement('div'); slot.className = 'cam-slot';
+      var title = document.createElement('div'); title.style.cssText = 'font-size:12px;font-weight:800;color:#CBD5E1;margin-bottom:5px;'; title.textContent = lbl;
       var img = document.createElement('img');
-      var inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*'; inp.setAttribute('capture', 'environment'); inp.id = prefix + '_cam_' + idx;
-      var btnLbl = document.createElement('label'); btnLbl.className = 'cam-label'; btnLbl.htmlFor = inp.id; btnLbl.textContent = '📷 ' + lbl;
-      inp.addEventListener('change', async function () {
+
+      var camInp = document.createElement('input'); camInp.type = 'file'; camInp.accept = 'image/*'; camInp.setAttribute('capture', 'environment'); camInp.id = prefix + '_cam_' + idx;
+      var galInp = document.createElement('input'); galInp.type = 'file'; galInp.accept = 'image/*'; galInp.id = prefix + '_gal_' + idx;
+
+      var camLbl = document.createElement('label'); camLbl.className = 'cam-label'; camLbl.htmlFor = camInp.id; camLbl.textContent = '📷 Take Live Photo (Camera)';
+      var galLbl = document.createElement('label'); galLbl.className = 'cam-label gal'; galLbl.htmlFor = galInp.id; galLbl.textContent = '🖼️ Choose from Gallery';
+
+      async function handleFile(inp) {
         if (!inp.files || !inp.files[0]) return;
-        btnLbl.textContent = 'Compressing...';
+        camLbl.textContent = 'Compressing...';
         try {
           var blob = await compressImage(inp.files[0]);
           storeArr[idx] = blob; img.src = URL.createObjectURL(blob); img.style.display = 'block';
-          btnLbl.textContent = '✓ Retake (' + Math.round(blob.size / 1024) + ' KB)';
-          updateStageBtnState(submitBtnId, storeArr);
-        } catch (err) { btnLbl.textContent = 'Retry ' + lbl; }
-      });
-      slot.appendChild(img); slot.appendChild(inp); slot.appendChild(btnLbl); box.appendChild(slot);
+          camLbl.textContent = '✓ Photo Ready (' + Math.round(blob.size / 1024) + ' KB)';
+          updateBtnState(btnId, storeArr);
+        } catch (err) { camLbl.textContent = '📷 Retry Live Photo'; }
+      }
+      camInp.addEventListener('change', function () { handleFile(camInp); });
+      galInp.addEventListener('change', function () { handleFile(galInp); });
+
+      var btns = document.createElement('div'); btns.className = 'slot-btns';
+      btns.appendChild(camLbl); btns.appendChild(galLbl);
+      slot.appendChild(title); slot.appendChild(img); slot.appendChild(camInp); slot.appendChild(galInp); slot.appendChild(btns);
+      box.appendChild(slot);
     });
   }
 
@@ -244,147 +263,102 @@ input { width: 100%; background: #0A101D; color: #fff; border: 1px solid rgba(25
     return ACTIVE_PROJ.url + '/storage/v1/object/public/booking-proofs/' + path;
   }
 
-  function persistUnlockedSession(job, projUrl, pickupDone) {
-    try {
-      var rec = { job: job, projUrl: projUrl, pickupDone: Boolean(pickupDone), savedAt: Date.now() };
-      localStorage.setItem('cc_partner_job_' + job.booking_number, JSON.stringify(rec));
-      localStorage.setItem('cc_partner_active_job', JSON.stringify(rec));
-    } catch (e) {}
-  }
-
-  function clearUnlockedSession(bookingNum) {
-    try {
-      if (bookingNum) localStorage.removeItem('cc_partner_job_' + bookingNum);
-      localStorage.removeItem('cc_partner_active_job');
-    } catch (e) {}
-  }
-
-  function unlockProofUI(job, pickupAlreadyDone) {
-    activeBooking = job;
-    populateDispatchCard(activeBooking);
-    document.getElementById('otpGateCard').classList.add('hidden');
-    document.getElementById('openPickupBtn').textContent = '✓ OTP Verified — Session Unlocked Until Delivery';
-    document.getElementById('proofSections').classList.remove('hidden');
-    buildCamSlots('pickupCamGrid', pickupBlobs, 'savePickupBtn', 'pu');
-    buildCamSlots('deliveryCamGrid', deliveryBlobs, 'saveDeliveryBtn', 'dl');
-    var hasPickup = pickupAlreadyDone || (Array.isArray(job.pickup_photos) && job.pickup_photos.length >= 4) || String(job.status || '').toLowerCase().indexOf('picked up') !== -1;
-    if (hasPickup) {
-      document.getElementById('pickupStatus').style.color = '#86EFAC';
-      document.getElementById('pickupStatus').textContent = '✓ Pickup Complete (4 Photos Locked). Proceed directly to Delivery Proof below — no OTP needed again!';
-      document.getElementById('deliveryCard').scrollIntoView({ behavior: 'smooth' });
-    } else {
-      document.getElementById('pickupCard').scrollIntoView({ behavior: 'smooth' });
-    }
-  }
-
-  // AUTO-RESTORE UNLOCKED SESSION SO PARTNER NEVER HAS TO RE-ENTER OTP BEFORE DELIVERY!
-  (function restoreSessionIfUnlocked() {
-    try {
-      var qId = (new URLSearchParams(location.search).get('id') || '').trim().toUpperCase();
-      var raw = qId ? localStorage.getItem('cc_partner_job_' + qId) : localStorage.getItem('cc_partner_active_job');
-      if (!raw) return;
-      var saved = JSON.parse(raw);
-      if (saved && saved.job && saved.job.booking_number) {
-        if (qId && saved.job.booking_number.toUpperCase() !== qId) return;
-        for (var i = 0; i < SB_PROJECTS.length; i++) {
-          if (SB_PROJECTS[i].url === saved.projUrl) { ACTIVE_PROJ = SB_PROJECTS[i]; break; }
-        }
-        unlockProofUI(saved.job, saved.pickupDone);
-      }
-    } catch (e) {}
-  })();
-
   document.getElementById('verifyBtn').addEventListener('click', async function () {
     var bid = document.getElementById('pId').value.trim().toUpperCase().replace(/\s+/g, '');
     var otp = document.getElementById('pOtp').value.replace(/[^0-9]/g, '').slice(0, 4);
     var st = document.getElementById('verifyStatus');
-    if (!bid || otp.length !== 4) { st.style.color = '#FCA5A5'; st.textContent = 'Enter valid Booking ID & 4-Digit Handover OTP.'; return; }
-    st.style.color = '#00E5FF'; st.textContent = 'Verifying Booking ID & 4-Digit OTP...';
+    if (!bid || otp.length !== 4) { st.style.color = '#FCA5A5'; st.textContent = 'Enter Booking ID & 4-Digit Pickup OTP.'; return; }
+    st.style.color = '#00E5FF'; st.textContent = 'Verifying OTP...';
+    var tbl = (bid.indexOf('CCS-4W-') === 0 || bid.indexOf('4W-') === 0) ? '4W_Bookings' : '2W_Bookings';
     var found = null;
-    var tbl = bid.indexOf('4W-') === 0 ? '4W_Bookings' : '2W_Bookings';
-
-    for (var pi = 0; pi < SB_PROJECTS.length; pi++) {
-      var pr = SB_PROJECTS[pi];
-      // Tier 1: Secure RPC get_verified_booking
+    for (var i = 0; i < SB_PROJECTS.length; i++) {
+      var pr = SB_PROJECTS[i];
       try {
-        var r = await fetch(pr.url + '/rest/v1/rpc/get_verified_booking', {
-          method: 'POST', headers: sbHdrs(pr.key, { 'Content-Type': 'application/json' }),
-          body: JSON.stringify({ p_booking_number: bid, p_verify_value: otp })
-        });
-        if (r.ok) {
-          var c = await r.json();
-          if (Array.isArray(c) && c.length && String(c[0].handover_otp).trim() === otp) {
-            ACTIVE_PROJ = pr; found = c[0]; break;
-          }
-        }
+        var r = await fetch(pr.url + '/rest/v1/rpc/get_verified_booking', { method: 'POST', headers: sbHdrs(pr.key, { 'Content-Type': 'application/json' }), body: JSON.stringify({ p_booking_number: bid, p_verify_value: otp }) });
+        if (r.ok) { var c = await r.json(); if (Array.isArray(c) && c[0] && String(c[0].handover_otp).trim() === otp) { ACTIVE_PROJ = pr; found = c[0]; break; } }
       } catch (e) {}
-      // Tier 2: Direct REST table check fallback (in case RPC wasn't run on that project)
       try {
-        var r2 = await fetch(pr.url + '/rest/v1/' + encodeURIComponent(tbl) + '?booking_number=eq.' + encodeURIComponent(bid) + '&handover_otp=eq.' + encodeURIComponent(otp) + '&limit=1', {
-          method: 'GET', headers: sbHdrs(pr.key)
-        });
-        if (r2.ok) {
-          var c2 = await r2.json();
-          if (Array.isArray(c2) && c2.length && String(c2[0].handover_otp).trim() === otp) {
-            ACTIVE_PROJ = pr; found = c2[0]; break;
-          }
-        }
+        var r2 = await fetch(pr.url + '/rest/v1/' + encodeURIComponent(tbl) + '?booking_number=eq.' + encodeURIComponent(bid) + '&handover_otp=eq.' + encodeURIComponent(otp) + '&limit=1', { method: 'GET', headers: sbHdrs(pr.key) });
+        if (r2.ok) { var c2 = await r2.json(); if (Array.isArray(c2) && c2[0]) { ACTIVE_PROJ = pr; found = c2[0]; break; } }
       } catch (e2) {}
     }
-
-    if (!found) {
-      st.style.color = '#FCA5A5';
-      st.textContent = 'Invalid Booking ID or 4-Digit OTP (check Booking ID ' + bid + ' & OTP in Supabase ' + tbl + ').';
-      return;
-    }
-    persistUnlockedSession(found, ACTIVE_PROJ.url, false);
-    st.style.color = '#86EFAC';
-    st.textContent = '✓ OTP Verified! Session stays unlocked on your phone until delivery is complete.';
-    unlockProofUI(found, false);
+    if (!found) { st.style.color = '#FCA5A5'; st.textContent = 'Invalid Booking ID or 4-Digit OTP.'; return; }
+    try { localStorage.setItem('cc_partner_job_' + found.booking_number, JSON.stringify({ job: found, projUrl: ACTIVE_PROJ.url, pickupDone: false })); } catch (e) {}
+    unlockStageUI(found, false);
   });
 
   async function saveStage(stage, blobs, statusId, btnId, waBtnId) {
     var st = document.getElementById(statusId);
     var btn = document.getElementById(btnId);
     if (!activeBooking || !blobs.every(Boolean)) return;
+
+    var totalAmt = null;
+    if (stage === 'delivery') {
+      totalAmt = Number((document.getElementById('deliveryAmount').value || '').replace(/[^0-9.]/g, ''));
+      var dOtp = (document.getElementById('deliveryOtp').value || '').replace(/[^0-9]/g, '');
+      if (dOtp !== String(activeBooking.handover_otp).trim()) {
+        st.style.color = '#FCA5A5'; st.textContent = 'Invalid 4-Digit Delivery OTP! Confirm OTP with customer.'; return;
+      }
+    }
+
     btn.disabled = true; st.style.color = '#00E5FF'; st.textContent = 'Uploading 4 compressed photos...';
     try {
       var urls = [];
       for (var i = 0; i < 4; i++) urls.push(await uploadPhoto(activeBooking.booking_number, stage, i, blobs[i]));
-      var totalAmt = stage === 'delivery' ? Number((document.getElementById('deliveryAmount').value || '').replace(/[^0-9.]/g, '')) : null;
-      var newStatus = stage === 'pickup' ? 'Picked Up — In Service (4 Photos Verified)' : 'Delivered (4 Photos Verified)';
+      var newStatus = stage === 'pickup' ? 'Picked Up' : 'Delivered & Closed';
       var rpcPayload = { p_booking_number: activeBooking.booking_number, p_otp: activeBooking.handover_otp, p_stage: stage, p_photos: urls, p_status: newStatus };
       if (stage === 'delivery' && totalAmt > 0) { rpcPayload.p_total_amount = totalAmt; rpcPayload.p_next_service_days = 60; }
       var rpc = await fetch(ACTIVE_PROJ.url + '/rest/v1/rpc/update_partner_proof', { method: 'POST', headers: sbHdrs(ACTIVE_PROJ.key, { 'Content-Type': 'application/json' }), body: JSON.stringify(rpcPayload) });
       var out = rpc.ok ? await rpc.json() : { ok: false };
       if (!out.ok) throw new Error('Update failed');
 
-      try { fetch(SHEET_HOOK, { method: 'POST', mode: 'no-cors', keepalive: true, headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: stage === 'pickup' ? 'pickup_proof' : 'delivery_proof', booking_number: activeBooking.booking_number, vehicle_mode: activeBooking.vehicle_mode, customer_name: activeBooking.customer_name, customer_email: activeBooking.customer_email || '', handover_otp: activeBooking.handover_otp || '', vehicle_model: activeBooking.vehicle_model, total_amount: totalAmt || '', status: newStatus, photos: urls }) }).catch(function () {}); } catch (e) {}
+      try {
+        fetch(SHEET_HOOK, {
+          method: 'POST', mode: 'no-cors', keepalive: true,
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: stage === 'pickup' ? 'pickup_proof' : 'delivery_proof',
+            booking_number: activeBooking.booking_number,
+            vehicle_mode: activeBooking.vehicle_mode,
+            customer_name: activeBooking.customer_name,
+            vehicle_model: activeBooking.vehicle_model,
+            total_amount: totalAmt || '',
+            status: newStatus,
+            photos: urls
+          })
+        }).catch(function () {});
+      } catch (e) {}
 
-      var is4WJob = String(activeBooking.booking_number || '').indexOf('4W-') === 0 || String(activeBooking.vehicle_mode || '').toLowerCase().indexOf('car') !== -1;
-      var exactBrand = is4WJob ? 'CarS CareS Motocrafts Ai Engine Labs Service' : 'CC Motocrafts Ai Engine Labs Service';
-      var digits = String(activeBooking.customer_phone || '').replace(/[^0-9]/g, '');
+      if (stage === 'pickup') {
+        activeBooking.status = 'Picked Up';
+        try { localStorage.setItem('cc_partner_job_' + activeBooking.booking_number, JSON.stringify({ job: activeBooking, projUrl: ACTIVE_PROJ.url, pickupDone: true })); } catch (e) {}
+      } else {
+        try { localStorage.removeItem('cc_partner_job_' + activeBooking.booking_number); } catch (e) {}
+      }
+
+      var digits = String(activeBooking.customer_phone || '').replace(/[^0-9]/g, '').slice(-10);
       var custWa = digits.length === 10 ? ('91' + digits) : digits;
       var nl = String.fromCharCode(10);
-      var numbered = urls.map(function (u, idx) { return (idx + 1) + '. ' + u; }).join(nl);
+      var photoLinks = urls.map(function (u, idx) { return (idx + 1) + '. ' + u; }).join(nl);
       var msg = stage === 'pickup'
-        ? ['Hello ' + activeBooking.customer_name + ', hamari ' + exactBrand + ' team ne aapki gadi (' + activeBooking.vehicle_model + ') collect kar li hai (Booking ID: ' + activeBooking.booking_number + '). Yeh 4 images hain — is condition mein aapki gadi pickup hui hai:', numbered].join(nl)
-        : ['Hello ' + activeBooking.customer_name + ', aapki gadi (' + activeBooking.vehicle_model + ') ki service complete ho gayi hai! Total Amount: ₹' + totalAmt + '. Yeh 4 delivery condition images hain:', numbered, 'Hamari service aur hamare technician ka kaam kaisa laga, uske hisaab se apna review zaroor dein: https://www.ccmotocrafts.in/#reviews'].join(nl);
-      if (stage === 'pickup') {
-        activeBooking.pickup_photos = urls;
-        activeBooking.status = newStatus;
-        persistUnlockedSession(activeBooking, ACTIVE_PROJ.url, true);
-      } else {
-        clearUnlockedSession(activeBooking.booking_number);
-      }
+        ? [
+            'Hello ' + activeBooking.customer_name + ', your vehicle (' + activeBooking.vehicle_model + ') pickup is verified (Booking ID: ' + activeBooking.booking_number + '). Please check the 4 pickup-time condition photos attached. Our team is taking your vehicle safely to our authorized service bay. Our Digital Floor Manager actively monitors every repair step and sends you live WhatsApp updates & prior parts approval—backed by our 1-Year Engine Warranty & 30-Day Workmanship Guarantee.',
+            photoLinks
+          ].join(nl)
+        : [
+            'Hello ' + activeBooking.customer_name + ', your vehicle (' + activeBooking.vehicle_model + ' | Booking ID: ' + activeBooking.booking_number + ') service is 100% completed, Floor Manager quality-checked, and ready for handover! Total Approved Bill: ₹' + totalAmt + '. Please inspect the 4 delivery condition photos attached. Your feedback helps our mechanics grow—please tap the link below to rate us 5 Stars and share how the work felt: https://www.ccmotocrafts.in/#reviews',
+            photoLinks
+          ].join(nl);
+
       st.style.color = '#86EFAC';
-      st.textContent = stage === 'pickup'
-        ? '✓ 4 Pickup Photos locked! Session stays unlocked — open this link anytime at delivery (no OTP needed again).'
-        : '✓ Delivery complete (₹' + totalAmt + ')! Session closed cleanly & 60-day reminder scheduled.';
+      st.textContent = stage === 'pickup' ? '✓ Status updated to "Picked Up"! Opening Customer WhatsApp...' : '✓ Status updated to "Delivered & Closed"! Opening Customer WhatsApp...';
+      var waUrl = 'https://wa.me/' + custWa + '?text=' + encodeURIComponent(msg);
       var waBtn = document.getElementById(waBtnId);
-      if (custWa) { waBtn.href = 'https://wa.me/' + custWa + '?text=' + encodeURIComponent(msg); waBtn.classList.remove('hidden'); }
+      waBtn.href = waUrl;
+      waBtn.classList.remove('hidden');
+      if (custWa) window.open(waUrl, '_blank', 'noopener');
     } catch (err) {
-      st.style.color = '#FCA5A5'; st.textContent = 'Upload failed — check internet & retry.'; btn.disabled = false;
+      st.style.color = '#FCA5A5'; st.textContent = 'Upload failed — check connection & retry.'; btn.disabled = false;
     }
   }
 

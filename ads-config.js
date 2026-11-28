@@ -4,11 +4,9 @@
 window.CC_ADS_CONFIG = {
   ADS_ID: 'AW-18345537681',
   GTM_ID: 'GTM-57JRWFN3',
-  // Paste ONLY the label after 'AW-18345537681/' below:
   CONVERSION_LABEL: '5Aa6CO-tyr8dEJHh6qtE',
-  // Keep false so gtag fires conversion ONCE cleanly (avoids GTM + gtag double-firing):
   USE_GTM_ONLY: false,
-  fireVerifiedConversion: function (bookingId, mode, valueInr, urlToken) {
+  fireVerifiedConversion: function (bookingId, mode, valueInr, urlToken, phone) {
     try {
       if (!bookingId || !urlToken) return false;
       var verifiedId = sessionStorage.getItem('cc_verified_booking_id');
@@ -17,11 +15,17 @@ window.CC_ADS_CONFIG = {
       var dedupeKey = 'cc_conv_fired_' + bookingId;
       if (sessionStorage.getItem(dedupeKey) === '1') return false;
 
+      var cleanPhone = String(phone || '').replace(/[^0-9]/g, '').slice(-10);
+      if (cleanPhone.length === 10) {
+        var phoneKey = 'cc_conv_phone_ts_' + cleanPhone;
+        var prevTs = Number(localStorage.getItem(phoneKey) || '0');
+        if (prevTs && (Date.now() - prevTs) < 86400000) return false;
+      }
+
       var modeUpper = String(mode || '').toLowerCase() === '4w' ? '4W' : '2W';
       var val = Number(valueInr || (modeUpper === '4W' ? 1499 : 499));
       var label = String(this.CONVERSION_LABEL || '').trim();
 
-      // Always push structured verified event to GTM-57JRWFN3 dataLayer (1 time per Booking ID)
       window.dataLayer = window.dataLayer || [];
       window.dataLayer.push({
         event: 'cc_verified_booking_confirmed',
@@ -32,7 +36,6 @@ window.CC_ADS_CONFIG = {
         transaction_id: bookingId
       });
 
-      // Fire Google Ads AW-18345537681 conversion directly ONCE when label is configured
       if (!this.USE_GTM_ONLY && typeof window.gtag === 'function' && label && label.indexOf('PASTE_') !== 0) {
         window.gtag('event', 'conversion', {
           send_to: this.ADS_ID + '/' + label,
@@ -45,6 +48,9 @@ window.CC_ADS_CONFIG = {
 
       sessionStorage.setItem(dedupeKey, '1');
       sessionStorage.removeItem('cc_verified_booking_token');
+      if (cleanPhone.length === 10) {
+        localStorage.setItem('cc_conv_phone_ts_' + cleanPhone, String(Date.now()));
+      }
       return true;
     } catch (err) {
       return false;

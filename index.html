@@ -462,12 +462,39 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 20px
     return { ok: false, json: async function () { return null; } };
   }
 
+  var VALID_VIP_PINS = ['500089','500075','500032','500081','500084','500033','500034','500008','500019','500049','500072'];
+  function isValidIndianMobile(m) {
+    if (!/^[6-9]\d{9}$/.test(m)) return false;
+    if (/^(\d)\1{9}$/.test(m)) return false;
+    if (/^(\d\d)\1{4}$/.test(m)) return false;
+    var bad = ['1234567890','0123456789','9876543210','6789012345','7890123456','8901234567','9012345678','9999988888'];
+    return bad.indexOf(m) === -1;
+  }
+  function isValidModelProblem(mp) {
+    var clean = String(mp || '').replace(/[^a-zA-Z0-9\u0900-\u097F\u0C00-\u0C7F\u0600-\u06FF]/g, '');
+    if (clean.length < 3) return false;
+    if (/^(.)\1+$/.test(clean)) return false;
+    var low = clean.toLowerCase();
+    return ['test','asdf','qwer','xxxx','zzzz','1234','12345','abcd'].indexOf(low) === -1;
+  }
+
   async function saveBookingToSupabase(table, payload) {
     var r1 = await sbFetch('/rest/v1/rpc/create_verified_booking', { method: 'POST', body: JSON.stringify({ p_payload: payload }) });
-    if (r1.ok) { var d1 = await r1.json(); if (d1 && d1.ok && d1.booking_number) return String(d1.booking_number); }
-    var r2 = await sbFetch('/rest/v1/' + encodeURIComponent(table), { method: 'POST', headers: { 'Prefer': 'return=minimal' }, body: JSON.stringify(payload) });
-    if (r2.ok) return payload.booking_number;
-    return null;
+    if (r1.ok) {
+      var d1 = await r1.json();
+      if (d1 && d1.ok && d1.booking_number) {
+        return {
+          ok: true,
+          duplicate: !!d1.duplicate,
+          booking_number: String(d1.booking_number),
+          handover_otp: String(d1.handover_otp || payload.handover_otp || '')
+        };
+      }
+      if (d1 && d1.ok === false) {
+        return { ok: false, networkError: false, error: d1.error || 'Invalid booking details.' };
+      }
+    }
+    return { ok: false, networkError: true, error: 'Network error' };
   }
 
   function applyMode(mode, updateUrl) {
@@ -522,10 +549,14 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 20px
       if (!Array.isArray(q) || !q.length || !navigator.onLine) return;
       var rem = [];
       for (var i = 0; i < q.length; i++) {
-        var ok = await saveBookingToSupabase(q[i].table, q[i].payload);
-        if (ok) {
-          try { fetch(SHEET_HOOK, { method: 'POST', mode: 'no-cors', keepalive: true, headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({ action: 'booking' }, q[i].payload)) }).catch(function () {}); } catch (e) {}
-        } else rem.push(q[i]);
+        var res = await saveBookingToSupabase(q[i].table, q[i].payload);
+        if (res && res.ok) {
+          if (!res.duplicate) {
+            try { fetch(SHEET_HOOK, { method: 'POST', mode: 'no-cors', keepalive: true, headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({ action: 'booking' }, q[i].payload)) }).catch(function () {}); } catch (e) {}
+          }
+        } else if (res && res.networkError) {
+          rem.push(q[i]);
+        }
       }
       localStorage.setItem('cc_offline_queue', JSON.stringify(rem));
     } catch (e) {}
@@ -614,9 +645,24 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 20px
     var statusEl = document.getElementById('formStatus');
     var btnEl = document.getElementById('submitBtn');
 
-    if (!name || phone.length !== 10 || !mp) {
+    if (name.replace(/[^a-zA-Z\u0900-\u097F\u0C00-\u0C7F\u0600-\u06FF]/g, '').length < 2) {
       statusEl.style.color = '#FCA5A5';
-      statusEl.textContent = 'Please enter Customer Name, valid 10-digit Mobile Number, and Vehicle Model & Problem.';
+      statusEl.textContent = 'Please enter a valid Customer Name (at least 2 letters).';
+      return;
+    }
+    if (!isValidIndianMobile(phone)) {
+      statusEl.style.color = '#FCA5A5';
+      statusEl.textContent = 'Please enter a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9.';
+      return;
+    }
+    if (!isValidModelProblem(mp)) {
+      statusEl.style.color = '#FCA5A5';
+      statusEl.textContent = 'Please enter a valid Vehicle Model & Service/Problem (minimum 3 characters).';
+      return;
+    }
+    if (VALID_VIP_PINS.indexOf(pin) === -1) {
+      statusEl.style.color = '#FCA5A5';
+      statusEl.textContent = 'Please select a valid Hyderabad VIP Area & PIN Code from the dropdown.';
       return;
     }
 
@@ -662,15 +708,34 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 20px
     };
 
     var tbl = m === '4w' ? '4W_Bookings' : '2W_Bookings';
-    var confirmedId = await saveBookingToSupabase(tbl, payload);
+    var sbRes = await saveBookingToSupabase(tbl, payload);
+    if (sbRes && !sbRes.ok && !sbRes.networkError) {
+      statusEl.style.color = '#FCA5A5';
+      statusEl.textContent = sbRes.error || 'Please check your booking details and try again.';
+      btnEl.disabled = false;
+      return;
+    }
+
+    var isDuplicate = !!(sbRes && sbRes.ok && sbRes.duplicate);
+    var confirmedId = (sbRes && sbRes.ok) ? sbRes.booking_number : '';
+    if (sbRes && sbRes.ok && sbRes.handover_otp) otp = sbRes.handover_otp;
     var isOfflineQueued = false;
+
     if (!confirmedId) {
       try {
-        var oq = JSON.parse(localStorage.getItem('cc_offline_queue') || '[]');
-        oq.push({ table: tbl, payload: payload });
-        localStorage.setItem('cc_offline_queue', JSON.stringify(oq));
-        confirmedId = bid;
-        isOfflineQueued = true;
+        var recentMap = JSON.parse(localStorage.getItem('cc_recent_bookings_24h') || '{}');
+        var rKey = phone + '_' + m;
+        if (recentMap[rKey] && (Date.now() - Number(recentMap[rKey].ts || 0)) < 86400000) {
+          confirmedId = recentMap[rKey].booking_number;
+          otp = recentMap[rKey].handover_otp;
+          isDuplicate = true;
+        } else {
+          var oq = JSON.parse(localStorage.getItem('cc_offline_queue') || '[]');
+          oq.push({ table: tbl, payload: payload });
+          localStorage.setItem('cc_offline_queue', JSON.stringify(oq));
+          confirmedId = bid;
+          isOfflineQueued = true;
+        }
       } catch (oe) {
         statusEl.style.color = '#FCA5A5';
         statusEl.textContent = 'Could not reach booking server. Please retry or WhatsApp +91 8333084261.';
@@ -679,36 +744,44 @@ footer { background: #060910; border-top: 1px solid var(--border); padding: 20px
       }
     }
 
-    try {
-      fetch(SHEET_HOOK, {
-        method: 'POST', mode: 'no-cors', keepalive: true,
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(Object.assign({ action: 'booking' }, payload))
-      }).catch(function () {});
-    } catch (err) {}
+    if (!isDuplicate) {
+      try {
+        fetch(SHEET_HOOK, {
+          method: 'POST', mode: 'no-cors', keepalive: true,
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(Object.assign({ action: 'booking' }, payload))
+        }).catch(function () {});
+      } catch (err) {}
+    }
 
-    var vt = 'v56_' + Date.now() + '_' + Math.random().toString(36).slice(2, 9);
+    var vt = (!isDuplicate && !isOfflineQueued) ? ('v57_' + Date.now() + '_' + Math.random().toString(36).slice(2, 9)) : '';
     try {
       var all = JSON.parse(localStorage.getItem('cc_my_bookings') || '{}');
-      all[confirmedId] = Object.assign({}, payload, { pickup_photos: [], delivery_photos: [] });
+      all[confirmedId] = Object.assign({}, payload, { booking_number: confirmedId, handover_otp: otp, pickup_photos: [], delivery_photos: [] });
       localStorage.setItem('cc_my_bookings', JSON.stringify(all));
+      var recentMap2 = JSON.parse(localStorage.getItem('cc_recent_bookings_24h') || '{}');
+      recentMap2[phone + '_' + m] = { booking_number: confirmedId, handover_otp: otp, ts: Date.now() };
+      localStorage.setItem('cc_recent_bookings_24h', JSON.stringify(recentMap2));
       sessionStorage.setItem('cc_last_booking', JSON.stringify(all[confirmedId]));
-      sessionStorage.setItem('cc_verified_booking_id', confirmedId);
-      sessionStorage.setItem('cc_verified_booking_token', vt);
+      if (vt) {
+        sessionStorage.setItem('cc_verified_booking_id', confirmedId);
+        sessionStorage.setItem('cc_verified_booking_token', vt);
+      }
     } catch (e) {}
 
-    if (!isOfflineQueued && window.CC_ADS_CONFIG && typeof window.CC_ADS_CONFIG.fireVerifiedConversion === 'function') {
-      window.CC_ADS_CONFIG.fireVerifiedConversion(confirmedId, m, m === '4w' ? 1499 : 499, vt);
+    if (!isDuplicate && !isOfflineQueued && vt && window.CC_ADS_CONFIG && typeof window.CC_ADS_CONFIG.fireVerifiedConversion === 'function') {
+      window.CC_ADS_CONFIG.fireVerifiedConversion(confirmedId, m, m === '4w' ? 1499 : 499, vt, phone);
     }
 
     document.getElementById('mConfirmBody').textContent =
+      (isDuplicate ? 'Your active booking from the last 24 hours is already confirmed (no duplicate created). ' : '') +
       'Thank you for choosing CC Motocrafts AI Engine Labs (2W) & CarS CareS (4W). Your Booking ID is ' + confirmedId +
       ' and your Pickup/Delivery Verification OTP is ' + otp +
       '. Our pickup executive will call you shortly and dispatch within 35 to 45 minutes to your selected Hyderabad location. ' +
       'Please keep your vehicle keys ready and share your live location on WhatsApp (+91 8333084261) when our rider calls.';
     document.getElementById('mBookingId').textContent = confirmedId;
     document.getElementById('mBookingOtp').textContent = otp;
-    document.getElementById('mSlipBtn').href = 'thank-you.html?id=' + encodeURIComponent(confirmedId) + '&mode=' + m + '&vt=' + encodeURIComponent(vt);
+    document.getElementById('mSlipBtn').href = 'thank-you.html?id=' + encodeURIComponent(confirmedId) + '&mode=' + m + (vt ? ('&vt=' + encodeURIComponent(vt)) : '');
     var nl = String.fromCharCode(10);
     var waShareTxt = [
       'Hello CC Motocrafts (+91 8333084261),',

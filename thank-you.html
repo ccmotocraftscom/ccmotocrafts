@@ -112,7 +112,7 @@ body { background: #090D16; color: #F3F6FB; font-family: system-ui, -apple-syste
     } catch (e) {}
   }
 
-  var is4w = qmode === '4w' || (b && String(b.booking_number || '').indexOf('4W-') === 0) || qid.indexOf('4W-') === 0;
+  var is4w = qmode === '4w' || (b && String(b.booking_number || '').indexOf('4W-') !== -1) || qid.indexOf('4W-') !== -1;
   var lockedBrand = is4w ? 'CarS CareS Motocrafts Ai Engine Labs Service' : 'CC Motocrafts Ai Engine Labs Service';
   document.getElementById('slipLogo').src = is4w ? 'logo-4w.webp' : 'logo-2w.webp';
   document.getElementById('slipBrandTitle').textContent = lockedBrand;
@@ -141,7 +141,7 @@ body { background: #090D16; color: #F3F6FB; font-family: system-ui, -apple-syste
 
     window.addEventListener('load', function () {
       if (vt && window.CC_ADS_CONFIG && typeof window.CC_ADS_CONFIG.fireVerifiedConversion === 'function') {
-        window.CC_ADS_CONFIG.fireVerifiedConversion(b.booking_number, is4w ? '4w' : '2w', is4w ? 1499 : 499, vt);
+        window.CC_ADS_CONFIG.fireVerifiedConversion(b.booking_number, is4w ? '4w' : '2w', is4w ? 1499 : 499, vt, b.customer_phone);
       }
     });
   } else {
